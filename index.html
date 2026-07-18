@@ -19,8 +19,26 @@
 		<meta property="og:title" content="Novan Saputra Haryana | Astrophysics" />
 		<meta property="og:description" content="Research on the formation and evolution of massive galaxies across cosmic time." />
 		<meta property="og:url" content="https://novansaputra.github.io/" />
-		<meta property="og:image" content="https://novansaputra.github.io/images/most_massive_uvj_images.pdf" />
+		<meta property="og:image" content="https://novansaputra.github.io/images/most_massive_uvj_images.png" />
 		<meta name="twitter:card" content="summary_large_image" />
+
+		<script type="application/ld+json">
+		{
+			"@context": "https://schema.org",
+			"@type": "Person",
+			"name": "Novan Saputra Haryana",
+			"url": "https://novansaputra.github.io/",
+			"jobTitle": "Astrophysics Graduate Student",
+			"affiliation": {
+				"@type": "CollegeOrUniversity",
+				"name": "Tohoku University"
+			},
+			"sameAs": [
+				"https://orcid.org/0009-0009-3404-5673",
+				"https://www.linkedin.com/in/novansaputra/"
+			]
+		}
+		</script>
 
 		<link rel="stylesheet" href="assets/css/main.css" />
 		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
@@ -93,6 +111,26 @@
 				display: block;
 				position: relative;
 				cursor: zoom-in;
+			}
+
+			.pdf-preview {
+				position: relative;
+				width: 100%;
+				aspect-ratio: 16 / 10;
+				overflow: hidden;
+				background: #fff;
+			}
+
+			.pdf-preview iframe {
+				width: 100%;
+				height: 100%;
+				border: 0;
+			}
+
+			.pdf-preview .lightbox-trigger {
+				position: absolute;
+				inset: 0;
+				z-index: 2;
 			}
 
 			.lightbox-trigger::after {
@@ -213,6 +251,14 @@
 				background: #fff;
 			}
 
+			#lightbox-pdf {
+				display: none;
+				width: 92vw;
+				height: 82vh;
+				border: 0;
+				background: #fff;
+			}
+
 			#lightbox-caption {
 				margin: 0.75rem auto 0 auto;
 				max-width: 70rem;
@@ -236,6 +282,31 @@
 				overflow: hidden;
 			}
 
+			.skip-link {
+				position: fixed;
+				top: 0.75rem;
+				left: 0.75rem;
+				z-index: 20000;
+				padding: 0.65rem 0.9rem;
+				background: #111827;
+				color: #fff;
+				border: 1px solid var(--accent);
+				transform: translateY(-180%);
+			}
+
+			.skip-link:focus {
+				transform: translateY(0);
+			}
+
+			@media (prefers-reduced-motion: reduce) {
+				*, *::before, *::after {
+					scroll-behavior: auto !important;
+					animation-duration: 0.01ms !important;
+					animation-iteration-count: 1 !important;
+					transition-duration: 0.01ms !important;
+				}
+			}
+
 			@media screen and (max-width: 736px) {
 				.hero-portrait {
 					width: 205px;
@@ -254,6 +325,7 @@
 	</head>
 
 	<body class="is-preload">
+		<a class="skip-link" href="#main">Skip to main content</a>
 		<div id="wrapper">
 			<header id="header">
 				<div class="content">
@@ -261,7 +333,7 @@
 						<h1>Novan Saputra Haryana</h1>
 						<h2>(ノファン サプトラ ハリヤナ)</h2>
 
-						<img class="hero-portrait" src="images/IMG_8870.jpg" width="250" height="250" alt="Portrait of Novan Saputra Haryana" />
+						<img class="hero-portrait" src="images/IMG_8870.jpg" width="250" height="250" fetchpriority="high" decoding="async" alt="Portrait of Novan Saputra Haryana" />
 
 						<p class="hero-role">
 							Graduate Student at<br />
@@ -289,7 +361,7 @@
 				</nav>
 			</header>
 
-			<div id="main">
+			<main id="main">
 				<article id="about">
 					<h2 class="major">About Me</h2>
 					<p>
@@ -302,10 +374,10 @@
 						<li>BSc in Astronomy, Institut Teknologi Bandung, Indonesia (2020–2024)</li>
 					</ul>
 
-					<span class="image main">
-						<img src="images/IMG_0592.jpg" loading="lazy" alt="Novan at Australian Parliament House in Canberra" />
+					<figure class="image main">
+						<img src="images/IMG_0592.jpg" loading="lazy" decoding="async" alt="Novan at Australian Parliament House in Canberra" />
 						<figcaption>At Australian Parliament House, Canberra.</figcaption>
-					</span>
+					</figure>
 				</article>
 
 				<article id="research">
@@ -322,15 +394,16 @@
 
 						<figure class="image main">
 							<a class="lightbox-trigger" href="images/sSFR_M1kpc_evol.png" data-caption="Evolution of central specific star formation rate and stellar mass density. The population moves through rapid central compaction and subsequent quenching, while X-ray-luminous AGN preferentially occupy compact star-forming systems.">
-								<img src="images/sSFR_M1kpc_evol.png" loading="lazy" alt="Central specific star formation rate plotted against central stellar mass density for massive galaxies across redshift" />
+								<img src="images/sSFR_M1kpc_evol.png" loading="lazy" decoding="async" alt="Central specific star formation rate plotted against central stellar mass density for massive galaxies across redshift" />
 							</a>
 							<figcaption>Evolution of central star formation and stellar mass density, illustrating the compaction–quenching sequence and the locations of X-ray-luminous AGN.</figcaption>
 						</figure>
 
-						<figure class="image main">
-							<a class="lightbox-trigger" href="images/most_massive_uvj_images.pdf" data-caption="Massive galaxies observed across cosmic time with JWST and Hubble imaging, shown together with their rest-frame UVJ colors.">
-								<img src="images/most_massive_uvj_images.pdf" loading="lazy" alt="Massive galaxies across cosmic time shown with their rest-frame UVJ colors" />
-							</a>
+						<figure class="image main pdf-figure">
+							<div class="pdf-preview">
+								<iframe src="images/most_massive_uvj_images.pdf#view=FitH" loading="lazy" title="Preview of massive galaxies across cosmic time and their rest-frame UVJ colors"></iframe>
+								<a class="lightbox-trigger" href="images/most_massive_uvj_images.pdf" data-type="pdf" data-alt="Massive galaxies across cosmic time shown with their rest-frame UVJ colors" data-caption="Massive galaxies observed across cosmic time with JWST and Hubble imaging, shown together with their rest-frame UVJ colors." aria-label="Enlarge the UVJ figure as a PDF"></a>
+							</div>
 							<figcaption>Massive galaxies observed across cosmic time and their locations in rest-frame UVJ color space.</figcaption>
 						</figure>
 					</section>
@@ -343,7 +416,7 @@
 
 						<figure class="image main">
 							<a class="lightbox-trigger" href="images/mass_rad.png" data-caption="Half-mass radius as a function of stellar mass for massive quiescent galaxies. The median population grows toward larger sizes after quenching, broadly following the direction expected from merger-driven evolution.">
-								<img src="images/mass_rad.png" loading="lazy" alt="Half-mass radius plotted against stellar mass for massive quiescent galaxies at different redshifts" />
+								<img src="images/mass_rad.png" loading="lazy" decoding="async" alt="Half-mass radius plotted against stellar mass for massive quiescent galaxies at different redshifts" />
 							</a>
 							<figcaption>Post-quenching evolution in the stellar mass–size plane, showing substantial size growth toward lower redshift.</figcaption>
 						</figure>
@@ -377,14 +450,14 @@
 					<ul class="talk-list">
 						<li><strong>April 2026 — <a href="https://sites.google.com/cam.ac.uk/beyondhubble" target="_blank" rel="noopener noreferrer">BeyondHubble</a></strong>, Kavli Institute for Cosmology, Cambridge, UK — oral presentation</li>
 						<li><strong>March 2026 — <a href="https://sites.google.com/view/endofsfpuertovaras/home" target="_blank" rel="noopener noreferrer">The End of Star Formation</a></strong>, University of Illinois Urbana-Champaign, USA — oral presentation</li>
-						<li><strong>August 2025 — <a href="https://sites.google.com/view/gew2025/home" target="_blank" rel="noopener noreferrer">11th Galaxy Evolution Workshop</strong></a>, Nagoya University, Japan — oral presentation</li>
+						<li><strong>August 2025 — <a href="https://sites.google.com/view/gew2025/home" target="_blank" rel="noopener noreferrer">11th Galaxy Evolution Workshop</a></strong>, Nagoya University, Japan — oral presentation</li>
 						<li><strong>June 2025 — <a href="https://sites.google.com/inaf.it/massivegalaxies/" target="_blank" rel="noopener noreferrer">IAU Symposium 396</a></strong>, Naples, Italy — oral presentation</li>
 					</ul>
 
 					<details>
 						<summary>View all presentations</summary>
 						<ul class="talk-list">
-							<li>December 2025 — <a href="https://naoj-global.mtk.nao.ac.jp/eama11/" target="_blank" rel="noopener noreferrer"><strong>11th East-Asian Meeting on Astronomy</a></strong>, Niigata, Japan — oral presentation</li>
+							<li>December 2025 — <strong><a href="https://naoj-global.mtk.nao.ac.jp/eama11/" target="_blank" rel="noopener noreferrer">11th East-Asian Meeting on Astronomy</a></strong>, Niigata, Japan — oral presentation</li>
 							<li>August 2024 — <a href="https://events.asiaa.sinica.edu.tw/workshop/20240806/index.php" target="_blank" rel="noopener noreferrer"><strong>10th Galaxy Evolution Workshop</strong></a>, ASIAA, Taipei, Taiwan — oral presentation</li>
 							<li>July 2024 — <a href="https://rsaa.anu.edu.au/news-events/seminars" target="_blank" rel="noopener noreferrer"><strong>RSAA Weekly Colloquium</strong></a>, Australian National University, Canberra — oral presentation</li>
 							<li>June 2024 — <a href="https://sites.google.com/view/eltsjwst/home" target="_blank" rel="noopener noreferrer"><strong>ELT Science in Light of JWST</strong></a>, Tohoku University, Sendai — poster presentation</li>
@@ -394,10 +467,10 @@
 
 				<article id="contact">
 					<h2 class="major">Contact</h2>
-					<span class="image main">
-						<img src="images/IMG_2426.JPG" loading="lazy" alt="Members of the Astronomical Institute Astro Mountain Club during a hike on Mount Nasu" />
+					<figure class="image main">
+						<img src="images/IMG_2426.JPG" loading="lazy" decoding="async" alt="Members of the Astronomical Institute Astro Mountain Club during a hike on Mount Nasu" />
 						<figcaption>Astro Mountain Club of the Astronomical Institute, Tohoku University, during a Mount Nasu hike.</figcaption>
-					</span>
+					</figure>
 
 					<p><strong>Email:</strong> <a href="mailto:novan.haryana@astr.tohoku.ac.jp">novan.haryana@astr.tohoku.ac.jp</a></p>
 					<p><strong>Office:</strong> Astronomical Institute, Tohoku University, 6-3 Aramaki, Aoba-ku, Sendai, Miyagi 980-8578, Japan</p>
@@ -415,7 +488,7 @@
 						<a href="https://www.linkedin.com/in/novansaputra/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
 					</div>
 				</article>
-			</div>
+			</main>
 
 			<footer id="footer">
 				<p class="copyright">&copy; Novan Saputra Haryana 2026. Design: <a href="https://html5up.net" target="_blank" rel="noopener noreferrer">HTML5 UP</a>. Background image credit: NASA.</p>
@@ -424,10 +497,11 @@
 
 		<div id="bg"></div>
 
-		<div id="lightbox" role="dialog" aria-modal="true" aria-label="Enlarged research figure" aria-hidden="true">
+		<div id="lightbox" role="dialog" aria-modal="true" aria-label="Enlarged research figure" aria-describedby="lightbox-caption" aria-hidden="true">
 			<div class="lightbox-dialog">
 				<button class="lightbox-close" type="button" aria-label="Close enlarged image">&times;</button>
 				<img id="lightbox-image" src="" alt="" />
+				<iframe id="lightbox-pdf" src="" title="Enlarged research figure PDF"></iframe>
 				<p id="lightbox-caption"></p>
 			</div>
 		</div>
@@ -443,14 +517,31 @@
 				var lightbox = document.getElementById('lightbox');
 				var lightboxImage = document.getElementById('lightbox-image');
 				var lightboxCaption = document.getElementById('lightbox-caption');
+				var lightboxPdf = document.getElementById('lightbox-pdf');
 				var closeButton = lightbox.querySelector('.lightbox-close');
 				var lastTrigger = null;
 
 				function openLightbox(trigger) {
+					var href = trigger.getAttribute('href');
+					var isPdf = trigger.dataset.type === 'pdf' || /\.pdf(?:$|[?#])/i.test(href);
+
 					lastTrigger = trigger;
-					lightboxImage.src = trigger.getAttribute('href');
-					lightboxImage.alt = trigger.querySelector('img').alt;
 					lightboxCaption.textContent = trigger.dataset.caption || '';
+
+					if (isPdf) {
+						lightboxImage.style.display = 'none';
+						lightboxImage.src = '';
+						lightboxPdf.style.display = 'block';
+						lightboxPdf.src = href + '#view=FitH';
+					} else {
+						lightboxPdf.style.display = 'none';
+						lightboxPdf.src = '';
+						lightboxImage.style.display = 'block';
+						lightboxImage.src = href;
+						var image = trigger.querySelector('img');
+						lightboxImage.alt = image ? image.alt : (trigger.dataset.alt || '');
+					}
+
 					lightbox.classList.add('is-open');
 					lightbox.setAttribute('aria-hidden', 'false');
 					document.body.classList.add('lightbox-open');
@@ -462,18 +553,20 @@
 					lightbox.setAttribute('aria-hidden', 'true');
 					document.body.classList.remove('lightbox-open');
 					lightboxImage.src = '';
+					lightboxPdf.src = '';
+					lightboxPdf.style.display = 'none';
+					lightboxImage.style.display = 'block';
 
-					// Keep the Research article open after the enlarged image is closed.
+					// Keep the Research article active without jumping back to the homepage.
 					if (window.location.hash !== '#research') {
-						window.location.hash = 'research';
+						history.replaceState(null, '', '#research');
 					}
 
 					window.setTimeout(function () {
-						var researchSection = document.getElementById('research');
-						if (researchSection) {
-							researchSection.scrollIntoView({ block: 'start' });
+						if (lastTrigger) {
+							lastTrigger.scrollIntoView({ block: 'center' });
+							lastTrigger.focus({ preventScroll: true });
 						}
-						if (lastTrigger) lastTrigger.focus();
 					}, 50);
 				}
 
@@ -494,8 +587,15 @@
 				});
 
 				document.addEventListener('keydown', function (event) {
-					if (event.key === 'Escape' && lightbox.classList.contains('is-open')) {
+					if (!lightbox.classList.contains('is-open')) return;
+
+					if (event.key === 'Escape') {
 						closeLightbox();
+					}
+
+					if (event.key === 'Tab') {
+						event.preventDefault();
+						closeButton.focus();
 					}
 				});
 			}());
