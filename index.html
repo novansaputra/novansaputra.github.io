@@ -4,252 +4,477 @@
 	html5up.net | @ajlkn
 	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
 -->
-<html>
-	<!-- 	This is the "Head" of the HTML document.
-		It contains information that isn't displayed on the actual page, but is useful
-		for the web browser when loading the page	
-	-->
+<html lang="en">
 	<head>
-		<!-- This is the title of the page. It is the text that appears inside this pages tab in your web browser -->
-		<title>Novan Saputra Haryana</title>
+		<title>Novan Saputra Haryana | Astrophysics</title>
 		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-		<!-- 	This links to this page's CSS, which is contained in the folder assets/css and the file main.css.
-			 If you want to edit the styling of this page, you should edit the file assets/css/main.css
-			 If you have a new CSS file you'd like to add with custom styling, you should link to it here using:
-			 <link rel="stylesheet" href="assets/css/my-new-css-file.css"/> 
-		-->
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="description" content="Novan Saputra Haryana studies the formation, quenching, black-hole growth, and structural evolution of massive galaxies using JWST, Hubble, and Chandra observations." />
+		<meta name="author" content="Novan Saputra Haryana" />
+		<meta name="theme-color" content="#111827" />
+		<link rel="canonical" href="https://novansaputra.github.io/" />
+		<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌌</text></svg>" />
+
+		<meta property="og:type" content="website" />
+		<meta property="og:title" content="Novan Saputra Haryana | Astrophysics" />
+		<meta property="og:description" content="Research on the formation and evolution of massive galaxies across cosmic time." />
+		<meta property="og:url" content="https://novansaputra.github.io/" />
+		<meta property="og:image" content="https://novansaputra.github.io/images/most_massive_uvj_images.png" />
+		<meta name="twitter:card" content="summary_large_image" />
+
 		<link rel="stylesheet" href="assets/css/main.css" />
-		<!-- 	In the case that the user's browser does not support JavaScript (unlikely, but possible), the page
-			will load a separate set of CSS stylings from the file assets/css/noscript.css
-			Any HTML contained inside <noscript></noscript> tags will be loaded in the event that JavaScript is not
-			available. 
-		-->
 		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+
+		<style>
+			:root {
+				--accent: #f2c14e;
+				--panel: rgba(255, 255, 255, 0.055);
+				--border: rgba(255, 255, 255, 0.18);
+			}
+
+			a:focus-visible,
+			button:focus-visible,
+			summary:focus-visible {
+				outline: 2px solid var(--accent);
+				outline-offset: 4px;
+			}
+
+			.hero-portrait {
+				width: 250px;
+				height: 250px;
+				object-fit: cover;
+				border-radius: 50%;
+				border: 2px solid rgba(255, 255, 255, 0.55);
+				box-shadow: 0 1rem 2.5rem rgba(0, 0, 0, 0.35);
+				margin-bottom: 1.25rem;
+			}
+
+			.hero-role {
+				margin-bottom: 0.6rem;
+			}
+
+			.hero-tagline {
+				max-width: 48rem;
+				margin: 0 auto 1.4rem auto;
+				font-size: 0.95rem;
+				line-height: 1.8;
+				letter-spacing: 0.03em;
+				text-transform: none;
+			}
+
+			.hero-actions {
+				justify-content: center;
+				margin-bottom: 0;
+			}
+
+			.section-lead {
+				font-size: 1.04rem;
+				line-height: 1.9;
+				margin-bottom: 2.4rem;
+			}
+
+			.research-project {
+				padding: 1.5rem;
+				margin: 0 0 2.25rem 0;
+				background: var(--panel);
+				border: 1px solid var(--border);
+				border-radius: 0.45rem;
+			}
+
+			.research-project h3 {
+				margin-bottom: 0.9rem;
+			}
+
+			.research-project .image.main {
+				margin: 1.5rem 0 0.5rem 0;
+			}
+
+			.lightbox-trigger {
+				display: block;
+				position: relative;
+				cursor: zoom-in;
+			}
+
+			.lightbox-trigger::after {
+				content: "Click to enlarge";
+				position: absolute;
+				right: 0.7rem;
+				bottom: 0.7rem;
+				padding: 0.35rem 0.6rem;
+				background: rgba(0, 0, 0, 0.72);
+				border: 1px solid rgba(255, 255, 255, 0.35);
+				border-radius: 0.25rem;
+				font-size: 0.62rem;
+				letter-spacing: 0.08em;
+				text-transform: uppercase;
+			}
+
+			figcaption {
+				margin-top: 0.65rem;
+				font-size: 0.78rem;
+				line-height: 1.55;
+				opacity: 0.82;
+			}
+
+			.publication-card {
+				padding: 1.25rem 1.35rem;
+				margin-bottom: 1.15rem;
+				background: var(--panel);
+				border-left: 3px solid var(--accent);
+				border-radius: 0.3rem;
+			}
+
+			.publication-card h3 {
+				font-size: 1rem;
+				line-height: 1.55;
+				margin: 0 0 0.55rem 0;
+				text-transform: none;
+				letter-spacing: 0.035em;
+			}
+
+			.publication-meta {
+				margin-bottom: 0.7rem;
+				opacity: 0.88;
+			}
+
+			.status-badge {
+				display: inline-block;
+				margin-left: 0.45rem;
+				padding: 0.1rem 0.45rem;
+				border: 1px solid var(--border);
+				border-radius: 999px;
+				font-size: 0.68rem;
+				letter-spacing: 0.06em;
+				text-transform: uppercase;
+			}
+
+			.publication-links {
+				margin: 0;
+				font-size: 0.82rem;
+			}
+
+			.talk-list li {
+				margin-bottom: 0.85rem;
+				line-height: 1.65;
+			}
+
+			details {
+				margin-top: 1.1rem;
+				padding: 0.9rem 1rem;
+				background: var(--panel);
+				border: 1px solid var(--border);
+				border-radius: 0.35rem;
+			}
+
+			details summary {
+				cursor: pointer;
+				font-weight: bold;
+				letter-spacing: 0.06em;
+				text-transform: uppercase;
+			}
+
+			.profile-links {
+				display: flex;
+				flex-wrap: wrap;
+				gap: 0.65rem 1rem;
+				margin-top: 1.5rem;
+			}
+
+			.profile-links a {
+				border-bottom: 0;
+			}
+
+			#lightbox {
+				display: none;
+				position: fixed;
+				inset: 0;
+				z-index: 10000;
+				align-items: center;
+				justify-content: center;
+				padding: 2rem;
+				background: rgba(0, 0, 0, 0.93);
+			}
+
+			#lightbox.is-open {
+				display: flex;
+			}
+
+			.lightbox-dialog {
+				position: relative;
+				max-width: 96vw;
+				max-height: 94vh;
+				text-align: center;
+			}
+
+			#lightbox-image {
+				max-width: 94vw;
+				max-height: 84vh;
+				object-fit: contain;
+				background: #fff;
+			}
+
+			#lightbox-caption {
+				margin: 0.75rem auto 0 auto;
+				max-width: 70rem;
+				font-size: 0.85rem;
+				line-height: 1.5;
+			}
+
+			.lightbox-close {
+				position: absolute;
+				top: -2.4rem;
+				right: 0;
+				width: 2.2rem;
+				height: 2.2rem;
+				padding: 0;
+				border-radius: 50%;
+				line-height: 2rem;
+				font-size: 1.2rem;
+			}
+
+			body.lightbox-open {
+				overflow: hidden;
+			}
+
+			@media screen and (max-width: 736px) {
+				.hero-portrait {
+					width: 205px;
+					height: 205px;
+				}
+
+				.research-project {
+					padding: 1.1rem;
+				}
+
+				#lightbox {
+					padding: 1rem;
+				}
+			}
+		</style>
 	</head>
-	<!-- The body is the location where your site's content will go -->
+
 	<body class="is-preload">
+		<div id="wrapper">
+			<header id="header">
+				<div class="content">
+					<div class="inner">
+						<h1>Novan Saputra Haryana</h1>
+						<h2>(ノファン サプトラ ハリヤナ)</h2>
 
-			<!-- This "div" wraps around all of our content and just changes how things are layed out -->
-			<div id="wrapper">
+						<img class="hero-portrait" src="images/IMG_8870.jpg" width="250" height="250" alt="Portrait of Novan Saputra Haryana" />
 
-					<!-- This is where the content that appears on page load exists -->
-					<header id="header">
-						<!-- This is the main content of the front page -->
-						<div class="content">
-							<div class="inner">
-								<!-- Here is a heading where you can put your name -->
-								<h1>
-									Novan Saputra Haryana
-								</h1>
-								<h2>
-									(ノファン サプトラ ハリヤナ)
-								</h2>
-								<!-- 	Here is an image where you can put a picture of you. 
-									You can change the width and height attributes below to change how large
-									your image is.
+						<p class="hero-role">
+							Graduate Student at<br />
+							<a href="https://www.astr.tohoku.ac.jp/en/index.html" target="_blank" rel="noopener noreferrer">Astronomical Institute, Tohoku University</a>
+						</p>
 
-									Try adding "border-radius: 50%;" to the style attribute.
-								-->
-								<img src="images/IMG_8870.jpg" style="width:280px; height:280px; object-fit: cover;">
-								<!-- 	Here is a paragraph where you can put your position and institution, or
-									a short line about yourself.
-								-->
-								<p>
-									Graduate Student at <br> <a href="https://www.astr.tohoku.ac.jp/en/index.html">Astronomical Institute, Tohoku University</a>
-								</p>
-								<!-- Here is a paragraph where you can put a link to your CV -->
-								<p>
-									<!-- Note you will want to change where this points to! -->
-									<a href="https://drive.google.com/drive/folders/1aY6SWH8tqX_u9JRQytLjO_FL0EhU-ovT?usp=sharing">Curriculum Vitae</a>
-								</p>
-							</div>
-						</div>
-						<!-- This is the navigation menu -->
-						<nav>
-							<!-- This element makes an "Unordered List" -->
-							<ul>
-								<!-- This is a "List Item" -->
-								<li>
-									<!-- 	Note that this links to #about, which will move the page to wherever
-										the element with the id "about" exists.
-									-->
-									<a href="#about">About Me</a>
-								</li>
-								<li>
-									<a href="#research">Research</a>
-								</li>
-								<li>
-									<a href="#works">Works</a>
-								</li>
-								<li>
-									<a href="#contact">Contact</a>
-								</li>
-								<!-- 	You can add another button to your navigation menu by adding
-									another List Item with a link inside of it.
-								-->
-								<!-- <li>
-									<a href="images/Astronomy.jpg">My CV</a>
-								</li> -->
-							</ul>
-						</nav>
-					</header>
+						<p class="hero-tagline">
+							I study how massive galaxies build dense stellar cores, stop forming stars, and grow across cosmic time using JWST and Chandra observations.
+						</p>
 
-					<!-- These are the "cards" that appear when you click the buttons on the main page -->
-					<div id="main">
-						<!-- 	Here is the "About Me" card. Note it has the id "about", which the previous 
-							button links to.
-						-->
-						<article id="about">
-							<h2 class="major">About Me</h2>
-							<p>
-							I'm a student from Indonesia currently studying astrophysics in Japan. My research focuses on galaxy evolution, with a particular interest in quiescent galaxies. I study them by analyzing the spatial distribution of their spectral energy distributions (SEDs). Outside of astrophysics, I enjoy traveling, music, and photography. Feel free to connect with me on Instagram: <a href="https://instagram.com/novansaputra_" target="_blank">@novansaputra_</a>!
-							</p>
-
-							<h2 class="major">Academic Timeline</h2>
-
-								<ul>
-									<li>MSc in Astrophysics at <a href="https://astr.tohoku.ac.jp/">Astronomical Institute</a>, Tohoku University, Japan (2024-present)</li>
-									<li>BSc in Astronomy at Institut Teknologi Bandung, Indonesia (2020-2024)</li>
-								</ul>
-
-							<span class="image main">
-								<img src="images/IMG_0592.jpg" alt=""/>
-								<figcaption>Me in Australian Parliament House, Canberra.</figcaption>
-							</span>
-						</article>
-
-						<!-- Here is the "Research" card. -->
-						<article id="research">
-							<h2 class="major">Research</h2>
-							<h3 class="major">Formation and Evolution of Massive Galaxies</h3>
-
-							<p>
-								My research investigates how the Universe's most massive galaxies build dense stellar cores, shut down their star formation, and evolve into the giant elliptical galaxies seen today. I combine deep imaging from the James Webb and Hubble Space Telescopes with spatially resolved spectral energy distribution (SED) fitting to map stellar mass and star formation within galaxies. I also use Chandra X-ray observations to trace the growth of their central supermassive black holes.
-							</p>
-
-							<p>
-								By studying the most massive galaxies at <i>z</i> &lt; 5, I find that their median central stellar mass rises by a factor of about seven over only ~400 million years around <i>z</i> ~ 4. The population subsequently shows inside-out suppression of star formation, while X-ray-luminous active galactic nuclei are preferentially found in compact, star-forming systems. These results connect the formation of dense stellar cores with the growth of their central black holes.
-							</p>
-
-							<p>
-								I also trace massive quiescent galaxies after their star formation has ended. Their dense central structures remain largely unchanged, while their outer regions continue to assemble stellar mass and their sizes increase by roughly a factor of five from <i>z</i> ~ 3.5 to <i>z</i> ~ 0.5. This later growth cannot be explained by residual star formation alone and is likely driven mainly by mergers. Together, my work connects core formation, black-hole growth, quenching, and merger-driven size growth within a unified picture of massive-galaxy evolution.
-							</p>
-
-							<span class="image main">
-								<a href="images/most_massive_uvj_images.pdf" target="_blank" rel="noopener noreferrer" title="Click to enlarge">
-									<img src="images/most_massive_uvj_images.pdf" alt="Massive galaxies observed across cosmic time"/>
-								</a>
-								<figcaption>Massive galaxies observed across cosmic time with JWST and Hubble imaging. Click the image to enlarge.</figcaption>
-							</span>
-
-							<span class="image main">
-								<a href="images/sSFR_M1kpc_evol.png" target="_blank" rel="noopener noreferrer" title="Click to enlarge">
-									<img src="images/sSFR_M1kpc_evol.png" alt="Evolution of central specific star formation rate and stellar mass density in massive galaxies"/>
-								</a>
-								<figcaption>Evolution of central specific star formation rate and stellar mass density, illustrating the compaction and quenching sequence of the most massive galaxies. Click the image to enlarge.</figcaption>
-							</span>
-						</article>
-
-						<!-- Here is the "Community" card. -->
-						<article id="works">
-							<h2 class="major">Publications</h2>
-							<h3 class="major">First Author</h3>
-							<ul>
-								<li> <b>N. S. Haryana</b>, M. Akiyama, Abdurrouf, S. Cooray, I. K. Fitriana, D. P. Triani, B. Vijarnwannaluk, J. P. Alfonzo, I. T. Andika, M. N. Effendi, I. N. Huda, T. Kakimoto, A. T. Jaelani, R. Laishram, N. Matsumoto, A. Naufal, L. Puspitarini, R. A. Sutanto, <br>"Interplay of Compaction, Quenching, and Black Hole Growth in the Most Massive Galaxies since z ~ 5: Insights from JWST and Chandra Data", submitted to ApJ</li>
-								<li> <b>N. S. Haryana</b>, M. Akiyama, Abdurro'uf, H. R. T. Wulandari, J. P. Alfonzo, K. Lee, N. Matsumoto, R. A. Sutanto, M. N. I. Effendi, I. K. Fitriana, I. N. Huda, A. T. Jaelani, S. H. Kusuma, L. Puspitarini, and D. P. Triani, <br>"Stellar Mass Assembly History of Massive Quiescent Galaxies since z ~ 4: Insights from Spatially Resolved SED Fitting with JWST Data", 2025, ApJ, 994, 215. (<a href="https://iopscience.iop.org/article/10.3847/1538-4357/ae03ad">IOP</a>)</li>
-
-							</ul>
-							<h2 class="major">Presentations</h2>
-							<ul>
-								<li> April 2026, <a href="https://sites.google.com/cam.ac.uk/beyondhubble"><b>BeyondHubble: Revisiting the Hubble Sequence Across Cosmic Time</b></a>, Kavli Institute for Cosmology, Cambridge, UK, "Interplay of Compaction, Quenching, and Black Hole Growth in the Most Massive Galaxies since z ~ 5: Insights from JWST and Chandra Data" (oral presentation)</li>
-								<li> March 2026, <a href="https://sites.google.com/view/endofsfpuertovaras/home"><b>The End of Star Formation</b></a>, University of Illinois Urbana-Champaign, USA, "Interplay of Compaction, Quenching, and Black Hole Growth in the Most Massive Galaxies since z ~ 5: Insights from JWST and Chandra Data" (oral presentation)</li>
-								<li> December 2025, <a href="https://naoj-global.mtk.nao.ac.jp/eama11/"><b>11th East-Asian Meeting on Astronomy</b></a>, Niigata, Japan, "Stellar Mass Assembly History of Massive Quiescent Galaxies since z ~ 4: Insights from Spatially Resolved SED Fitting with JWST Data" (oral presentation)</li>
-								<li> August 2025, <a href="https://sites.google.com/view/gew2025/home"><b>11th Galaxy Evolution Workshop</b></a>, Nagoya University, Nagoya, Japan, "Stellar Mass Assembly History of Massive Quiescent Galaxies since z ~ 4: Insights from Spatially Resolved SED Fitting with JWST Data" (oral presentation)</li>
-								<li> June 2025, <a href="https://sites.google.com/inaf.it/massivegalaxies/"><b>IAU Symposium #396: Massive Galaxies across the Universe</b></a>, Naples, Italy, "Stellar Mass Assembly History of Massive Quiescent Galaxies since z ~ 4: Insights from Spatially Resolved SED Fitting with JWST Data" (oral presentation)</li>
-								<li> August 2024, <a href="https://events.asiaa.sinica.edu.tw/workshop/20240806/index.php"><b>10th Galaxy Evolution Workshop</b></a>, ASIAA, Taipei, Taiwan, "Study of Quiescent Galaxies in 2 &lt z &lt 7 using JWST and HST Data" (oral presentation)</li>
-								<li> July 2024, <a href="https://rsaa.anu.edu.au/news-events/seminars"><b>Weekly Colloquia of RSAA ANU</b></a>, Canberra, Australia, "Stochastic Star Formation Histories in Less Massive Quiescent Galaxies at High Redshift from Meraxes" (oral presentation)</li>
-								<li> June 2024, <a href="https://sites.google.com/view/eltsjwst/home"><b>ELT Science in Light of JWST</b></a>, Tohoku University, Sendai, Japan, "Study of Quiescent Galaxies in 2 &lt z &lt 7 using JWST and HST Data" (poster presentation)</li>
-
-							</ul>
-						</article>
-
-						<!-- Here is a the "Contact" card. -->
-						<article id="contact">
-							<h2 class="major">Contact</h2>
-							<span class="image main">
-								<img src="images/IMG_2426.JPG" alt=""/>
-								<figcaption>Astro Mountain Club of Astronomical Institute of Tohoku University, on Nasudake hike.</figcaption>
-							</span>
-							<p> 
-								<b>Email:</b> <a href="mailto:novan.haryana@astr.tohoku.ac.jp">novan.haryana@astr.tohoku.ac.jp</a>
-							</p>
-							<p> 
-								<b>Office Address:</b> Astronomical Institute, Tohoku University, 6-3, Aramaki, Aoba-ku, Sendai, Miyagi, 980-8578, Japan
-							</p>
-
-							<!-- 	Here are the fancy icons that link to your social media.
-								These icons are rendered using Font Awesome fonts, and you can find more icons
-								here: https://fontawesome.com/icons
-							-->
-							<ul class="icons">
-								<!-- The Instagram icon -->
-								<li>
-									<a href="https://www.instagram.com/novansaputra_" class="icon fa-instagram">
-										<span class="label">Instagram</span>
-									</a>
-								</li>
-								<!-- The GitHub icon -->
-								<li>
-									<a href="https://www.linkedin.com/in/novansaputra/" class="icon fa-linkedin">
-										<span class="label">Linkedin</span>
-									</a>
-								</li>
-								<!-- 	We can add a new icon by searching on the Font Awesome website
-									for the correct class name and inserting it as a new list item.
-
-									We found "envelope" here: https://fontawesome.com/icons/envelope
-								-->
-								<li>
-									<a href="mailto:novan.haryana@astr.tohoku.ac.jp" class="icon fa-envelope">
-										<span class="label">Email</span>
-									</a>
-								</li>
-							</ul>
-						</article>
+						<ul class="actions hero-actions">
+							<li><a href="#research" class="button primary">View Research</a></li>
+							<li><a href="https://drive.google.com/drive/folders/1aY6SWH8tqX_u9JRQytLjO_FL0EhU-ovT?usp=sharing" class="button" target="_blank" rel="noopener noreferrer">Curriculum Vitae</a></li>
+						</ul>
 					</div>
+				</div>
 
-					<!-- This is the footer that appears at the bottom of the page -->
-					<footer id="footer">
-						<!-- 	You can change "Untitled" to your name to show everyone that
-							this is your work.
-						-->
-						<p class="copyright">&copy; NOVAN 2025. Design: <a href="https://html5up.net">HTML5 UP</a>. Image Credit: NASA.</p>
-					</footer>
+				<nav aria-label="Main navigation">
+					<ul>
+						<li><a href="#about">About Me</a></li>
+						<li><a href="#research">Research</a></li>
+						<li><a href="#works">Publications &amp; Talks</a></li>
+						<li><a href="#contact">Contact</a></li>
+					</ul>
+				</nav>
+			</header>
 
+			<div id="main">
+				<article id="about">
+					<h2 class="major">About Me</h2>
+					<p>
+						I am an Indonesian astrophysics graduate student based in Sendai, Japan. My research focuses on galaxy evolution—particularly how massive galaxies form dense stellar cores, quench their star formation, and grow structurally over cosmic time. I work with spatially resolved SED fitting and multiwavelength observations from JWST, Hubble, and Chandra. Outside astronomy, I enjoy traveling, music, photography, and hiking.
+					</p>
+
+					<h2 class="major">Academic Timeline</h2>
+					<ul>
+						<li>MSc in Astrophysics, <a href="https://astr.tohoku.ac.jp/" target="_blank" rel="noopener noreferrer">Tohoku University</a>, Japan (2024–present)</li>
+						<li>BSc in Astronomy, Institut Teknologi Bandung, Indonesia (2020–2024)</li>
+					</ul>
+
+					<span class="image main">
+						<img src="images/IMG_0592.jpg" loading="lazy" alt="Novan at Australian Parliament House in Canberra" />
+						<figcaption>At Australian Parliament House, Canberra.</figcaption>
+					</span>
+				</article>
+
+				<article id="research">
+					<h2 class="major">Research</h2>
+					<p class="section-lead">
+						My research investigates how the Universe's most massive galaxies assemble their stars, build dense central structures, stop forming new stars, and evolve into the giant elliptical galaxies seen today. I combine deep space-based imaging with spatially resolved spectral energy distribution fitting to map stellar mass and star formation within individual galaxies.
+					</p>
+
+					<section class="research-project">
+						<h3>Compaction, Quenching, and Black-Hole Growth</h3>
+						<p>
+							Using JWST imaging and Chandra X-ray observations, I study the most massive galaxies at <i>z</i> &lt; 5. Their median central stellar mass increases by a factor of about seven over only ~400 million years around <i>z</i> ~ 4, followed by progressively stronger suppression of central star formation. X-ray-luminous active galactic nuclei are preferentially found in compact, star-forming systems, connecting dense-core formation with the growth of central supermassive black holes.
+						</p>
+
+						<figure class="image main">
+							<a class="lightbox-trigger" href="images/sSFR_M1kpc_evol.png" data-caption="Evolution of central specific star formation rate and stellar mass density. The population moves through rapid central compaction and subsequent quenching, while X-ray-luminous AGN preferentially occupy compact star-forming systems.">
+								<img src="images/sSFR_M1kpc_evol_thumb.webp" loading="lazy" alt="Central specific star formation rate plotted against central stellar mass density for massive galaxies across redshift" />
+							</a>
+							<figcaption>Evolution of central star formation and stellar mass density, illustrating the compaction–quenching sequence and the locations of X-ray-luminous AGN.</figcaption>
+						</figure>
+					</section>
+
+					<section class="research-project">
+						<h3>Assembly of Massive Quiescent Galaxies</h3>
+						<p>
+							I also trace massive galaxies after their star formation has ended. Their dense central structures remain largely unchanged, while their outer regions continue to assemble stellar mass and their sizes increase by roughly a factor of five from <i>z</i> ~ 3.5 to <i>z</i> ~ 0.5. Residual star formation is insufficient to explain this growth, indicating that mergers are the main mechanism that transforms compact early galaxies into extended present-day systems.
+						</p>
+
+						<figure class="image main">
+							<a class="lightbox-trigger" href="images/most_massive_uvj_images.png" data-caption="Massive galaxies observed across cosmic time with JWST and Hubble imaging. Early quiescent systems are compact, whereas lower-redshift descendants show more extended structures.">
+								<img src="images/most_massive_uvj_images_thumb.webp" loading="lazy" alt="Images of massive galaxies across cosmic time arranged by their observed properties" />
+							</a>
+							<figcaption>Massive galaxies observed across cosmic time with JWST and Hubble imaging.</figcaption>
+						</figure>
+					</section>
+				</article>
+
+				<article id="works">
+					<h2 class="major">Publications</h2>
+					<p>Selected first-author work. Full author lists and bibliographic information are available through the linked records.</p>
+
+					<section class="publication-card">
+						<h3>Interplay of Compaction, Quenching, and Black Hole Growth in the Most Massive Galaxies since <i>z</i> ~ 5: Insights from JWST and Chandra Data</h3>
+						<p class="publication-meta"><strong>N. S. Haryana</strong> et al. <span class="status-badge">Submitted to ApJ</span></p>
+						<p class="publication-links"><a href="#research">Research summary</a></p>
+					</section>
+
+					<section class="publication-card">
+						<h3>Stellar Mass Assembly History of Massive Quiescent Galaxies since <i>z</i> ~ 4: Insights from Spatially Resolved SED Fitting with JWST Data</h3>
+						<p class="publication-meta"><strong>N. S. Haryana</strong> et al. — <i>The Astrophysical Journal</i>, 994, 215 (2025)</p>
+						<p class="publication-links">
+							<a href="https://iopscience.iop.org/article/10.3847/1538-4357/ae03ad" target="_blank" rel="noopener noreferrer">Journal</a>
+							&nbsp;·&nbsp;
+							<a href="https://arxiv.org/abs/2508.19170" target="_blank" rel="noopener noreferrer">arXiv</a>
+							&nbsp;·&nbsp;
+							<a href="https://ui.adsabs.harvard.edu/abs/10.3847/1538-4357/ae03ad" target="_blank" rel="noopener noreferrer">NASA ADS</a>
+						</p>
+					</section>
+
+					<h2 class="major">Selected Presentations</h2>
+					<ul class="talk-list">
+						<li><strong>April 2026 — <a href="https://sites.google.com/cam.ac.uk/beyondhubble" target="_blank" rel="noopener noreferrer">BeyondHubble</a></strong>, Kavli Institute for Cosmology, Cambridge, UK — oral presentation</li>
+						<li><strong>March 2026 — <a href="https://sites.google.com/view/endofsfpuertovaras/home" target="_blank" rel="noopener noreferrer">The End of Star Formation</a></strong>, University of Illinois Urbana-Champaign, USA — oral presentation</li>
+						<li><strong>December 2025 — <a href="https://naoj-global.mtk.nao.ac.jp/eama11/" target="_blank" rel="noopener noreferrer">11th East-Asian Meeting on Astronomy</a></strong>, Niigata, Japan — oral presentation</li>
+						<li><strong>June 2025 — <a href="https://sites.google.com/inaf.it/massivegalaxies/" target="_blank" rel="noopener noreferrer">IAU Symposium 396</a></strong>, Naples, Italy — oral presentation</li>
+					</ul>
+
+					<details>
+						<summary>View all presentations</summary>
+						<ul class="talk-list">
+							<li>August 2025 — <a href="https://sites.google.com/view/gew2025/home" target="_blank" rel="noopener noreferrer"><strong>11th Galaxy Evolution Workshop</strong></a>, Nagoya University, Japan — oral presentation</li>
+							<li>August 2024 — <a href="https://events.asiaa.sinica.edu.tw/workshop/20240806/index.php" target="_blank" rel="noopener noreferrer"><strong>10th Galaxy Evolution Workshop</strong></a>, ASIAA, Taipei, Taiwan — oral presentation</li>
+							<li>July 2024 — <a href="https://rsaa.anu.edu.au/news-events/seminars" target="_blank" rel="noopener noreferrer"><strong>RSAA Weekly Colloquium</strong></a>, Australian National University, Canberra — oral presentation</li>
+							<li>June 2024 — <a href="https://sites.google.com/view/eltsjwst/home" target="_blank" rel="noopener noreferrer"><strong>ELT Science in Light of JWST</strong></a>, Tohoku University, Sendai — poster presentation</li>
+						</ul>
+					</details>
+				</article>
+
+				<article id="contact">
+					<h2 class="major">Contact</h2>
+					<span class="image main">
+						<img src="images/IMG_2426.JPG" loading="lazy" alt="Members of the Astronomical Institute Astro Mountain Club during a hike on Mount Nasu" />
+						<figcaption>Astro Mountain Club of the Astronomical Institute, Tohoku University, during a Mount Nasu hike.</figcaption>
+					</span>
+
+					<p><strong>Email:</strong> <a href="mailto:novan.haryana@astr.tohoku.ac.jp">novan.haryana@astr.tohoku.ac.jp</a></p>
+					<p><strong>Office:</strong> Astronomical Institute, Tohoku University, 6-3 Aramaki, Aoba-ku, Sendai, Miyagi 980-8578, Japan</p>
+
+					<ul class="icons" aria-label="Social links">
+						<li><a href="https://www.instagram.com/novansaputra_" class="icon fa-instagram" target="_blank" rel="noopener noreferrer"><span class="label">Instagram</span></a></li>
+						<li><a href="https://www.linkedin.com/in/novansaputra/" class="icon fa-linkedin" target="_blank" rel="noopener noreferrer"><span class="label">LinkedIn</span></a></li>
+						<li><a href="mailto:novan.haryana@astr.tohoku.ac.jp" class="icon fa-envelope"><span class="label">Email</span></a></li>
+					</ul>
+
+					<div class="profile-links" aria-label="Academic profiles">
+						<a href="https://orcid.org/0009-0009-3404-5673" target="_blank" rel="noopener noreferrer">ORCID</a>
+						<a href="https://ui.adsabs.harvard.edu/search/q=author%3A%22Haryana%2C%20Novan%20Saputra%22&amp;sort=date%20desc%2C%20bibcode%20desc" target="_blank" rel="noopener noreferrer">NASA ADS</a>
+						<a href="https://www.instagram.com/novansaputra_/" target="_blank" rel="noopener noreferrer">Instagram</a>
+						<a href="https://www.linkedin.com/in/novansaputra/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+					</div>
+				</article>
 			</div>
 
-			<!--	This is the background image of the site.
-				All configuration of the background is done with CSS.
-				Look in the file assets/css/main.css and search for "#bg" to
-				see how this element is styled. Look for comments pointing 
-				to where you can set a new background image.
-			-->
-			<div id="bg"></div>
+			<footer id="footer">
+				<p class="copyright">&copy; Novan Saputra Haryana 2026. Design: <a href="https://html5up.net" target="_blank" rel="noopener noreferrer">HTML5 UP</a>. Background image credit: NASA.</p>
+			</footer>
+		</div>
 
-			<!-- Scripts -->
-			<script src="assets/js/jquery.min.js"></script>
-			<script src="assets/js/browser.min.js"></script>
-			<script src="assets/js/breakpoints.min.js"></script>
-			<script src="assets/js/util.js"></script>
-			<script src="assets/js/main.js"></script>
+		<div id="bg"></div>
 
+		<div id="lightbox" role="dialog" aria-modal="true" aria-label="Enlarged research figure" aria-hidden="true">
+			<div class="lightbox-dialog">
+				<button class="lightbox-close" type="button" aria-label="Close enlarged image">&times;</button>
+				<img id="lightbox-image" src="" alt="" />
+				<p id="lightbox-caption"></p>
+			</div>
+		</div>
+
+		<script src="assets/js/jquery.min.js"></script>
+		<script src="assets/js/browser.min.js"></script>
+		<script src="assets/js/breakpoints.min.js"></script>
+		<script src="assets/js/util.js"></script>
+		<script src="assets/js/main.js"></script>
+
+		<script>
+			(function () {
+				var lightbox = document.getElementById('lightbox');
+				var lightboxImage = document.getElementById('lightbox-image');
+				var lightboxCaption = document.getElementById('lightbox-caption');
+				var closeButton = lightbox.querySelector('.lightbox-close');
+				var lastTrigger = null;
+
+				function openLightbox(trigger) {
+					lastTrigger = trigger;
+					lightboxImage.src = trigger.getAttribute('href');
+					lightboxImage.alt = trigger.querySelector('img').alt;
+					lightboxCaption.textContent = trigger.dataset.caption || '';
+					lightbox.classList.add('is-open');
+					lightbox.setAttribute('aria-hidden', 'false');
+					document.body.classList.add('lightbox-open');
+					closeButton.focus();
+				}
+
+				function closeLightbox() {
+					lightbox.classList.remove('is-open');
+					lightbox.setAttribute('aria-hidden', 'true');
+					document.body.classList.remove('lightbox-open');
+					lightboxImage.src = '';
+					if (lastTrigger) lastTrigger.focus();
+				}
+
+				document.querySelectorAll('.lightbox-trigger').forEach(function (trigger) {
+					trigger.addEventListener('click', function (event) {
+						event.preventDefault();
+						openLightbox(trigger);
+					});
+				});
+
+				closeButton.addEventListener('click', closeLightbox);
+				lightbox.addEventListener('click', function (event) {
+					if (event.target === lightbox) closeLightbox();
+				});
+
+				document.addEventListener('keydown', function (event) {
+					if (event.key === 'Escape' && lightbox.classList.contains('is-open')) {
+						closeLightbox();
+					}
+				});
+			}());
+		</script>
 	</body>
 </html>
-
-
-
-
-
-
-
