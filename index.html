@@ -478,15 +478,28 @@
 				border-radius: 0.45rem;
 			}
 
-			.cosmic-orb {
-				width: 5.2rem;
-				height: 5.2rem;
+			.stacked-galaxy-frame {
+				width: min(100%, 12rem);
+				aspect-ratio: 1 / 1;
 				margin: 0 auto 1rem;
+				display: grid;
+				place-items: center;
+				overflow: hidden;
 				border-radius: 50%;
-				background: radial-gradient(circle at 35% 35%, #fff7c7 0 3%, #f2c14e 4% 10%, #a749e9 28%, #18284c 55%, #07101f 75%);
-				box-shadow: 0 0 2rem rgba(242,193,78,0.24), inset -0.7rem -0.7rem 1.3rem rgba(0,0,0,0.45);
-				transition: transform 350ms ease, filter 350ms ease;
+				background: #000;
+				border: 1px solid rgba(242,193,78,0.34);
+				box-shadow: 0 0 2rem rgba(242,193,78,0.18), inset 0 0 1.2rem rgba(0,0,0,0.65);
 			}
+
+			.stacked-galaxy-image {
+				width: 100%;
+				height: 100%;
+				display: block;
+				object-fit: cover;
+				transition: opacity 220ms ease, transform 350ms ease;
+			}
+
+			.stacked-galaxy-image.is-loading { opacity: 0.25; }
 
 			.story-phase {
 				margin: 0 0 0.35rem;
@@ -786,7 +799,9 @@
 								</div>
 
 								<aside class="explorer-story">
-									<div id="cosmic-orb" class="cosmic-orb" aria-hidden="true"></div>
+									<div class="stacked-galaxy-frame">
+										<img id="stacked-galaxy-image" class="stacked-galaxy-image" src="images/stacked_uvj_zbin_4.png" alt="Stacked rest-frame UVJ image of galaxies in the selected redshift bin" loading="eager" decoding="async" />
+									</div>
 									<h4 id="story-phase" class="story-phase">Loading profiles</h4>
 									<p id="story-text" class="story-text">Reading the radial-profile catalogue…</p>
 
@@ -1018,6 +1033,7 @@
 			var showIndividuals = document.getElementById('toggle-individual');
 			var showSpread = document.getElementById('toggle-spread');
 			var logRadius = document.getElementById('toggle-logradius');
+			var stackedGalaxyImage = document.getElementById('stacked-galaxy-image');
 
 			function parseTable(text) {
 				var lines = text.trim().split(/\r?\n/).filter(function (line) {
@@ -1196,9 +1212,20 @@
 				var central=data.summary[0] || {};
 				document.getElementById('metric-mass').textContent=Number.isFinite(central.mass50)?(central.mass50/1e9).toPrecision(3)+' × 10⁹ M☉ kpc⁻²':'—';
 				document.getElementById('metric-ssfr').textContent=Number.isFinite(central.ssfr50)?(central.ssfr50*1e9).toPrecision(3)+' Gyr⁻¹':'—';
-				var orb=document.getElementById('cosmic-orb');
-				orb.style.transform='scale('+(0.88+(4.8-zMedian)*0.055)+') rotate('+(zMedian*18)+'deg)';
-				orb.style.filter='saturate('+(1.25-zMedian*0.05)+')';
+				// Match each slider bin to its website-ready stacked rest-frame UVJ PNG.
+				var galaxyImagePath = 'images/stacked_uvj_zbin_' + binIndex + '.png';
+				if (stackedGalaxyImage.getAttribute('src') !== galaxyImagePath) {
+					stackedGalaxyImage.classList.add('is-loading');
+					stackedGalaxyImage.onload = function () {
+						stackedGalaxyImage.classList.remove('is-loading');
+					};
+					stackedGalaxyImage.onerror = function () {
+						stackedGalaxyImage.classList.remove('is-loading');
+						stackedGalaxyImage.alt = 'Stacked UVJ image not found for redshift bin ' + binIndex;
+					};
+					stackedGalaxyImage.src = galaxyImagePath;
+				}
+				stackedGalaxyImage.alt = 'Stacked rest-frame UVJ image for ' + label;
 				status.textContent='Hover over the median curve to inspect exact values, or change the display options below.';
 				status.classList.remove('error');
 			}
