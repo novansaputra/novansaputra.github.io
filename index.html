@@ -1104,12 +1104,11 @@
 			}
 
 			function buildBinSummary(binIndex) {
-				var sortedBins = bins.slice().sort(function(a,b){return a-b;});
-				var highestBin = sortedBins[sortedBins.length - 1];
-				var secondHighestBin = sortedBins[sortedBins.length - 2];
-				var reliableRadius = binIndex === highestBin ? 8.0 : (binIndex === secondHighestBin ? 12.0 : 16.0);
+				// Keep the full radial profiles in every redshift bin. The two
+				// highest-redshift bins are only marked with reliability overlays;
+				// their outer profile measurements are not removed from the plot.
 				var selected = rows.filter(function (r) {
-					return r.z_bin_index === binIndex && r.radius_kpc <= reliableRadius;
+					return r.z_bin_index === binIndex;
 				});
 				var galaxyGroups = groupBy(selected, uniqueGalaxyKey);
 				var radii = Array.from(new Set(selected.map(function (r) { return r.radius_kpc; }))).sort(function(a,b){return a-b;});
