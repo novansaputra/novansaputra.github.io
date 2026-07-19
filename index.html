@@ -348,8 +348,57 @@
 
 			#redshift-slider {
 				width: 100%;
+				height: 1.4rem;
+				margin: 0;
+				background: transparent;
 				accent-color: var(--accent);
 				cursor: ew-resize;
+				-webkit-appearance: none;
+				appearance: none;
+			}
+
+			#redshift-slider::-webkit-slider-runnable-track {
+				height: 0.42rem;
+				background: linear-gradient(90deg, rgba(242,193,78,0.95), rgba(167,73,233,0.82));
+				border: 1px solid rgba(255,255,255,0.34);
+				border-radius: 999px;
+				box-shadow: 0 0 0.7rem rgba(242,193,78,0.18);
+			}
+
+			#redshift-slider::-webkit-slider-thumb {
+				width: 1.15rem;
+				height: 1.15rem;
+				margin-top: -0.43rem;
+				border: 3px solid #171927;
+				border-radius: 50%;
+				background: var(--accent);
+				box-shadow: 0 0 0 2px #fff, 0 0 1rem rgba(242,193,78,0.72);
+				-webkit-appearance: none;
+			}
+
+			#redshift-slider::-moz-range-track {
+				height: 0.42rem;
+				background: linear-gradient(90deg, rgba(242,193,78,0.95), rgba(167,73,233,0.82));
+				border: 1px solid rgba(255,255,255,0.34);
+				border-radius: 999px;
+				box-shadow: 0 0 0.7rem rgba(242,193,78,0.18);
+			}
+
+			#redshift-slider::-moz-range-thumb {
+				width: 1.15rem;
+				height: 1.15rem;
+				border: 3px solid #171927;
+				border-radius: 50%;
+				background: var(--accent);
+				box-shadow: 0 0 0 2px #fff, 0 0 1rem rgba(242,193,78,0.72);
+			}
+
+			#redshift-slider:focus-visible {
+				outline: none;
+			}
+
+			#redshift-slider:focus-visible::-webkit-slider-thumb {
+				box-shadow: 0 0 0 3px #171927, 0 0 0 5px var(--accent), 0 0 1rem rgba(242,193,78,0.72);
 			}
 
 			.redshift-readout {
@@ -417,7 +466,7 @@
 
 			.metric-grid {
 				display: grid;
-				grid-template-columns: repeat(2, minmax(0,1fr));
+				grid-template-columns: 1fr;
 				gap: 0.65rem;
 				margin-top: 1rem;
 			}
@@ -446,13 +495,72 @@
 			.explorer-options {
 				display: flex;
 				flex-wrap: wrap;
-				gap: 0.65rem 1.1rem;
+				gap: 0.65rem;
 				margin-top: 1rem;
-				font-size: 0.72rem;
 			}
 
-			.explorer-options label { cursor: pointer; }
-			.explorer-options input { margin-right: 0.35rem; }
+			.option-toggle {
+				position: relative;
+				display: inline-flex;
+				cursor: pointer;
+				user-select: none;
+			}
+
+			.option-toggle input {
+				position: absolute;
+				opacity: 0;
+				pointer-events: none;
+			}
+
+			.option-toggle span {
+				display: inline-flex;
+				align-items: center;
+				gap: 0.48rem;
+				min-height: 2.35rem;
+				padding: 0.55rem 0.82rem;
+				border: 1px solid rgba(255,255,255,0.22);
+				border-radius: 999px;
+				background: rgba(255,255,255,0.045);
+				font-size: 0.68rem;
+				font-weight: 600;
+				letter-spacing: 0.055em;
+				text-transform: uppercase;
+				opacity: 0.72;
+				transition: background 180ms ease, border-color 180ms ease, color 180ms ease, box-shadow 180ms ease, opacity 180ms ease, transform 180ms ease;
+			}
+
+			.option-toggle span::before {
+				content: "";
+				width: 0.48rem;
+				height: 0.48rem;
+				border: 1px solid rgba(255,255,255,0.5);
+				border-radius: 50%;
+				background: transparent;
+			}
+
+			.option-toggle:hover span {
+				opacity: 1;
+				transform: translateY(-1px);
+			}
+
+			.option-toggle input:checked + span {
+				border-color: rgba(242,193,78,0.78);
+				background: rgba(242,193,78,0.16);
+				color: #fff4cf;
+				box-shadow: inset 0 0 0 1px rgba(242,193,78,0.1), 0 0 1rem rgba(242,193,78,0.1);
+				opacity: 1;
+			}
+
+			.option-toggle input:checked + span::before {
+				border-color: var(--accent);
+				background: var(--accent);
+				box-shadow: 0 0 0.55rem rgba(242,193,78,0.8);
+			}
+
+			.option-toggle input:focus-visible + span {
+				outline: 2px solid var(--accent);
+				outline-offset: 3px;
+			}
 
 			.explorer-status {
 				margin: 1rem 0 0;
@@ -639,7 +747,6 @@
 									<p id="story-text" class="story-text">Reading the radial-profile catalogue…</p>
 
 									<div class="metric-grid">
-										<div class="metric"><span>Galaxies</span><strong id="metric-ngal">—</strong></div>
 										<div class="metric"><span>Median z</span><strong id="metric-z">—</strong></div>
 										<div class="metric"><span>Central Σ★</span><strong id="metric-mass">—</strong></div>
 										<div class="metric"><span>Central sSFR</span><strong id="metric-ssfr">—</strong></div>
@@ -647,10 +754,10 @@
 								</aside>
 							</div>
 
-							<div class="explorer-options">
-								<label><input id="toggle-individual" type="checkbox" checked /> Individual galaxies</label>
-								<label><input id="toggle-spread" type="checkbox" checked /> 16th–84th percentile</label>
-								<label><input id="toggle-logradius" type="checkbox" /> Logarithmic radius</label>
+							<div class="explorer-options" aria-label="Profile display options">
+								<label class="option-toggle"><input id="toggle-individual" type="checkbox" checked /><span>Individual galaxies</span></label>
+								<label class="option-toggle"><input id="toggle-spread" type="checkbox" checked /><span>16th–84th percentile</span></label>
+								<label class="option-toggle"><input id="toggle-logradius" type="checkbox" /><span>Logarithmic radius</span></label>
 							</div>
 
 							<p id="profile-status" class="explorer-status">Loading <code>radial_profiles_all_galaxies.txt</code>…</p>
@@ -1009,7 +1116,6 @@
 				var phase=phaseFor(zMedian);
 				document.getElementById('story-phase').textContent=phase[0];
 				document.getElementById('story-text').textContent=phase[1];
-				document.getElementById('metric-ngal').textContent=Object.keys(data.galaxies).length;
 				document.getElementById('metric-z').textContent=zMedian.toFixed(2);
 				var central=data.summary[0] || {};
 				document.getElementById('metric-mass').innerHTML=formatSci(central.mass50,1)+' M☉ kpc⁻²';
@@ -1017,7 +1123,7 @@
 				var orb=document.getElementById('cosmic-orb');
 				orb.style.transform='scale('+(0.88+(4.8-zMedian)*0.055)+') rotate('+(zMedian*18)+'deg)';
 				orb.style.filter='saturate('+(1.25-zMedian*0.05)+')';
-				status.textContent='Showing '+Object.keys(data.galaxies).length+' galaxies. Hover over the median curve to inspect exact values.';
+				status.textContent='Hover over the median curve to inspect exact values, or change the display options below.';
 				status.classList.remove('error');
 			}
 
