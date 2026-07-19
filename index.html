@@ -393,17 +393,17 @@
 			}
 
 			.slider-dot {
-				width: 0.34rem;
-				height: 0.34rem;
-				border: 1px solid rgba(23,25,39,0.9);
+				width: 0.52rem;
+				height: 0.52rem;
+				border: 1px solid rgba(23,25,39,1);
 				border-radius: 50%;
-				background: rgba(255,255,255,0.72);
-				box-shadow: 0 0 0 1px rgba(255,255,255,0.28);
+				background: rgba(255,255,255,0.96);
+				box-shadow: 0 0 0 2px rgba(255,255,255,0.32), 0 0 0.35rem rgba(255,255,255,0.34);
 				transition: transform 0.18s ease, background 0.18s ease, box-shadow 0.18s ease;
 			}
 
 			.slider-dot.is-active {
-				transform: scale(1.45);
+				transform: scale(1.35);
 				background: var(--accent);
 				box-shadow: 0 0 0 2px rgba(23,25,39,0.95), 0 0 0.65rem rgba(242,193,78,0.7);
 			}
@@ -582,14 +582,14 @@
 			.story-phase {
 				margin: 0 0 0.35rem;
 				font-size: 1rem;
-				text-align: center;
+				text-align: left;
 				color: var(--accent);
 			}
 
 			.story-text {
 				font-size: 0.83rem;
 				line-height: 1.65;
-				text-align: center;
+				text-align: left;
 			}
 
 			.distribution-panel {
@@ -847,7 +847,7 @@
 							<div class="explorer-header">
 								<div>
 									<p class="explorer-kicker">Interactive experiment</p>
-									<h3 id="explorer-title">Travel Through Galaxy Evolution</h3>
+									<h3 id="explorer-title">Massive Galaxies Evolution</h3>
 									<p>Move through cosmic time to see how stars become concentrated toward galaxy centers and how actively different regions continue forming new stars.</p>
 								</div>
 							</div>
@@ -1383,20 +1383,20 @@
 						text: inactive.map(function (d) { return d.label; }),
 						type: 'scatter', mode: 'markers', name: 'Bin medians',
 						marker: {size: 9, color: inactive.map(function(d){return d.binIndex;}), colorscale: 'Viridis', cmin: Math.min.apply(null,bins), cmax: Math.max.apply(null,bins), line:{color:'#111827',width:1}},
-						hovertemplate: '%{text}<br>log Σ₁ₖₚc = %{x:.2f}<br>log sSFR₁ₖₚc = %{y:.2f}<extra></extra>'
+						hovertemplate: '%{text}<br>log Σ<sub>★,1 kpc</sub> = %{x:.2f}<br>log sSFR<sub>1 kpc</sub> = %{y:.2f}<extra></extra>'
 					}
 				];
 				if (active.length) traces.push({
 					x:[active[0].x], y:[active[0].y], text:[active[0].label], type:'scatter', mode:'markers', name:'Selected median',
 					marker:{size:15,color:'#f2c14e',symbol:'diamond',line:{color:'#ffffff',width:2}},
-					hovertemplate:'Selected: %{text}<br>log Σ₁ₖₚc = %{x:.2f}<br>log sSFR₁ₖₚc = %{y:.2f}<extra></extra>'
+					hovertemplate:'Selected: %{text}<br>log Σ<sub>★,1 kpc</sub> = %{x:.2f}<br>log sSFR<sub>1 kpc</sub> = %{y:.2f}<extra></extra>'
 				});
 
 				var layout = {
 					margin:{l:52,r:10,t:8,b:47}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
 					font:{color:'#f4f4f4',family:'Arial, sans-serif',size:10}, showlegend:false, hovermode:'closest',
-					xaxis:{title:{text:'Central stellar density (log Σ★,₁ₖₚc)',font:{size:10}},range:[8.35,10.55],gridcolor:'rgba(255,255,255,0.07)',zeroline:false,ticks:'outside',ticklen:4},
-					yaxis:{title:{text:'Central star-forming activity (log sSFR₁ₖₚc)',font:{size:10}},range:[-13.8,-7.9],gridcolor:'rgba(255,255,255,0.07)',zeroline:false,ticks:'outside',ticklen:4},
+					xaxis:{title:{text:'Central stellar density (log Σ<sub>★,1 kpc</sub>)',font:{size:10}},range:[8.35,10.55],gridcolor:'rgba(255,255,255,0.07)',zeroline:false,ticks:'outside',ticklen:4},
+					yaxis:{title:{text:'Central star-forming activity (log sSFR<sub>1 kpc</sub>)',font:{size:10}},range:[-13.8,-7.9],gridcolor:'rgba(255,255,255,0.07)',zeroline:false,ticks:'outside',ticklen:4},
 					hoverlabel:{bgcolor:'#111827',bordercolor:'#f2c14e',font:{color:'#ffffff',size:11}}
 				};
 				Plotly.react('central-distribution-plot', traces, layout, {responsive:true,displaylogo:false,displayModeBar:false});
