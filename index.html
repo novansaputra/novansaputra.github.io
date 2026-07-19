@@ -40,6 +40,7 @@
 		}
 		</script>
 
+		<script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
 		<link rel="stylesheet" href="assets/css/main.css" />
 		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
 
@@ -298,6 +299,207 @@
 				transform: translateY(0);
 			}
 
+			
+			.profile-explorer {
+				margin: 2.4rem 0;
+				padding: 1.35rem;
+				background:
+					radial-gradient(circle at 15% 10%, rgba(242,193,78,0.12), transparent 26rem),
+					linear-gradient(145deg, rgba(14,23,40,0.92), rgba(8,13,25,0.88));
+				border: 1px solid rgba(242,193,78,0.28);
+				border-radius: 0.65rem;
+				box-shadow: 0 1.2rem 3rem rgba(0,0,0,0.28);
+			}
+
+			.explorer-header {
+				display: flex;
+				align-items: flex-start;
+				justify-content: space-between;
+				gap: 1rem;
+				margin-bottom: 1rem;
+			}
+
+			.explorer-kicker {
+				margin: 0 0 0.25rem 0;
+				font-size: 0.67rem;
+				letter-spacing: 0.16em;
+				text-transform: uppercase;
+				color: var(--accent);
+			}
+
+			.explorer-header h3 { margin: 0; }
+			.explorer-header p { margin: 0.45rem 0 0; opacity: 0.82; }
+
+			.explorer-controls {
+				display: grid;
+				grid-template-columns: auto 1fr auto;
+				gap: 0.85rem;
+				align-items: center;
+				padding: 0.9rem 1rem;
+				background: rgba(255,255,255,0.045);
+				border: 1px solid rgba(255,255,255,0.11);
+				border-radius: 0.45rem;
+			}
+
+			#profile-play {
+				min-width: 7.2rem;
+				margin: 0;
+			}
+
+			#redshift-slider {
+				width: 100%;
+				accent-color: var(--accent);
+				cursor: ew-resize;
+			}
+
+			.redshift-readout {
+				min-width: 9rem;
+				text-align: right;
+			}
+
+			.redshift-readout strong {
+				display: block;
+				font-size: 1.1rem;
+				color: var(--accent);
+			}
+
+			.redshift-readout span {
+				font-size: 0.7rem;
+				opacity: 0.76;
+			}
+
+			.explorer-stage {
+				display: grid;
+				grid-template-columns: minmax(0, 1.35fr) minmax(14rem, 0.65fr);
+				gap: 1rem;
+				margin-top: 1rem;
+			}
+
+			.explorer-plots {
+				min-width: 0;
+				background: rgba(255,255,255,0.025);
+				border: 1px solid rgba(255,255,255,0.09);
+				border-radius: 0.45rem;
+				overflow: hidden;
+			}
+
+			.profile-plot { width: 100%; height: 315px; }
+
+			.explorer-story {
+				padding: 1rem;
+				background: rgba(255,255,255,0.04);
+				border: 1px solid rgba(255,255,255,0.1);
+				border-radius: 0.45rem;
+			}
+
+			.cosmic-orb {
+				width: 5.2rem;
+				height: 5.2rem;
+				margin: 0 auto 1rem;
+				border-radius: 50%;
+				background: radial-gradient(circle at 35% 35%, #fff7c7 0 3%, #f2c14e 4% 10%, #a749e9 28%, #18284c 55%, #07101f 75%);
+				box-shadow: 0 0 2rem rgba(242,193,78,0.24), inset -0.7rem -0.7rem 1.3rem rgba(0,0,0,0.45);
+				transition: transform 350ms ease, filter 350ms ease;
+			}
+
+			.story-phase {
+				margin: 0 0 0.35rem;
+				font-size: 1rem;
+				text-align: center;
+				color: var(--accent);
+			}
+
+			.story-text {
+				font-size: 0.83rem;
+				line-height: 1.65;
+				text-align: center;
+			}
+
+			.metric-grid {
+				display: grid;
+				grid-template-columns: repeat(2, minmax(0,1fr));
+				gap: 0.65rem;
+				margin-top: 1rem;
+			}
+
+			.metric {
+				padding: 0.7rem;
+				background: rgba(0,0,0,0.18);
+				border: 1px solid rgba(255,255,255,0.08);
+				border-radius: 0.35rem;
+			}
+
+			.metric span {
+				display: block;
+				font-size: 0.61rem;
+				letter-spacing: 0.1em;
+				text-transform: uppercase;
+				opacity: 0.67;
+			}
+
+			.metric strong {
+				display: block;
+				margin-top: 0.2rem;
+				font-size: 0.88rem;
+			}
+
+			.explorer-options {
+				display: flex;
+				flex-wrap: wrap;
+				gap: 0.65rem 1.1rem;
+				margin-top: 1rem;
+				font-size: 0.72rem;
+			}
+
+			.explorer-options label { cursor: pointer; }
+			.explorer-options input { margin-right: 0.35rem; }
+
+			.explorer-status {
+				margin: 1rem 0 0;
+				padding: 0.8rem 1rem;
+				border-radius: 0.35rem;
+				background: rgba(242,193,78,0.08);
+				border: 1px solid rgba(242,193,78,0.22);
+				font-size: 0.78rem;
+			}
+
+			.explorer-status.error {
+				background: rgba(255,90,90,0.08);
+				border-color: rgba(255,90,90,0.3);
+			}
+
+			@media screen and (max-width: 736px) {
+				.hero-portrait {
+					width: 205px;
+					height: 205px;
+				}
+
+				.research-project {
+					padding: 1.1rem;
+				}
+
+				#lightbox {
+					padding: 1rem;
+				}
+
+				.explorer-header,
+				.explorer-stage {
+					display: block;
+				}
+
+				.explorer-controls {
+					grid-template-columns: 1fr;
+				}
+
+				.redshift-readout {
+					text-align: left;
+				}
+
+				.explorer-story {
+					margin-top: 1rem;
+				}
+			}
+
 			@media (prefers-reduced-motion: reduce) {
 				*, *::before, *::after {
 					scroll-behavior: auto !important;
@@ -406,6 +608,56 @@
 						<figcaption>Massive galaxies observed across cosmic time and their stellar mass, shown in rest-frame UVJ color.</figcaption>
 					</figure>
 					</section>
+
+						<section class="profile-explorer" aria-labelledby="explorer-title">
+							<div class="explorer-header">
+								<div>
+									<p class="explorer-kicker">Interactive experiment</p>
+									<h3 id="explorer-title">Travel Through Galaxy Evolution</h3>
+									<p>Move through redshift to watch the median internal structure of the most massive galaxies change.</p>
+								</div>
+							</div>
+
+							<div class="explorer-controls">
+								<button id="profile-play" class="button small" type="button" aria-label="Play redshift evolution">▶ Play evolution</button>
+								<input id="redshift-slider" type="range" min="0" max="4" step="1" value="4" aria-label="Select redshift bin" />
+								<div class="redshift-readout" aria-live="polite">
+									<strong id="redshift-label">Loading…</strong>
+									<span id="cosmic-age-label"></span>
+								</div>
+							</div>
+
+							<div class="explorer-stage">
+								<div class="explorer-plots">
+									<div id="mass-profile-plot" class="profile-plot" role="img" aria-label="Interactive stellar mass surface density profile"></div>
+									<div id="ssfr-profile-plot" class="profile-plot" role="img" aria-label="Interactive specific star formation rate profile"></div>
+								</div>
+
+								<aside class="explorer-story">
+									<div id="cosmic-orb" class="cosmic-orb" aria-hidden="true"></div>
+									<h4 id="story-phase" class="story-phase">Loading profiles</h4>
+									<p id="story-text" class="story-text">Reading the radial-profile catalogue…</p>
+
+									<div class="metric-grid">
+										<div class="metric"><span>Galaxies</span><strong id="metric-ngal">—</strong></div>
+										<div class="metric"><span>Median z</span><strong id="metric-z">—</strong></div>
+										<div class="metric"><span>Central Σ★</span><strong id="metric-mass">—</strong></div>
+										<div class="metric"><span>Central sSFR</span><strong id="metric-ssfr">—</strong></div>
+									</div>
+								</aside>
+							</div>
+
+							<div class="explorer-options">
+								<label><input id="toggle-individual" type="checkbox" checked /> Individual galaxies</label>
+								<label><input id="toggle-spread" type="checkbox" checked /> 16th–84th percentile</label>
+								<label><input id="toggle-logradius" type="checkbox" /> Logarithmic radius</label>
+							</div>
+
+							<p id="profile-status" class="explorer-status">Loading <code>radial_profiles_all_galaxies.txt</code>…</p>
+						</section>
+					</section>
+
+
 
 					<section class="research-project">
 						<h3>Post-quenching Evolution</h3>
@@ -599,5 +851,209 @@
 				});
 			}());
 		</script>
+	<script>
+		(function () {
+			'use strict';
+
+			var DATA_FILE = 'radial_profiles_all_galaxies.txt';
+			var rows = [];
+			var bins = [];
+			var playing = false;
+			var playTimer = null;
+
+			var slider = document.getElementById('redshift-slider');
+			var playButton = document.getElementById('profile-play');
+			var status = document.getElementById('profile-status');
+			var showIndividuals = document.getElementById('toggle-individual');
+			var showSpread = document.getElementById('toggle-spread');
+			var logRadius = document.getElementById('toggle-logradius');
+
+			function parseTable(text) {
+				var lines = text.trim().split(/\r?\n/).filter(function (line) {
+					return line.trim() && !line.trim().startsWith('#');
+				});
+				if (lines.length < 2) throw new Error('The profile table is empty.');
+				var delimiter = lines[0].indexOf('\t') >= 0 ? '\t' : /\s+/;
+				var headers = lines[0].trim().split(delimiter);
+				return lines.slice(1).map(function (line) {
+					var values = line.trim().split(delimiter);
+					var object = {};
+					headers.forEach(function (header, i) { object[header] = values[i]; });
+					['redshift','z_bin_index','z_bin_lower','z_bin_upper','radius_kpc','mass_sd_msun_kpc2','ssfr_yr-1'].forEach(function (key) {
+						if (object[key] !== undefined) object[key] = Number(object[key]);
+					});
+					return object;
+				});
+			}
+
+			function uniqueGalaxyKey(row) {
+				return String(row.field) + '::' + String(row.id);
+			}
+
+			function percentile(values, p) {
+				var a = values.filter(Number.isFinite).sort(function (x,y) { return x-y; });
+				if (!a.length) return NaN;
+				var index = (a.length - 1) * p;
+				var lo = Math.floor(index), hi = Math.ceil(index);
+				return lo === hi ? a[lo] : a[lo] + (a[hi] - a[lo]) * (index - lo);
+			}
+
+			function groupBy(array, keyFn) {
+				return array.reduce(function (acc, item) {
+					var key = keyFn(item);
+					(acc[key] = acc[key] || []).push(item);
+					return acc;
+				}, {});
+			}
+
+			function cosmicAgeGyr(z) {
+				// Numerical age for a flat LCDM cosmology close to Planck values.
+				var H0 = 67.7, Om = 0.307, Ol = 1 - Om;
+				var hTime = 9.778 / (H0 / 100);
+				var zMax = 1000, n = 7000;
+				var x0 = Math.log(1 + z), x1 = Math.log(1 + zMax), dx = (x1 - x0) / n;
+				var sum = 0;
+				for (var i = 0; i <= n; i++) {
+					var x = x0 + i * dx;
+					var zz = Math.exp(x) - 1;
+					var f = 1 / Math.sqrt(Om * Math.pow(1 + zz, 3) + Ol);
+					sum += (i === 0 || i === n ? 0.5 : 1) * f;
+				}
+				return hTime * sum * dx;
+			}
+
+			function phaseFor(z) {
+				if (z >= 4) return ['Early assembly', 'Massive galaxies are still building their internal structure. Star formation remains comparatively extended while dense centers begin to emerge.'];
+				if (z >= 3) return ['Rapid compaction', 'The central stellar density rises rapidly. Many systems remain strongly star-forming while black-hole growth becomes increasingly common.'];
+				if (z >= 2) return ['Central suppression', 'Dense cores are established and the central specific star formation rate starts to fall relative to the outskirts.'];
+				if (z >= 1) return ['Quenching spreads outward', 'Suppressed star formation extends to larger radii as galaxies move toward the quiescent population.'];
+				return ['Post-quenching growth', 'The dense core changes little, while mergers add stars at large radii and increase the overall galaxy size.'];
+			}
+
+			function formatSci(value, digits) {
+				if (!Number.isFinite(value) || value <= 0) return '—';
+				var exponent = Math.floor(Math.log10(value));
+				var mantissa = value / Math.pow(10, exponent);
+				return mantissa.toFixed(digits || 1) + ' × 10<sup>' + exponent + '</sup>';
+			}
+
+			function buildBinSummary(binIndex) {
+				var selected = rows.filter(function (r) { return r.z_bin_index === binIndex; });
+				var galaxyGroups = groupBy(selected, uniqueGalaxyKey);
+				var radii = Array.from(new Set(selected.map(function (r) { return r.radius_kpc; }))).sort(function(a,b){return a-b;});
+				var summary = radii.map(function (radius) {
+					var atRadius = selected.filter(function (r) { return Math.abs(r.radius_kpc-radius) < 1e-8; });
+					var masses = atRadius.map(function(r){return r.mass_sd_msun_kpc2;});
+					var ssfrs = atRadius.map(function(r){return r['ssfr_yr-1'];});
+					return {
+						radius: radius,
+						mass50: percentile(masses,0.5), mass16: percentile(masses,0.16), mass84: percentile(masses,0.84),
+						ssfr50: percentile(ssfrs,0.5), ssfr16: percentile(ssfrs,0.16), ssfr84: percentile(ssfrs,0.84)
+					};
+				});
+				return { rows:selected, galaxies:galaxyGroups, summary:summary };
+			}
+
+			function individualTraces(galaxies, key, color) {
+				if (!showIndividuals.checked) return [];
+				return Object.keys(galaxies).map(function (name) {
+					var g = galaxies[name].slice().sort(function(a,b){return a.radius_kpc-b.radius_kpc;});
+					return {
+						x:g.map(function(r){return r.radius_kpc;}), y:g.map(function(r){return r[key];}),
+						type:'scatter', mode:'lines', hoverinfo:'skip', showlegend:false,
+						line:{color:color,width:1}, opacity:0.12
+					};
+				});
+			}
+
+			function medianTraces(summary, prefix, accent) {
+				var x=summary.map(function(d){return d.radius;});
+				var y50=summary.map(function(d){return d[prefix+'50'];});
+				var traces=[];
+				if (showSpread.checked) {
+					traces.push({x:x,y:summary.map(function(d){return d[prefix+'84'];}),type:'scatter',mode:'lines',line:{width:0},hoverinfo:'skip',showlegend:false});
+					traces.push({x:x,y:summary.map(function(d){return d[prefix+'16'];}),type:'scatter',mode:'lines',line:{width:0},fill:'tonexty',fillcolor:'rgba(242,193,78,0.18)',hoverinfo:'skip',name:'16th–84th percentile'});
+				}
+				traces.push({x:x,y:y50,type:'scatter',mode:'lines+markers',name:'Median',line:{color:accent,width:4},marker:{size:6,color:accent},hovertemplate:'r = %{x:.2f} kpc<br>Median = %{y:.2e}<extra></extra>'});
+				return traces;
+			}
+
+			function plotLayout(yTitle, range) {
+				return {
+					margin:{l:72,r:22,t:36,b:55}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
+					font:{color:'#f4f4f4',family:'Arial, sans-serif'},
+					xaxis:{title:'Radius (kpc)',type:logRadius.checked?'log':'linear',range:logRadius.checked?[-0.32,1.22]:[0,16],gridcolor:'rgba(255,255,255,0.08)',zeroline:false},
+					yaxis:{title:yTitle,type:'log',range:range,gridcolor:'rgba(255,255,255,0.08)',zeroline:false},
+					legend:{orientation:'h',x:0,y:1.14,bgcolor:'rgba(0,0,0,0)'},
+					hovermode:'x unified',transition:{duration:350,easing:'cubic-in-out'}
+				};
+			}
+
+			function updateExplorer() {
+				if (!rows.length) return;
+				var binIndex = bins[Number(slider.value)];
+				var data = buildBinSummary(binIndex);
+				if (!data.rows.length) return;
+				var zValues=data.rows.map(function(r){return r.redshift;});
+				var zMedian=percentile(zValues,0.5);
+				var lo=data.rows[0].z_bin_lower, hi=data.rows[0].z_bin_upper;
+				var label=(Number.isFinite(lo)&&Number.isFinite(hi))?lo.toFixed(1)+' < z < '+hi.toFixed(1):'z ≈ '+zMedian.toFixed(2);
+				document.getElementById('redshift-label').textContent=label;
+				document.getElementById('cosmic-age-label').textContent='Universe ≈ '+cosmicAgeGyr(zMedian).toFixed(1)+' Gyr old';
+
+				var massTraces=individualTraces(data.galaxies,'mass_sd_msun_kpc2','rgba(158,202,255,0.75)').concat(medianTraces(data.summary,'mass','#f2c14e'));
+				var ssfrTraces=individualTraces(data.galaxies,'ssfr_yr-1','rgba(190,147,255,0.75)').concat(medianTraces(data.summary,'ssfr','#f2c14e'));
+				Plotly.react('mass-profile-plot',massTraces,plotLayout('Σ★ (M☉ kpc⁻²)',[7,11]),{responsive:true,displaylogo:false,modeBarButtonsToRemove:['lasso2d','select2d']});
+				Plotly.react('ssfr-profile-plot',ssfrTraces,plotLayout('sSFR (yr⁻¹)',[-12.5,-7.5]),{responsive:true,displaylogo:false,modeBarButtonsToRemove:['lasso2d','select2d']});
+
+				var phase=phaseFor(zMedian);
+				document.getElementById('story-phase').textContent=phase[0];
+				document.getElementById('story-text').textContent=phase[1];
+				document.getElementById('metric-ngal').textContent=Object.keys(data.galaxies).length;
+				document.getElementById('metric-z').textContent=zMedian.toFixed(2);
+				var central=data.summary[0] || {};
+				document.getElementById('metric-mass').innerHTML=formatSci(central.mass50,1)+' M☉ kpc⁻²';
+				document.getElementById('metric-ssfr').innerHTML=formatSci(central.ssfr50,1)+' yr⁻¹';
+				var orb=document.getElementById('cosmic-orb');
+				orb.style.transform='scale('+(0.88+(4.8-zMedian)*0.055)+') rotate('+(zMedian*18)+'deg)';
+				orb.style.filter='saturate('+(1.25-zMedian*0.05)+')';
+				status.textContent='Showing '+Object.keys(data.galaxies).length+' galaxies. Hover over the median curve to inspect exact values.';
+				status.classList.remove('error');
+			}
+
+			function stopPlaying() {
+				playing=false; clearInterval(playTimer); playTimer=null;
+				playButton.textContent='▶ Play evolution';
+			}
+
+			playButton.addEventListener('click',function(){
+				if(playing){stopPlaying();return;}
+				playing=true; playButton.textContent='Ⅱ Pause';
+				playTimer=setInterval(function(){
+					var next=Number(slider.value)-1;
+					if(next<0) next=bins.length-1;
+					slider.value=next; updateExplorer();
+				},1500);
+			});
+			[slider,showIndividuals,showSpread,logRadius].forEach(function(el){el.addEventListener('input',function(){if(el===slider)stopPlaying();updateExplorer();});});
+
+			fetch(DATA_FILE)
+				.then(function(response){if(!response.ok)throw new Error('HTTP '+response.status);return response.text();})
+				.then(function(text){
+					rows=parseTable(text).filter(function(r){return Number.isFinite(r.z_bin_index)&&Number.isFinite(r.radius_kpc);});
+					bins=Array.from(new Set(rows.map(function(r){return r.z_bin_index;}))).sort(function(a,b){return a-b;});
+					if(!bins.length)throw new Error('No valid redshift bins were found.');
+					slider.min=0;slider.max=bins.length-1;slider.value=bins.length-1;
+					updateExplorer();
+				})
+				.catch(function(error){
+					status.classList.add('error');
+					status.innerHTML='<strong>Profile catalogue not loaded.</strong> Place <code>'+DATA_FILE+'</code> in the same folder as <code>index.html</code>, then serve the site through GitHub Pages or a local web server. Details: '+error.message;
+					document.getElementById('story-phase').textContent='Awaiting catalogue';
+					document.getElementById('story-text').textContent='The explorer is ready; it only needs the radial-profile table generated by your Python analysis.';
+				});
+		}());
+		</script>
+
 	</body>
 </html>
