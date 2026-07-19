@@ -51,6 +51,30 @@
 				--border: rgba(255, 255, 255, 0.18);
 			}
 
+
+			/* Wider content cards than the Dimension template default. */
+			#main article {
+				width: min(78rem, calc(100vw - 4rem));
+				max-width: calc(100vw - 4rem);
+				box-sizing: border-box;
+			}
+
+			/* Allow grid/flex children and Plotly canvases to shrink correctly. */
+			.explorer-stage,
+			.explorer-plots,
+			.explorer-story,
+			.profile-plot,
+			.distribution-plot {
+				min-width: 0;
+				max-width: 100%;
+				box-sizing: border-box;
+			}
+
+			.profile-plot,
+			.distribution-plot {
+				overflow: hidden;
+			}
+
 			a:focus-visible,
 			button:focus-visible,
 			summary:focus-visible {
@@ -619,6 +643,13 @@
 			}
 
 			@media screen and (max-width: 736px) {
+				#main article {
+					width: calc(100vw - 1.5rem);
+					max-width: calc(100vw - 1.5rem);
+					padding-left: 1.15rem;
+					padding-right: 1.15rem;
+				}
+
 				.hero-portrait {
 					width: 205px;
 					height: 205px;
@@ -1198,6 +1229,46 @@
 				};
 			}
 
+			var explorerResizeObserver = null;
+			var explorerResizeQueued = false;
+
+			function resizeExplorerPlots() {
+				['mass-profile-plot', 'ssfr-profile-plot', 'central-distribution-plot'].forEach(function (id) {
+					var plot = document.getElementById(id);
+					if (plot && plot.offsetWidth > 0 && plot.offsetHeight > 0 && plot._fullLayout) {
+						Plotly.Plots.resize(plot);
+					}
+				});
+			}
+
+			function scheduleExplorerResize() {
+				if (explorerResizeQueued) return;
+				explorerResizeQueued = true;
+				requestAnimationFrame(function () {
+					explorerResizeQueued = false;
+					resizeExplorerPlots();
+					setTimeout(resizeExplorerPlots, 120);
+					setTimeout(resizeExplorerPlots, 350);
+					setTimeout(resizeExplorerPlots, 700);
+				});
+			}
+
+			function installExplorerResizeHandling() {
+				window.addEventListener('resize', scheduleExplorerResize, {passive:true});
+				window.addEventListener('orientationchange', scheduleExplorerResize, {passive:true});
+				window.addEventListener('hashchange', scheduleExplorerResize);
+
+				if ('ResizeObserver' in window) {
+					explorerResizeObserver = new ResizeObserver(scheduleExplorerResize);
+					['research', 'galaxy-profile-explorer', 'explorer-stage', 'explorer-plots', 'explorer-story'].forEach(function (id) {
+						var element = document.getElementById(id) || document.querySelector('.' + id);
+						if (element) explorerResizeObserver.observe(element);
+					});
+				}
+
+				document.fonts && document.fonts.ready.then(scheduleExplorerResize);
+			}
+
 			function updateCentralDistribution(activeBin) {
 				if (!centralRows.length || !rows.length) return;
 				var binInfo = bins.map(function (binIndex) {
@@ -1245,6 +1316,7 @@
 					hoverlabel:{bgcolor:'#111827',bordercolor:'#f2c14e',font:{color:'#ffffff',size:11}}
 				};
 				Plotly.react('central-distribution-plot', traces, layout, {responsive:true,displaylogo:false,displayModeBar:false});
+				scheduleExplorerResize();
 			}
 
 			function updateExplorer() {
@@ -1269,6 +1341,7 @@
 				var ssfrLayout=plotLayout('sSFR (Gyr⁻¹)',[-3,1.5],unreliableFrom,[0.001,0.01,0.1,1,10],['0.001','0.01','0.1','1','10']);
 				Plotly.react('mass-profile-plot',massTraces,massLayout,{responsive:true,displaylogo:false,modeBarButtonsToRemove:['lasso2d','select2d']});
 				Plotly.react('ssfr-profile-plot',ssfrTraces,ssfrLayout,{responsive:true,displaylogo:false,modeBarButtonsToRemove:['lasso2d','select2d']});
+				scheduleExplorerResize();
 
 				// Explicitly clear the high-redshift overlay when moving to another bin.
 				Plotly.relayout('mass-profile-plot',{shapes:massLayout.shapes,annotations:massLayout.annotations});
@@ -1311,6 +1384,8 @@
 				},1500);
 			});
 			[slider,showIndividuals,showSpread,logRadius].forEach(function(el){el.addEventListener('input',function(){if(el===slider)stopPlaying();updateExplorer();});});
+
+			installExplorerResizeHandling();
 
 			Promise.all([
 				fetch(DATA_FILE).then(function(response){if(!response.ok)throw new Error(DATA_FILE+': HTTP '+response.status);return response.text();}),
