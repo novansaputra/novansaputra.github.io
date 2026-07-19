@@ -1045,7 +1045,10 @@
 			}
 
 			function buildBinSummary(binIndex) {
-				var selected = rows.filter(function (r) { return r.z_bin_index === binIndex; });
+				var highestBin = Math.max.apply(null, bins);
+				var selected = rows.filter(function (r) {
+					return r.z_bin_index === binIndex && (binIndex !== highestBin || r.radius_kpc <= 8.0);
+				});
 				var galaxyGroups = groupBy(selected, uniqueGalaxyKey);
 				var radii = Array.from(new Set(selected.map(function (r) { return r.radius_kpc; }))).sort(function(a,b){return a-b;});
 				var summary = radii.map(function (radius) {
@@ -1061,12 +1064,18 @@
 				return { rows:selected, galaxies:galaxyGroups, summary:summary };
 			}
 
+			function convertedValue(row, key) {
+				if (key === 'mass_sd_msun_kpc2') return row[key] / 1e9;
+				if (key === 'ssfr_yr-1') return row[key] * 1e9;
+				return row[key];
+			}
+
 			function individualTraces(galaxies, key, color) {
 				if (!showIndividuals.checked) return [];
 				return Object.keys(galaxies).map(function (name) {
 					var g = galaxies[name].slice().sort(function(a,b){return a.radius_kpc-b.radius_kpc;});
 					return {
-						x:g.map(function(r){return r.radius_kpc;}), y:g.map(function(r){return r[key];}),
+						x:g.map(function(r){return r.radius_kpc;}), y:g.map(function(r){return convertedValue(r,key);}),
 						type:'scatter', mode:'lines', hoverinfo:'skip', showlegend:false,
 						line:{color:color,width:1}, opacity:0.12
 					};
@@ -1075,22 +1084,33 @@
 
 			function medianTraces(summary, prefix, accent) {
 				var x=summary.map(function(d){return d.radius;});
-				var y50=summary.map(function(d){return d[prefix+'50'];});
+				var scale = prefix === 'mass' ? 1e-9 : 1e9;
+				var y50=summary.map(function(d){return d[prefix+'50'] * scale;});
 				var traces=[];
 				if (showSpread.checked) {
-					traces.push({x:x,y:summary.map(function(d){return d[prefix+'84'];}),type:'scatter',mode:'lines',line:{width:0},hoverinfo:'skip',showlegend:false});
-					traces.push({x:x,y:summary.map(function(d){return d[prefix+'16'];}),type:'scatter',mode:'lines',line:{width:0},fill:'tonexty',fillcolor:'rgba(242,193,78,0.18)',hoverinfo:'skip',name:'16th–84th percentile'});
+					traces.push({x:x,y:summary.map(function(d){return d[prefix+'84'] * scale;}),type:'scatter',mode:'lines',line:{width:0},hoverinfo:'skip',showlegend:false});
+					traces.push({x:x,y:summary.map(function(d){return d[prefix+'16'] * scale;}),type:'scatter',mode:'lines',line:{width:0},fill:'tonexty',fillcolor:'rgba(242,193,78,0.18)',hoverinfo:'skip',name:'16th–84th percentile'});
 				}
-				traces.push({x:x,y:y50,type:'scatter',mode:'lines+markers',name:'Median',line:{color:accent,width:4},marker:{size:6,color:accent},hovertemplate:'r = %{x:.2f} kpc<br>Median = %{y:.2e}<extra></extra>'});
+				traces.push({x:x,y:y50,type:'scatter',mode:'lines+markers',name:'Median',line:{color:accent,width:4},marker:{size:6,color:accent},hovertemplate:'r = %{x:.2f} kpc<br>Median = %{y:.3g}<extra></extra>'});
 				return traces;
 			}
 
-			function plotLayout(yTitle, range) {
+			function plotLayout(yTitle, range, maxRadius, tickValues, tickLabels) {
 				return {
-					margin:{l:72,r:22,t:36,b:55}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
+					margin:{l:82,r:22,t:36,b:55}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
 					font:{color:'#f4f4f4',family:'Arial, sans-serif'},
-					xaxis:{title:'Radius (kpc)',type:logRadius.checked?'log':'linear',range:logRadius.checked?[-0.32,1.22]:[0,16],gridcolor:'rgba(255,255,255,0.08)',zeroline:false},
-					yaxis:{title:yTitle,type:'log',range:range,gridcolor:'rgba(255,255,255,0.08)',zeroline:false},
+					xaxis:{
+						title:'Radius (kpc)', type:logRadius.checked?'log':'linear',
+						range:logRadius.checked?[-0.32,Math.log10(maxRadius)]:[0,maxRadius],
+						tickmode:'array',
+						tickvals:logRadius.checked?[0.5,1,2,4,8,16].filter(function(v){return v<=maxRadius;}):[0,2,4,6,8,10,12,14,16].filter(function(v){return v<=maxRadius;}),
+						ticktext:logRadius.checked?[0.5,1,2,4,8,16].filter(function(v){return v<=maxRadius;}).map(String):undefined,
+						gridcolor:'rgba(255,255,255,0.08)',zeroline:false,ticks:'outside',ticklen:5
+					},
+					yaxis:{
+						title:yTitle,type:'log',range:range,tickmode:'array',tickvals:tickValues,ticktext:tickLabels,
+						gridcolor:'rgba(255,255,255,0.08)',zeroline:false,ticks:'outside',ticklen:5
+					},
 					legend:{orientation:'h',x:0,y:1.14,bgcolor:'rgba(0,0,0,0)'},
 					hovermode:'x unified',transition:{duration:350,easing:'cubic-in-out'}
 				};
@@ -1110,16 +1130,18 @@
 
 				var massTraces=individualTraces(data.galaxies,'mass_sd_msun_kpc2','rgba(158,202,255,0.75)').concat(medianTraces(data.summary,'mass','#f2c14e'));
 				var ssfrTraces=individualTraces(data.galaxies,'ssfr_yr-1','rgba(190,147,255,0.75)').concat(medianTraces(data.summary,'ssfr','#f2c14e'));
-				Plotly.react('mass-profile-plot',massTraces,plotLayout('Σ★ (M☉ kpc⁻²)',[7,11]),{responsive:true,displaylogo:false,modeBarButtonsToRemove:['lasso2d','select2d']});
-				Plotly.react('ssfr-profile-plot',ssfrTraces,plotLayout('sSFR (yr⁻¹)',[-12.5,-7.5]),{responsive:true,displaylogo:false,modeBarButtonsToRemove:['lasso2d','select2d']});
+				var highestBin = Math.max.apply(null, bins);
+				var maxRadius = binIndex === highestBin ? 8 : 16;
+				Plotly.react('mass-profile-plot',massTraces,plotLayout('Σ★ (10⁹ M☉ kpc⁻²)',[-2,2],maxRadius,[0.01,0.1,1,10,100],['0.01','0.1','1','10','100']),{responsive:true,displaylogo:false,modeBarButtonsToRemove:['lasso2d','select2d']});
+				Plotly.react('ssfr-profile-plot',ssfrTraces,plotLayout('sSFR (Gyr⁻¹)',[-3,1.5],maxRadius,[0.001,0.01,0.1,1,10],['0.001','0.01','0.1','1','10']),{responsive:true,displaylogo:false,modeBarButtonsToRemove:['lasso2d','select2d']});
 
 				var phase=phaseFor(zMedian);
 				document.getElementById('story-phase').textContent=phase[0];
 				document.getElementById('story-text').textContent=phase[1];
 				document.getElementById('metric-z').textContent=zMedian.toFixed(2);
 				var central=data.summary[0] || {};
-				document.getElementById('metric-mass').innerHTML=formatSci(central.mass50,1)+' M☉ kpc⁻²';
-				document.getElementById('metric-ssfr').innerHTML=formatSci(central.ssfr50,1)+' yr⁻¹';
+				document.getElementById('metric-mass').textContent=Number.isFinite(central.mass50)?(central.mass50/1e9).toPrecision(3)+' × 10⁹ M☉ kpc⁻²':'—';
+				document.getElementById('metric-ssfr').textContent=Number.isFinite(central.ssfr50)?(central.ssfr50*1e9).toPrecision(3)+' Gyr⁻¹':'—';
 				var orb=document.getElementById('cosmic-orb');
 				orb.style.transform='scale('+(0.88+(4.8-zMedian)*0.055)+') rotate('+(zMedian*18)+'deg)';
 				orb.style.filter='saturate('+(1.25-zMedian*0.05)+')';
