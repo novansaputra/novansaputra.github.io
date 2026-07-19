@@ -514,32 +514,24 @@
 				text-align: center;
 			}
 
-			.metric-grid {
-				display: grid;
-				grid-template-columns: 1fr;
-				gap: 0.65rem;
-				margin-top: 1rem;
+			.distribution-panel {
+				margin-top: 0.9rem;
+				padding-top: 0.75rem;
+				border-top: 1px solid rgba(255,255,255,0.09);
 			}
 
-			.metric {
-				padding: 0.7rem;
-				background: rgba(0,0,0,0.18);
-				border: 1px solid rgba(255,255,255,0.08);
-				border-radius: 0.35rem;
-			}
-
-			.metric span {
-				display: block;
-				font-size: 0.61rem;
-				letter-spacing: 0.1em;
+			.distribution-panel h5 {
+				margin: 0 0 0.2rem;
+				font-size: 0.72rem;
+				letter-spacing: 0.08em;
+				text-align: center;
 				text-transform: uppercase;
-				opacity: 0.67;
+				opacity: 0.78;
 			}
 
-			.metric strong {
-				display: block;
-				margin-top: 0.2rem;
-				font-size: 0.88rem;
+			.distribution-plot {
+				width: 100%;
+				height: 255px;
 			}
 
 			.explorer-options {
@@ -805,9 +797,9 @@
 									<h4 id="story-phase" class="story-phase">Loading profiles</h4>
 									<p id="story-text" class="story-text">Reading the radial-profile catalogue…</p>
 
-									<div class="metric-grid">
-										<div class="metric"><span>Central Σ★</span><strong id="metric-mass">—</strong></div>
-										<div class="metric"><span>Central sSFR</span><strong id="metric-ssfr">—</strong></div>
+									<div class="distribution-panel">
+										<h5>Central-density sequence</h5>
+										<div id="central-distribution-plot" class="distribution-plot" role="img" aria-label="Distribution of central specific star formation rate versus central stellar mass surface density"></div>
 									</div>
 								</aside>
 							</div>
@@ -1021,7 +1013,9 @@
 			'use strict';
 
 			var DATA_FILE = 'radial_profiles_all_galaxies.txt';
+			var CENTRAL_DATA_FILE = 'sSFR1kpc_Sigma1kpc_redshift_all_galaxies.txt';
 			var rows = [];
+			var centralRows = [];
 			var bins = [];
 			var playing = false;
 			var playTimer = null;
@@ -1049,6 +1043,27 @@
 						if (object[key] !== undefined) object[key] = Number(object[key]);
 					});
 					return object;
+				});
+			}
+
+			function parseCentralTable(text) {
+				var lines = text.trim().split(/\r?\n/).filter(function (line) {
+					return line.trim() && !line.trim().startsWith('#');
+				});
+				if (lines.length < 2) throw new Error('The central-property table is empty.');
+				var delimiter = lines[0].indexOf('\t') >= 0 ? '\t' : /\s+/;
+				var headers = lines[0].trim().split(delimiter);
+				return lines.slice(1).map(function (line) {
+					var values = line.trim().split(delimiter);
+					var object = {};
+					headers.forEach(function (header, i) { object[header] = Number(values[i]); });
+					return {
+						redshift: object.redshift,
+						logSigma: object['log_Sigma1kpc_Msun_kpc-2'],
+						logSSFR: object['log_sSFR1kpc_yr-1']
+					};
+				}).filter(function (row) {
+					return Number.isFinite(row.redshift) && Number.isFinite(row.logSigma) && Number.isFinite(row.logSSFR);
 				});
 			}
 
@@ -1183,6 +1198,55 @@
 				};
 			}
 
+			function updateCentralDistribution(activeBin) {
+				if (!centralRows.length || !rows.length) return;
+				var binInfo = bins.map(function (binIndex) {
+					var sample = rows.find(function (r) { return r.z_bin_index === binIndex; });
+					if (!sample) return null;
+					var selected = centralRows.filter(function (r) {
+						return r.redshift >= sample.z_bin_lower && r.redshift <= sample.z_bin_upper;
+					});
+					return {
+						binIndex: binIndex,
+						label: sample.z_bin_lower.toFixed(1) + ' < z < ' + sample.z_bin_upper.toFixed(1),
+						x: percentile(selected.map(function (r) { return r.logSigma; }), 0.5),
+						y: percentile(selected.map(function (r) { return r.logSSFR; }), 0.5)
+					};
+				}).filter(function (d) { return d && Number.isFinite(d.x) && Number.isFinite(d.y); });
+
+				var inactive = binInfo.filter(function (d) { return d.binIndex !== activeBin; });
+				var active = binInfo.filter(function (d) { return d.binIndex === activeBin; });
+				var traces = [
+					{
+						x: centralRows.map(function (r) { return r.logSigma; }),
+						y: centralRows.map(function (r) { return r.logSSFR; }),
+						type: 'scatter', mode: 'markers', name: 'Galaxies', hoverinfo: 'skip',
+						marker: {size: 4, color: 'rgba(255,255,255,0.18)'}
+					},
+					{
+						x: inactive.map(function (d) { return d.x; }), y: inactive.map(function (d) { return d.y; }),
+						text: inactive.map(function (d) { return d.label; }),
+						type: 'scatter', mode: 'markers', name: 'Bin medians',
+						marker: {size: 9, color: inactive.map(function(d){return d.binIndex;}), colorscale: 'Viridis', cmin: Math.min.apply(null,bins), cmax: Math.max.apply(null,bins), line:{color:'#111827',width:1}},
+						hovertemplate: '%{text}<br>log Σ₁ₖₚc = %{x:.2f}<br>log sSFR₁ₖₚc = %{y:.2f}<extra></extra>'
+					}
+				];
+				if (active.length) traces.push({
+					x:[active[0].x], y:[active[0].y], text:[active[0].label], type:'scatter', mode:'markers', name:'Selected median',
+					marker:{size:15,color:'#f2c14e',symbol:'diamond',line:{color:'#ffffff',width:2}},
+					hovertemplate:'Selected: %{text}<br>log Σ₁ₖₚc = %{x:.2f}<br>log sSFR₁ₖₚc = %{y:.2f}<extra></extra>'
+				});
+
+				var layout = {
+					margin:{l:52,r:10,t:8,b:47}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
+					font:{color:'#f4f4f4',family:'Arial, sans-serif',size:10}, showlegend:false, hovermode:'closest',
+					xaxis:{title:{text:'log Σ★,1kpc',font:{size:10}},range:[8.35,10.55],gridcolor:'rgba(255,255,255,0.07)',zeroline:false,ticks:'outside',ticklen:4},
+					yaxis:{title:{text:'log sSFR₁ₖₚc (yr⁻¹)',font:{size:10}},range:[-13.8,-7.9],gridcolor:'rgba(255,255,255,0.07)',zeroline:false,ticks:'outside',ticklen:4},
+					hoverlabel:{bgcolor:'#111827',bordercolor:'#f2c14e',font:{color:'#ffffff',size:11}}
+				};
+				Plotly.react('central-distribution-plot', traces, layout, {responsive:true,displaylogo:false,displayModeBar:false});
+			}
+
 			function updateExplorer() {
 				if (!rows.length) return;
 				var binIndex = bins[Number(slider.value)];
@@ -1213,9 +1277,7 @@
 				var phase=phaseFor(zMedian);
 				document.getElementById('story-phase').textContent=phase[0];
 				document.getElementById('story-text').textContent=phase[1];
-				var central=data.summary[0] || {};
-				document.getElementById('metric-mass').textContent=Number.isFinite(central.mass50)?(central.mass50/1e9).toPrecision(3)+' × 10⁹ M☉ kpc⁻²':'—';
-				document.getElementById('metric-ssfr').textContent=Number.isFinite(central.ssfr50)?(central.ssfr50*1e9).toPrecision(3)+' Gyr⁻¹':'—';
+				updateCentralDistribution(binIndex);
 				// Match each slider bin to its website-ready stacked rest-frame UVJ PNG.
 				var galaxyImagePath = 'images/stacked_uvj_zbin_' + binIndex + '.png';
 				if (stackedGalaxyImage.getAttribute('src') !== galaxyImagePath) {
@@ -1250,20 +1312,24 @@
 			});
 			[slider,showIndividuals,showSpread,logRadius].forEach(function(el){el.addEventListener('input',function(){if(el===slider)stopPlaying();updateExplorer();});});
 
-			fetch(DATA_FILE)
-				.then(function(response){if(!response.ok)throw new Error('HTTP '+response.status);return response.text();})
-				.then(function(text){
-					rows=parseTable(text).filter(function(r){return Number.isFinite(r.z_bin_index)&&Number.isFinite(r.radius_kpc);});
+			Promise.all([
+				fetch(DATA_FILE).then(function(response){if(!response.ok)throw new Error(DATA_FILE+': HTTP '+response.status);return response.text();}),
+				fetch(CENTRAL_DATA_FILE).then(function(response){if(!response.ok)throw new Error(CENTRAL_DATA_FILE+': HTTP '+response.status);return response.text();})
+			])
+				.then(function(texts){
+					rows=parseTable(texts[0]).filter(function(r){return Number.isFinite(r.z_bin_index)&&Number.isFinite(r.radius_kpc);});
+					centralRows=parseCentralTable(texts[1]);
 					bins=Array.from(new Set(rows.map(function(r){return r.z_bin_index;}))).sort(function(a,b){return a-b;});
 					if(!bins.length)throw new Error('No valid redshift bins were found.');
+					if(!centralRows.length)throw new Error('No valid central galaxy measurements were found.');
 					slider.min=0;slider.max=bins.length-1;slider.value=bins.length-1;
 					updateExplorer();
 				})
 				.catch(function(error){
 					status.classList.add('error');
-					status.innerHTML='<strong>Profile catalogue not loaded.</strong> Place <code>'+DATA_FILE+'</code> in the same folder as <code>index.html</code>, then serve the site through GitHub Pages or a local web server. Details: '+error.message;
-					document.getElementById('story-phase').textContent='Awaiting catalogue';
-					document.getElementById('story-text').textContent='The explorer is ready; it only needs the radial-profile table generated by your Python analysis.';
+					status.innerHTML='<strong>Explorer data not loaded.</strong> Place <code>'+DATA_FILE+'</code> and <code>'+CENTRAL_DATA_FILE+'</code> beside <code>index.html</code>, then serve the site through GitHub Pages or a local web server. Details: '+error.message;
+					document.getElementById('story-phase').textContent='Awaiting catalogues';
+					document.getElementById('story-text').textContent='The interactive explorer needs both text catalogues to draw the radial profiles and the central-density distribution.';
 				});
 		}());
 		</script>
