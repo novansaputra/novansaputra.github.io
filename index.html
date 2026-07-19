@@ -534,7 +534,7 @@
 
 			.explorer-stage {
 				display: grid;
-				grid-template-columns: minmax(0, 1.35fr) minmax(14rem, 0.65fr);
+				grid-template-columns: minmax(17rem, 1.08fr) minmax(0, 0.92fr);
 				gap: 1rem;
 				margin-top: 1rem;
 			}
@@ -879,11 +879,6 @@
 							</div>
 
 							<div class="explorer-stage">
-								<div class="explorer-plots">
-									<div id="mass-profile-plot" class="profile-plot" role="img" aria-label="Interactive stellar mass surface density profile"></div>
-									<div id="ssfr-profile-plot" class="profile-plot" role="img" aria-label="Interactive specific star formation rate profile"></div>
-								</div>
-
 								<aside class="explorer-story">
 									<div class="stacked-galaxy-frame">
 										<img id="stacked-galaxy-image" class="stacked-galaxy-image" src="images/stacked_uvj_zbin_4.png" alt="Stacked rest-frame UVJ image of galaxies in the selected redshift bin" loading="eager" decoding="async" />
@@ -896,6 +891,11 @@
 										<div id="central-distribution-plot" class="distribution-plot" role="img" aria-label="Distribution of central specific star formation rate versus central stellar mass surface density"></div>
 									</div>
 								</aside>
+
+								<div class="explorer-plots">
+									<div id="mass-profile-plot" class="profile-plot" role="img" aria-label="Interactive stellar mass surface density profile"></div>
+									<div id="ssfr-profile-plot" class="profile-plot" role="img" aria-label="Interactive specific star formation rate profile"></div>
+								</div>
 							</div>
 
 							<div class="explorer-options" aria-label="Profile display options">
