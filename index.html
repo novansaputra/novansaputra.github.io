@@ -374,6 +374,40 @@
 				min-width: 0;
 			}
 
+			.slider-track-wrap {
+				position: relative;
+				height: 1.4rem;
+			}
+
+			.slider-dots {
+				position: absolute;
+				left: 0.625rem;
+				right: 0.625rem;
+				top: 50%;
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				transform: translateY(-50%);
+				pointer-events: none;
+				z-index: 2;
+			}
+
+			.slider-dot {
+				width: 0.34rem;
+				height: 0.34rem;
+				border: 1px solid rgba(23,25,39,0.9);
+				border-radius: 50%;
+				background: rgba(255,255,255,0.72);
+				box-shadow: 0 0 0 1px rgba(255,255,255,0.28);
+				transition: transform 0.18s ease, background 0.18s ease, box-shadow 0.18s ease;
+			}
+
+			.slider-dot.is-active {
+				transform: scale(1.45);
+				background: var(--accent);
+				box-shadow: 0 0 0 2px rgba(23,25,39,0.95), 0 0 0.65rem rgba(242,193,78,0.7);
+			}
+
 			.cosmic-time-direction {
 				display: grid;
 				grid-template-columns: auto 1fr auto;
@@ -408,6 +442,8 @@
 			}
 
 			#redshift-slider {
+				position: relative;
+				z-index: 3;
 				width: 100%;
 				height: 1.4rem;
 				margin: 0;
@@ -824,7 +860,16 @@
 										<span class="cosmic-time-arrow"></span>
 										<span>Big Bang</span>
 									</div>
-									<input id="redshift-slider" type="range" min="0" max="4" step="1" value="4" aria-label="Select redshift bin, with cosmic time flowing from the Big Bang on the right toward the present on the left" />
+									<div class="slider-track-wrap">
+										<div class="slider-dots" aria-hidden="true">
+											<span class="slider-dot"></span>
+											<span class="slider-dot"></span>
+											<span class="slider-dot"></span>
+											<span class="slider-dot"></span>
+											<span class="slider-dot"></span>
+										</div>
+										<input id="redshift-slider" type="range" min="0" max="4" step="1" value="4" aria-label="Select one of five redshift bins, with cosmic time flowing from the Big Bang on the right toward the present on the left" />
+									</div>
 								</div>
 								<div class="redshift-readout" aria-live="polite">
 									<span class="readout-eyebrow">Selected cosmic epoch</span>
@@ -1096,6 +1141,7 @@
 			var showSpread = document.getElementById('toggle-spread');
 			var logRadius = document.getElementById('toggle-logradius');
 			var stackedGalaxyImage = document.getElementById('stacked-galaxy-image');
+			var sliderDots = Array.prototype.slice.call(document.querySelectorAll('.slider-dot'));
 
 			function parseTable(text) {
 				var lines = text.trim().split(/\r?\n/).filter(function (line) {
@@ -1359,7 +1405,11 @@
 
 			function updateExplorer() {
 				if (!rows.length) return;
-				var binIndex = bins[Number(slider.value)];
+				var sliderIndex = Number(slider.value);
+				var binIndex = bins[sliderIndex];
+				sliderDots.forEach(function(dot, index) {
+					dot.classList.toggle('is-active', index === sliderIndex);
+				});
 				var data = buildBinSummary(binIndex);
 				if (!data.rows.length) return;
 				var zValues=data.rows.map(function(r){return r.redshift;});
