@@ -556,10 +556,19 @@
 				border-radius: 0.45rem;
 			}
 
+			.story-overview {
+				display: grid;
+				grid-template-columns: minmax(7.5rem, 9rem) minmax(0, 1fr);
+				align-items: center;
+				gap: 1rem;
+			}
+
+			.story-copy { min-width: 0; }
+
 			.stacked-galaxy-frame {
-				width: min(100%, 10rem);
+				width: 100%;
 				aspect-ratio: 1 / 1;
-				margin: 0 auto 1rem;
+				margin: 0;
 				display: grid;
 				place-items: center;
 				overflow: hidden;
@@ -587,6 +596,7 @@
 			}
 
 			.story-text {
+				margin-bottom: 0;
 				font-size: 0.83rem;
 				line-height: 1.65;
 				text-align: left;
@@ -880,11 +890,15 @@
 
 							<div class="explorer-stage">
 								<aside class="explorer-story">
-									<div class="stacked-galaxy-frame">
-										<img id="stacked-galaxy-image" class="stacked-galaxy-image" src="images/stacked_uvj_zbin_4.png" alt="Stacked rest-frame UVJ image of galaxies in the selected redshift bin" loading="eager" decoding="async" />
+									<div class="story-overview">
+										<div class="stacked-galaxy-frame">
+											<img id="stacked-galaxy-image" class="stacked-galaxy-image" src="images/stacked_uvj_zbin_4.png" alt="Stacked rest-frame UVJ image of galaxies in the selected redshift bin" loading="eager" decoding="async" />
+										</div>
+										<div class="story-copy">
+											<h4 id="story-phase" class="story-phase">Loading profiles</h4>
+											<p id="story-text" class="story-text">Reading the radial-profile catalogue…</p>
+										</div>
 									</div>
-									<h4 id="story-phase" class="story-phase">Loading profiles</h4>
-									<p id="story-text" class="story-text">Reading the radial-profile catalogue…</p>
 
 									<div class="distribution-panel">
 										<h5>How galaxy centers become dense and shut down</h5>
