@@ -373,13 +373,13 @@
 			.cosmic-time-arrow::after {
 				content: '';
 				position: absolute;
-				right: -1px;
+				left: -1px;
 				top: 50%;
 				width: 0;
 				height: 0;
 				border-top: 4px solid transparent;
 				border-bottom: 4px solid transparent;
-				border-left: 7px solid #a749e9;
+				border-right: 7px solid #f2c14e;
 				transform: translateY(-50%);
 			}
 
@@ -771,7 +771,7 @@
 										<span class="cosmic-time-arrow"></span>
 										<span>Big Bang</span>
 									</div>
-									<input id="redshift-slider" type="range" min="0" max="4" step="1" value="4" aria-label="Select redshift bin, from the present on the left toward the Big Bang on the right" />
+									<input id="redshift-slider" type="range" min="0" max="4" step="1" value="4" aria-label="Select redshift bin, with cosmic time flowing from the Big Bang on the right toward the present on the left" />
 								</div>
 								<div class="redshift-readout" aria-live="polite">
 									<strong id="redshift-label">Loading…</strong>
@@ -1149,7 +1149,8 @@
 						tickmode:'array',
 						tickvals:logRadius.checked?[0.5,1,2,4,8,16]:[0,2,4,6,8,10,12,14,16],
 						ticktext:logRadius.checked?[0.5,1,2,4,8,16].map(String):undefined,
-						gridcolor:'rgba(255,255,255,0.08)',zeroline:false,ticks:'outside',ticklen:5
+						gridcolor:'rgba(255,255,255,0.08)',zeroline:false,ticks:'outside',ticklen:5,
+						showspikes:true, spikecolor:'#f2c14e', spikethickness:1.5, spikedash:'dot', spikesnap:'cursor'
 					},
 					yaxis:{
 						title:yTitle,type:'log',range:range,tickmode:'array',tickvals:tickValues,ticktext:tickLabels,
@@ -1158,6 +1159,7 @@
 					legend:{orientation:'h',x:0,y:1.14,bgcolor:'rgba(0,0,0,0)'},
 					shapes:shadeOuter?[{type:'rect',xref:'x',yref:'paper',x0:8,x1:16,y0:0,y1:1,fillcolor:'rgba(255,255,255,0.035)',line:{width:0},layer:'below'}]:[],
 					annotations:shadeOuter?[{xref:'x',yref:'paper',x:12,y:0.96,text:'No reliable measurements',showarrow:false,font:{size:10,color:'rgba(255,255,255,0.48)'},textangle:0}]:[],
+					hoverlabel:{bgcolor:'#111827',bordercolor:'#f2c14e',font:{color:'#ffffff',family:'Arial, sans-serif',size:13},namelength:-1},
 					hovermode:'x unified',transition:{duration:350,easing:'cubic-in-out'}
 				};
 			}
@@ -1178,8 +1180,14 @@
 				var ssfrTraces=individualTraces(data.galaxies,'ssfr_yr-1','rgba(190,147,255,0.75)').concat(medianTraces(data.summary,'ssfr','#f2c14e'));
 				var highestBin = Math.max.apply(null, bins);
 				var shadeOuter = binIndex === highestBin;
-				Plotly.react('mass-profile-plot',massTraces,plotLayout('Σ★ (10⁹ M☉ kpc⁻²)',[-2,2],shadeOuter,[0.01,0.1,1,10,100],['0.01','0.1','1','10','100']),{responsive:true,displaylogo:false,modeBarButtonsToRemove:['lasso2d','select2d']});
-				Plotly.react('ssfr-profile-plot',ssfrTraces,plotLayout('sSFR (Gyr⁻¹)',[-3,1.5],shadeOuter,[0.001,0.01,0.1,1,10],['0.001','0.01','0.1','1','10']),{responsive:true,displaylogo:false,modeBarButtonsToRemove:['lasso2d','select2d']});
+				var massLayout=plotLayout('Σ★ (10⁹ M☉ kpc⁻²)',[-2,2],shadeOuter,[0.01,0.1,1,10,100],['0.01','0.1','1','10','100']);
+				var ssfrLayout=plotLayout('sSFR (Gyr⁻¹)',[-3,1.5],shadeOuter,[0.001,0.01,0.1,1,10],['0.001','0.01','0.1','1','10']);
+				Plotly.react('mass-profile-plot',massTraces,massLayout,{responsive:true,displaylogo:false,modeBarButtonsToRemove:['lasso2d','select2d']});
+				Plotly.react('ssfr-profile-plot',ssfrTraces,ssfrLayout,{responsive:true,displaylogo:false,modeBarButtonsToRemove:['lasso2d','select2d']});
+
+				// Explicitly clear the high-redshift overlay when moving to another bin.
+				Plotly.relayout('mass-profile-plot',{shapes:massLayout.shapes,annotations:massLayout.annotations});
+				Plotly.relayout('ssfr-profile-plot',{shapes:ssfrLayout.shapes,annotations:ssfrLayout.annotations});
 
 				var phase=phaseFor(zMedian);
 				document.getElementById('story-phase').textContent=phase[0];
