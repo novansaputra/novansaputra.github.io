@@ -479,7 +479,7 @@
 			}
 
 			.stacked-galaxy-frame {
-				width: min(100%, 12rem);
+				width: min(100%, 10rem);
 				aspect-ratio: 1 / 1;
 				margin: 0 auto 1rem;
 				display: grid;
@@ -806,7 +806,6 @@
 									<p id="story-text" class="story-text">Reading the radial-profile catalogue…</p>
 
 									<div class="metric-grid">
-										<div class="metric"><span>Median z</span><strong id="metric-z">—</strong></div>
 										<div class="metric"><span>Central Σ★</span><strong id="metric-mass">—</strong></div>
 										<div class="metric"><span>Central sSFR</span><strong id="metric-ssfr">—</strong></div>
 									</div>
@@ -1105,9 +1104,12 @@
 			}
 
 			function buildBinSummary(binIndex) {
-				var highestBin = Math.max.apply(null, bins);
+				var sortedBins = bins.slice().sort(function(a,b){return a-b;});
+				var highestBin = sortedBins[sortedBins.length - 1];
+				var secondHighestBin = sortedBins[sortedBins.length - 2];
+				var reliableRadius = binIndex === highestBin ? 8.0 : (binIndex === secondHighestBin ? 12.0 : 16.0);
 				var selected = rows.filter(function (r) {
-					return r.z_bin_index === binIndex && (binIndex !== highestBin || r.radius_kpc <= 8.0);
+					return r.z_bin_index === binIndex && r.radius_kpc <= reliableRadius;
 				});
 				var galaxyGroups = groupBy(selected, uniqueGalaxyKey);
 				var radii = Array.from(new Set(selected.map(function (r) { return r.radius_kpc; }))).sort(function(a,b){return a-b;});
@@ -1155,7 +1157,7 @@
 				return traces;
 			}
 
-			function plotLayout(yTitle, range, shadeOuter, tickValues, tickLabels) {
+			function plotLayout(yTitle, range, unreliableFrom, tickValues, tickLabels) {
 				return {
 					margin:{l:82,r:22,t:36,b:55}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
 					font:{color:'#f4f4f4',family:'Arial, sans-serif'},
@@ -1173,8 +1175,8 @@
 						gridcolor:'rgba(255,255,255,0.08)',zeroline:false,ticks:'outside',ticklen:5
 					},
 					legend:{orientation:'h',x:0,y:1.14,bgcolor:'rgba(0,0,0,0)'},
-					shapes:shadeOuter?[{type:'rect',xref:'x',yref:'paper',x0:8,x1:16,y0:0,y1:1,fillcolor:'rgba(255,255,255,0.035)',line:{width:0},layer:'below'}]:[],
-					annotations:shadeOuter?[{xref:'x',yref:'paper',x:12,y:0.96,text:'No reliable measurements',showarrow:false,font:{size:10,color:'rgba(255,255,255,0.48)'},textangle:0}]:[],
+					shapes:Number.isFinite(unreliableFrom)?[{type:'rect',xref:'x',yref:'paper',x0:unreliableFrom,x1:16,y0:0,y1:1,fillcolor:'rgba(255,255,255,0.035)',line:{width:0},layer:'below'}]:[],
+					annotations:Number.isFinite(unreliableFrom)?[{xref:'x',yref:'paper',x:(unreliableFrom+16)/2,y:0.96,text:'No reliable measurements',showarrow:false,font:{size:10,color:'rgba(255,255,255,0.48)'},textangle:0}]:[],
 					hoverlabel:{bgcolor:'#111827',bordercolor:'#f2c14e',font:{color:'#ffffff',family:'Arial, sans-serif',size:13},namelength:-1},
 					hovermode:'x unified',transition:{duration:350,easing:'cubic-in-out'}
 				};
@@ -1194,10 +1196,12 @@
 
 				var massTraces=individualTraces(data.galaxies,'mass_sd_msun_kpc2','rgba(158,202,255,0.75)').concat(medianTraces(data.summary,'mass','#f2c14e'));
 				var ssfrTraces=individualTraces(data.galaxies,'ssfr_yr-1','rgba(190,147,255,0.75)').concat(medianTraces(data.summary,'ssfr','#f2c14e'));
-				var highestBin = Math.max.apply(null, bins);
-				var shadeOuter = binIndex === highestBin;
-				var massLayout=plotLayout('Σ★ (10⁹ M☉ kpc⁻²)',[-2,2],shadeOuter,[0.01,0.1,1,10,100],['0.01','0.1','1','10','100']);
-				var ssfrLayout=plotLayout('sSFR (Gyr⁻¹)',[-3,1.5],shadeOuter,[0.001,0.01,0.1,1,10],['0.001','0.01','0.1','1','10']);
+				var sortedBins = bins.slice().sort(function(a,b){return a-b;});
+				var highestBin = sortedBins[sortedBins.length - 1];
+				var secondHighestBin = sortedBins[sortedBins.length - 2];
+				var unreliableFrom = binIndex === highestBin ? 8 : (binIndex === secondHighestBin ? 12 : NaN);
+				var massLayout=plotLayout('Σ★ (10⁹ M☉ kpc⁻²)',[-2,2],unreliableFrom,[0.01,0.1,1,10,100],['0.01','0.1','1','10','100']);
+				var ssfrLayout=plotLayout('sSFR (Gyr⁻¹)',[-3,1.5],unreliableFrom,[0.001,0.01,0.1,1,10],['0.001','0.01','0.1','1','10']);
 				Plotly.react('mass-profile-plot',massTraces,massLayout,{responsive:true,displaylogo:false,modeBarButtonsToRemove:['lasso2d','select2d']});
 				Plotly.react('ssfr-profile-plot',ssfrTraces,ssfrLayout,{responsive:true,displaylogo:false,modeBarButtonsToRemove:['lasso2d','select2d']});
 
@@ -1208,7 +1212,6 @@
 				var phase=phaseFor(zMedian);
 				document.getElementById('story-phase').textContent=phase[0];
 				document.getElementById('story-text').textContent=phase[1];
-				document.getElementById('metric-z').textContent=zMedian.toFixed(2);
 				var central=data.summary[0] || {};
 				document.getElementById('metric-mass').textContent=Number.isFinite(central.mass50)?(central.mass50/1e9).toPrecision(3)+' × 10⁹ M☉ kpc⁻²':'—';
 				document.getElementById('metric-ssfr').textContent=Number.isFinite(central.ssfr50)?(central.ssfr50*1e9).toPrecision(3)+' Gyr⁻¹':'—';
