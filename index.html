@@ -356,8 +356,8 @@
 
 			.explorer-controls {
 				display: grid;
-				grid-template-columns: auto 1fr auto;
-				gap: 0.85rem;
+				grid-template-columns: auto minmax(14rem, 23rem) minmax(13rem, 1fr);
+				gap: 1rem;
 				align-items: center;
 				padding: 0.9rem 1rem;
 				background: rgba(255,255,255,0.045);
@@ -463,19 +463,37 @@
 			}
 
 			.redshift-readout {
-				min-width: 9rem;
-				text-align: right;
+				min-width: 0;
+				padding: 0.65rem 0.85rem;
+				text-align: left;
+				background: rgba(242,193,78,0.08);
+				border-left: 3px solid var(--accent);
+				border-radius: 0.25rem;
+			}
+
+			.redshift-readout .readout-eyebrow {
+				display: block;
+				margin-bottom: 0.08rem;
+				font-size: 0.58rem;
+				font-weight: 700;
+				letter-spacing: 0.14em;
+				text-transform: uppercase;
+				opacity: 0.72;
 			}
 
 			.redshift-readout strong {
 				display: block;
-				font-size: 1.1rem;
+				font-size: clamp(1.25rem, 2.2vw, 1.75rem);
+				line-height: 1.05;
 				color: var(--accent);
 			}
 
-			.redshift-readout span {
-				font-size: 0.7rem;
-				opacity: 0.76;
+			.redshift-readout #cosmic-age-label {
+				display: block;
+				margin-top: 0.18rem;
+				font-size: 0.82rem;
+				font-weight: 600;
+				opacity: 0.9;
 			}
 
 			.explorer-stage {
@@ -704,6 +722,26 @@
 					padding: 1rem;
 				}
 			}
+			/* Keep the epoch control compact and easy to manipulate. */
+			.cosmic-slider-wrap {
+				width: 100%;
+				max-width: 23rem;
+			}
+
+			@media screen and (max-width: 736px) {
+				.explorer-controls {
+					grid-template-columns: 1fr;
+				}
+
+				.cosmic-slider-wrap {
+					max-width: 20rem;
+				}
+
+				.redshift-readout {
+					text-align: left;
+				}
+			}
+
 		</style>
 	</head>
 
@@ -769,33 +807,12 @@
 						My research investigates how the Universe's most massive galaxies assemble their stars, build dense central structures, stop forming new stars, and evolve into the giant elliptical galaxies seen today. I combine deep space-based imaging with spatially resolved spectral energy distribution fitting to map stellar mass and star formation within individual galaxies.
 					</p>
 
-					<section class="research-project">
-						<h3>Compaction, Quenching, and Black-Hole Growth</h3>
-						<p>
-							Using JWST imaging and Chandra X-ray observations, I study the most massive galaxies at <i>z</i> &lt; 5. Their median central stellar mass increases by a factor of about seven over only ~400 million years around <i>z</i> ~ 4, followed by progressively stronger suppression of central star formation. X-ray-luminous active galactic nuclei are preferentially found in compact, star-forming systems, connecting dense-core formation with the growth of central supermassive black holes.
-						</p>
-
-						<figure class="image main">
-							<a class="lightbox-trigger" href="images/sSFR_M1kpc_evol.png" data-caption="Evolution of central specific star formation rate and stellar mass density. The population moves through rapid central compaction and subsequent quenching, while X-ray-luminous AGN preferentially occupy compact star-forming systems.">
-								<img src="images/sSFR_M1kpc_evol.png" loading="lazy" decoding="async" alt="Central specific star formation rate plotted against central stellar mass density for massive galaxies across redshift" />
-							</a>
-							<figcaption>Evolution of central star formation and stellar mass density, illustrating the compaction–quenching sequence and the locations of X-ray-luminous AGN.</figcaption>
-						</figure>
-
-						<figure class="image main">
-						<a class="lightbox-trigger" href="images/most_massive_uvj_images.pdf" data-caption="Massive galaxies observed across cosmic time with JWST and Hubble imaging, shown together with their rest-frame UVJ colors.">
-							<img src="images/most_massive_uvj_images.pdf" loading="lazy" alt="Massive galaxies across cosmic time shown with their rest-frame UVJ colors" />
-						</a>
-						<figcaption>Massive galaxies observed across cosmic time and their stellar mass, shown in rest-frame UVJ color.</figcaption>
-					</figure>
-					</section>
-
 						<section class="profile-explorer" aria-labelledby="explorer-title">
 							<div class="explorer-header">
 								<div>
 									<p class="explorer-kicker">Interactive experiment</p>
 									<h3 id="explorer-title">Travel Through Galaxy Evolution</h3>
-									<p>Move through redshift to watch the median internal structure of the most massive galaxies change.</p>
+									<p>Move through cosmic time to see how stars become concentrated toward galaxy centers and how actively different regions continue forming new stars.</p>
 								</div>
 							</div>
 
@@ -810,6 +827,7 @@
 									<input id="redshift-slider" type="range" min="0" max="4" step="1" value="4" aria-label="Select redshift bin, with cosmic time flowing from the Big Bang on the right toward the present on the left" />
 								</div>
 								<div class="redshift-readout" aria-live="polite">
+									<span class="readout-eyebrow">Selected cosmic epoch</span>
 									<strong id="redshift-label">Loading…</strong>
 									<span id="cosmic-age-label"></span>
 								</div>
@@ -829,7 +847,7 @@
 									<p id="story-text" class="story-text">Reading the radial-profile catalogue…</p>
 
 									<div class="distribution-panel">
-										<h5>Central-density sequence</h5>
+										<h5>How galaxy centers become dense and shut down</h5>
 										<div id="central-distribution-plot" class="distribution-plot" role="img" aria-label="Distribution of central specific star formation rate versus central stellar mass surface density"></div>
 									</div>
 								</aside>
@@ -843,6 +861,26 @@
 
 							<p id="profile-status" class="explorer-status">Loading <code>radial_profiles_all_galaxies.txt</code>…</p>
 						</section>
+
+					<section class="research-project">
+						<h3>Compaction, Quenching, and Black-Hole Growth</h3>
+						<p>
+							Using JWST imaging and Chandra X-ray observations, I study the most massive galaxies at <i>z</i> &lt; 5. Their median central stellar mass increases by a factor of about seven over only ~400 million years around <i>z</i> ~ 4, followed by progressively stronger suppression of central star formation. X-ray-luminous active galactic nuclei are preferentially found in compact, star-forming systems, connecting dense-core formation with the growth of central supermassive black holes.
+						</p>
+
+						<figure class="image main">
+							<a class="lightbox-trigger" href="images/sSFR_M1kpc_evol.png" data-caption="Evolution of central specific star formation rate and stellar mass density. The population moves through rapid central compaction and subsequent quenching, while X-ray-luminous AGN preferentially occupy compact star-forming systems.">
+								<img src="images/sSFR_M1kpc_evol.png" loading="lazy" decoding="async" alt="Central specific star formation rate plotted against central stellar mass density for massive galaxies across redshift" />
+							</a>
+							<figcaption>Evolution of central star formation and stellar mass density, illustrating the compaction–quenching sequence and the locations of X-ray-luminous AGN.</figcaption>
+						</figure>
+
+						<figure class="image main">
+						<a class="lightbox-trigger" href="images/most_massive_uvj_images.pdf" data-caption="Massive galaxies observed across cosmic time with JWST and Hubble imaging, shown together with their rest-frame UVJ colors.">
+							<img src="images/most_massive_uvj_images.pdf" loading="lazy" alt="Massive galaxies across cosmic time shown with their rest-frame UVJ colors" />
+						</a>
+						<figcaption>Massive galaxies observed across cosmic time and their stellar mass, shown in rest-frame UVJ color.</figcaption>
+					</figure>
 					</section>
 
 
@@ -1311,8 +1349,8 @@
 				var layout = {
 					margin:{l:52,r:10,t:8,b:47}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
 					font:{color:'#f4f4f4',family:'Arial, sans-serif',size:10}, showlegend:false, hovermode:'closest',
-					xaxis:{title:{text:'log Σ★,1kpc',font:{size:10}},range:[8.35,10.55],gridcolor:'rgba(255,255,255,0.07)',zeroline:false,ticks:'outside',ticklen:4},
-					yaxis:{title:{text:'log sSFR₁ₖₚc (yr⁻¹)',font:{size:10}},range:[-13.8,-7.9],gridcolor:'rgba(255,255,255,0.07)',zeroline:false,ticks:'outside',ticklen:4},
+					xaxis:{title:{text:'Central stellar density (log Σ★,₁ₖₚc)',font:{size:10}},range:[8.35,10.55],gridcolor:'rgba(255,255,255,0.07)',zeroline:false,ticks:'outside',ticklen:4},
+					yaxis:{title:{text:'Central star-forming activity (log sSFR₁ₖₚc)',font:{size:10}},range:[-13.8,-7.9],gridcolor:'rgba(255,255,255,0.07)',zeroline:false,ticks:'outside',ticklen:4},
 					hoverlabel:{bgcolor:'#111827',bordercolor:'#f2c14e',font:{color:'#ffffff',size:11}}
 				};
 				Plotly.react('central-distribution-plot', traces, layout, {responsive:true,displaylogo:false,displayModeBar:false});
@@ -1337,8 +1375,8 @@
 				var highestBin = sortedBins[sortedBins.length - 1];
 				var secondHighestBin = sortedBins[sortedBins.length - 2];
 				var unreliableFrom = binIndex === highestBin ? 8 : (binIndex === secondHighestBin ? 12 : NaN);
-				var massLayout=plotLayout('Σ★ (10⁹ M☉ kpc⁻²)',[-2,2],unreliableFrom,[0.01,0.1,1,10,100],['0.01','0.1','1','10','100']);
-				var ssfrLayout=plotLayout('sSFR (Gyr⁻¹)',[-3,1.5],unreliableFrom,[0.001,0.01,0.1,1,10],['0.001','0.01','0.1','1','10']);
+				var massLayout=plotLayout('Stellar density, Σ★ (10⁹ M☉ kpc⁻²)',[-2,2],unreliableFrom,[0.01,0.1,1,10,100],['0.01','0.1','1','10','100']);
+				var ssfrLayout=plotLayout('Star-forming activity, sSFR (Gyr⁻¹)',[-3,1.5],unreliableFrom,[0.001,0.01,0.1,1,10],['0.001','0.01','0.1','1','10']);
 				Plotly.react('mass-profile-plot',massTraces,massLayout,{responsive:true,displaylogo:false,modeBarButtonsToRemove:['lasso2d','select2d']});
 				Plotly.react('ssfr-profile-plot',ssfrTraces,ssfrLayout,{responsive:true,displaylogo:false,modeBarButtonsToRemove:['lasso2d','select2d']});
 				scheduleExplorerResize();
