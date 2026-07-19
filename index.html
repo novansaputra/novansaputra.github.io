@@ -346,6 +346,43 @@
 				margin: 0;
 			}
 
+			.cosmic-slider-wrap {
+				min-width: 0;
+			}
+
+			.cosmic-time-direction {
+				display: grid;
+				grid-template-columns: auto 1fr auto;
+				align-items: center;
+				gap: 0.55rem;
+				margin: 0 0 0.15rem 0;
+				font-size: 0.62rem;
+				font-weight: 700;
+				letter-spacing: 0.12em;
+				text-transform: uppercase;
+				color: rgba(255,255,255,0.88);
+			}
+
+			.cosmic-time-arrow {
+				position: relative;
+				height: 1px;
+				background: linear-gradient(90deg, rgba(242,193,78,0.8), rgba(167,73,233,0.95));
+				box-shadow: 0 0 0.5rem rgba(167,73,233,0.35);
+			}
+
+			.cosmic-time-arrow::after {
+				content: '';
+				position: absolute;
+				right: -1px;
+				top: 50%;
+				width: 0;
+				height: 0;
+				border-top: 4px solid transparent;
+				border-bottom: 4px solid transparent;
+				border-left: 7px solid #a749e9;
+				transform: translateY(-50%);
+			}
+
 			#redshift-slider {
 				width: 100%;
 				height: 1.4rem;
@@ -728,7 +765,14 @@
 
 							<div class="explorer-controls">
 								<button id="profile-play" class="button small" type="button" aria-label="Play redshift evolution">▶ Play evolution</button>
-								<input id="redshift-slider" type="range" min="0" max="4" step="1" value="4" aria-label="Select redshift bin" />
+								<div class="cosmic-slider-wrap">
+									<div class="cosmic-time-direction" aria-hidden="true">
+										<span>Now</span>
+										<span class="cosmic-time-arrow"></span>
+										<span>Big Bang</span>
+									</div>
+									<input id="redshift-slider" type="range" min="0" max="4" step="1" value="4" aria-label="Select redshift bin, from the present on the left toward the Big Bang on the right" />
+								</div>
 								<div class="redshift-readout" aria-live="polite">
 									<strong id="redshift-label">Loading…</strong>
 									<span id="cosmic-age-label"></span>
@@ -1095,16 +1139,16 @@
 				return traces;
 			}
 
-			function plotLayout(yTitle, range, maxRadius, tickValues, tickLabels) {
+			function plotLayout(yTitle, range, shadeOuter, tickValues, tickLabels) {
 				return {
 					margin:{l:82,r:22,t:36,b:55}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
 					font:{color:'#f4f4f4',family:'Arial, sans-serif'},
 					xaxis:{
 						title:'Radius (kpc)', type:logRadius.checked?'log':'linear',
-						range:logRadius.checked?[-0.32,Math.log10(maxRadius)]:[0,maxRadius],
+						range:logRadius.checked?[-0.32,Math.log10(16)]:[0,16],
 						tickmode:'array',
-						tickvals:logRadius.checked?[0.5,1,2,4,8,16].filter(function(v){return v<=maxRadius;}):[0,2,4,6,8,10,12,14,16].filter(function(v){return v<=maxRadius;}),
-						ticktext:logRadius.checked?[0.5,1,2,4,8,16].filter(function(v){return v<=maxRadius;}).map(String):undefined,
+						tickvals:logRadius.checked?[0.5,1,2,4,8,16]:[0,2,4,6,8,10,12,14,16],
+						ticktext:logRadius.checked?[0.5,1,2,4,8,16].map(String):undefined,
 						gridcolor:'rgba(255,255,255,0.08)',zeroline:false,ticks:'outside',ticklen:5
 					},
 					yaxis:{
@@ -1112,6 +1156,8 @@
 						gridcolor:'rgba(255,255,255,0.08)',zeroline:false,ticks:'outside',ticklen:5
 					},
 					legend:{orientation:'h',x:0,y:1.14,bgcolor:'rgba(0,0,0,0)'},
+					shapes:shadeOuter?[{type:'rect',xref:'x',yref:'paper',x0:8,x1:16,y0:0,y1:1,fillcolor:'rgba(255,255,255,0.035)',line:{width:0},layer:'below'}]:[],
+					annotations:shadeOuter?[{xref:'x',yref:'paper',x:12,y:0.96,text:'No reliable measurements',showarrow:false,font:{size:10,color:'rgba(255,255,255,0.48)'},textangle:0}]:[],
 					hovermode:'x unified',transition:{duration:350,easing:'cubic-in-out'}
 				};
 			}
@@ -1131,9 +1177,9 @@
 				var massTraces=individualTraces(data.galaxies,'mass_sd_msun_kpc2','rgba(158,202,255,0.75)').concat(medianTraces(data.summary,'mass','#f2c14e'));
 				var ssfrTraces=individualTraces(data.galaxies,'ssfr_yr-1','rgba(190,147,255,0.75)').concat(medianTraces(data.summary,'ssfr','#f2c14e'));
 				var highestBin = Math.max.apply(null, bins);
-				var maxRadius = binIndex === highestBin ? 8 : 16;
-				Plotly.react('mass-profile-plot',massTraces,plotLayout('Σ★ (10⁹ M☉ kpc⁻²)',[-2,2],maxRadius,[0.01,0.1,1,10,100],['0.01','0.1','1','10','100']),{responsive:true,displaylogo:false,modeBarButtonsToRemove:['lasso2d','select2d']});
-				Plotly.react('ssfr-profile-plot',ssfrTraces,plotLayout('sSFR (Gyr⁻¹)',[-3,1.5],maxRadius,[0.001,0.01,0.1,1,10],['0.001','0.01','0.1','1','10']),{responsive:true,displaylogo:false,modeBarButtonsToRemove:['lasso2d','select2d']});
+				var shadeOuter = binIndex === highestBin;
+				Plotly.react('mass-profile-plot',massTraces,plotLayout('Σ★ (10⁹ M☉ kpc⁻²)',[-2,2],shadeOuter,[0.01,0.1,1,10,100],['0.01','0.1','1','10','100']),{responsive:true,displaylogo:false,modeBarButtonsToRemove:['lasso2d','select2d']});
+				Plotly.react('ssfr-profile-plot',ssfrTraces,plotLayout('sSFR (Gyr⁻¹)',[-3,1.5],shadeOuter,[0.001,0.01,0.1,1,10],['0.001','0.01','0.1','1','10']),{responsive:true,displaylogo:false,modeBarButtonsToRemove:['lasso2d','select2d']});
 
 				var phase=phaseFor(zMedian);
 				document.getElementById('story-phase').textContent=phase[0];
