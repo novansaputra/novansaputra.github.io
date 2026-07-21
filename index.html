@@ -547,7 +547,7 @@
 				overflow: hidden;
 			}
 
-			.profile-plot { width: 100%; height: auto; aspect-ratio: 5 / 4; }
+			.profile-plot { width: 100%; height: 315px; }
 
 			.explorer-story {
 				padding: 1rem;
@@ -620,7 +620,18 @@
 			.distribution-plot {
 				width: 100%;
 				height: auto;
-				aspect-ratio: 5 / 4;
+				aspect-ratio: 1 / 1;
+			}
+
+			.distribution-options {
+				display: flex;
+				justify-content: center;
+				margin-top: 0.55rem;
+			}
+
+			.profile-options {
+				padding: 0.7rem 0.75rem 0.8rem;
+				border-top: 1px solid rgba(255,255,255,0.09);
 			}
 
 			.explorer-options {
@@ -909,19 +920,21 @@
 									<div class="distribution-panel">
 										<h5>How galaxy centers become dense and shut down</h5>
 										<div id="central-distribution-plot" class="distribution-plot" role="img" aria-label="Distribution of central specific star formation rate versus central stellar mass surface density"></div>
+										<div class="distribution-options" aria-label="Central-density plot options">
+											<label class="option-toggle"><input id="toggle-xray" type="checkbox" /><span>X-ray luminous galaxies</span></label>
+										</div>
 									</div>
 								</aside>
 
 								<div class="explorer-plots">
 									<div id="mass-profile-plot" class="profile-plot" role="img" aria-label="Interactive stellar mass surface density profile"></div>
 									<div id="ssfr-profile-plot" class="profile-plot" role="img" aria-label="Interactive specific star formation rate profile"></div>
+									<div class="explorer-options profile-options" aria-label="Profile display options">
+										<label class="option-toggle"><input id="toggle-individual" type="checkbox" checked /><span>Individual galaxies</span></label>
+										<label class="option-toggle"><input id="toggle-spread" type="checkbox" checked /><span>16th–84th percentile</span></label>
+										<label class="option-toggle"><input id="toggle-logradius" type="checkbox" /><span>Logarithmic radius</span></label>
+									</div>
 								</div>
-							</div>
-
-							<div class="explorer-options" aria-label="Profile display options">
-								<label class="option-toggle"><input id="toggle-individual" type="checkbox" checked /><span>Individual galaxies</span></label>
-								<label class="option-toggle"><input id="toggle-spread" type="checkbox" checked /><span>16th–84th percentile</span></label>
-								<label class="option-toggle"><input id="toggle-logradius" type="checkbox" /><span>Logarithmic radius</span></label>
 							</div>
 
 							<p id="profile-status" class="explorer-status">Loading <code>radial_profiles_all_galaxies.txt</code>…</p>
@@ -1160,6 +1173,7 @@
 			var showIndividuals = document.getElementById('toggle-individual');
 			var showSpread = document.getElementById('toggle-spread');
 			var logRadius = document.getElementById('toggle-logradius');
+			var showXray = document.getElementById('toggle-xray');
 			var stackedGalaxyImage = document.getElementById('stacked-galaxy-image');
 			var sliderDots = Array.prototype.slice.call(document.querySelectorAll('.slider-dot'));
 
@@ -1195,7 +1209,8 @@
 					return {
 						redshift: object.redshift,
 						logSigma: object['log_Sigma1kpc_Msun_kpc-2'],
-						logSSFR: object['log_sSFR1kpc_yr-1']
+						logSSFR: object['log_sSFR1kpc_yr-1'],
+						xrayLuminous: object.xray_L_gt_5e43 === 1
 					};
 				}).filter(function (row) {
 					return Number.isFinite(row.redshift) && Number.isFinite(row.logSigma) && Number.isFinite(row.logSSFR);
@@ -1406,6 +1421,18 @@
 						hovertemplate: '%{text}<br>log Σ<sub>★,1 kpc</sub> = %{x:.2f}<br>log sSFR<sub>1 kpc</sub> = %{y:.2f}<extra></extra>'
 					}
 				];
+
+				if (showXray && showXray.checked) {
+					var luminous = centralRows.filter(function (r) { return r.xrayLuminous; });
+					traces.push({
+						x: luminous.map(function (r) { return r.logSigma; }),
+						y: luminous.map(function (r) { return r.logSSFR; }),
+						type: 'scatter', mode: 'markers', name: 'X-ray luminous',
+						marker: {size: 11, symbol: 'star', color: 'rgba(0,0,0,0)', line: {color: '#ff9f43', width: 2}},
+						hovertemplate: 'X-ray luminous galaxy<br>log Σ<sub>★,1 kpc</sub> = %{x:.2f}<br>log sSFR<sub>1 kpc</sub> = %{y:.2f}<extra></extra>'
+					});
+				}
+
 				if (active.length) traces.push({
 					x:[active[0].x], y:[active[0].y], text:[active[0].label], type:'scatter', mode:'markers', name:'Selected median',
 					marker:{size:15,color:'#f2c14e',symbol:'diamond',line:{color:'#ffffff',width:2}},
@@ -1413,10 +1440,10 @@
 				});
 
 				var layout = {
-					margin:{l:52,r:10,t:8,b:47}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
-					font:{color:'#f4f4f4',family:'Arial, sans-serif',size:10}, showlegend:false, hovermode:'closest',
-					xaxis:{title:{text:'Central stellar density (log Σ<sub>★,1 kpc</sub>)',font:{size:10}},range:[8.35,10.55],gridcolor:'rgba(255,255,255,0.07)',zeroline:false,ticks:'outside',ticklen:4},
-					yaxis:{title:{text:'Central star-forming activity (log sSFR<sub>1 kpc</sub>)',font:{size:10}},range:[-13.8,-7.9],gridcolor:'rgba(255,255,255,0.07)',zeroline:false,ticks:'outside',ticklen:4},
+					margin:{l:72,r:14,t:10,b:66}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
+					font:{color:'#f4f4f4',family:'Arial, sans-serif',size:12}, showlegend:false, hovermode:'closest',
+					xaxis:{title:{text:'Central stellar density (log Σ<sub>★,1 kpc</sub>)',font:{size:15}},range:[8.35,10.55],gridcolor:'rgba(255,255,255,0.07)',zeroline:false,ticks:'outside',ticklen:4},
+					yaxis:{title:{text:'Central star-forming activity (log sSFR<sub>1 kpc</sub>)',font:{size:15}},range:[-13.8,-7.9],gridcolor:'rgba(255,255,255,0.07)',zeroline:false,ticks:'outside',ticklen:4},
 					hoverlabel:{bgcolor:'#111827',bordercolor:'#f2c14e',font:{color:'#ffffff',size:11}}
 				};
 				Plotly.react('central-distribution-plot', traces, layout, {responsive:true,displaylogo:false,displayModeBar:false});
@@ -1492,6 +1519,7 @@
 				},1500);
 			});
 			[slider,showIndividuals,showSpread,logRadius].forEach(function(el){el.addEventListener('input',function(){if(el===slider)stopPlaying();updateExplorer();});});
+			if (showXray) showXray.addEventListener('input', function () { updateCentralDistribution(bins[Number(slider.value)]); });
 
 			installExplorerResizeHandling();
 
