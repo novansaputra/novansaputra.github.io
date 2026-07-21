@@ -547,7 +547,7 @@
 				overflow: hidden;
 			}
 
-			.profile-plot { width: 100%; height: 315px; }
+			.profile-plot { width: 100%; height: auto; aspect-ratio: 5 / 4; }
 
 			.explorer-story {
 				padding: 1rem;
@@ -620,7 +620,7 @@
 			.distribution-plot {
 				width: 100%;
 				height: auto;
-				aspect-ratio: 1 / 1;
+				aspect-ratio: 5 / 4;
 			}
 
 			.distribution-options {
@@ -1417,7 +1417,7 @@
 						x: inactive.map(function (d) { return d.x; }), y: inactive.map(function (d) { return d.y; }),
 						text: inactive.map(function (d) { return d.label; }),
 						type: 'scatter', mode: 'markers', name: 'Bin medians',
-						marker: {size: 9, color: inactive.map(function(d){return d.binIndex;}), colorscale: 'Viridis', cmin: Math.min.apply(null,bins), cmax: Math.max.apply(null,bins), line:{color:'#111827',width:1}},
+						marker: {size: 10, color: '#d9c27a', line:{color:'#111827',width:1.2}},
 						hovertemplate: '%{text}<br>log Σ<sub>★,1 kpc</sub> = %{x:.2f}<br>log sSFR<sub>1 kpc</sub> = %{y:.2f}<extra></extra>'
 					}
 				];
@@ -1435,7 +1435,7 @@
 
 				if (active.length) traces.push({
 					x:[active[0].x], y:[active[0].y], text:[active[0].label], type:'scatter', mode:'markers', name:'Selected median',
-					marker:{size:15,color:'#f2c14e',symbol:'diamond',line:{color:'#ffffff',width:2}},
+					marker:{size:20,color:'#f2c14e',symbol:'diamond',line:{color:'#ffffff',width:3}},
 					hovertemplate:'Selected: %{text}<br>log Σ<sub>★,1 kpc</sub> = %{x:.2f}<br>log sSFR<sub>1 kpc</sub> = %{y:.2f}<extra></extra>'
 				});
 
@@ -1500,7 +1500,7 @@
 					stackedGalaxyImage.src = galaxyImagePath;
 				}
 				stackedGalaxyImage.alt = 'Stacked rest-frame UVJ image for ' + label;
-				status.textContent='Hover over the median curve to inspect exact values, or change the display options below.';
+				status.textContent='';
 				status.classList.remove('error');
 			}
 
