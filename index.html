@@ -873,7 +873,7 @@
 
 			.galaxy-atlas-plotarea {
 				position: absolute;
-				left: 9.5rem;
+				left: 6.8rem;
 				right: 1.2rem;
 				top: 1.5rem;
 				bottom: 4.8rem;
@@ -934,10 +934,11 @@
 			}
 
 			.galaxy-atlas-axis-title.y {
-				left: -7.2rem;
+				left: 0.35rem;
 				top: 50%;
 				transform: translateY(-50%) rotate(-90deg);
 				transform-origin: center;
+				z-index: 4;
 			}
 
 			.galaxy-thumb {
@@ -1006,14 +1007,15 @@
 
 			@media screen and (max-width: 736px) {
 				.galaxy-atlas-plotarea {
-					left: 6.6rem;
+					left: 5.4rem;
 					right: 0.7rem;
 					top: 1.1rem;
 					bottom: 4rem;
 				}
 
 				.galaxy-atlas-axis-title.y {
-					left: -5.0rem;
+					left: -0.15rem;
+					font-size: 1.15rem;
 				}
 
 				.galaxy-thumb {
@@ -2269,7 +2271,6 @@
 				var yTitle = document.createElement('span');
 				yTitle.className = 'galaxy-atlas-axis-title y';
 				yTitle.textContent = 'log Stellar Mass (M☉)';
-				area.appendChild(yTitle);
 
 				galleryRows.forEach(function (galaxy) {
 					if (!galaxy.display) return;
@@ -2322,6 +2323,7 @@
 				});
 
 				canvas.appendChild(area);
+				canvas.appendChild(yTitle);
 				plot.appendChild(canvas);
 
 				status.textContent = '';
