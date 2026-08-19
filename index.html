@@ -919,7 +919,7 @@
 
 			.galaxy-atlas-axis-title {
 				position: absolute;
-				font-size: 1.05rem;
+				font-size: 1.28rem;
 				font-weight: 700;
 				letter-spacing: 0.02em;
 				color: rgba(255,255,255,0.92);
@@ -933,7 +933,7 @@
 			}
 
 			.galaxy-atlas-axis-title.y {
-				left: -5.35rem;
+				left: -6.85rem;
 				top: 50%;
 				transform: translateY(-50%) rotate(-90deg);
 				transform-origin: center;
@@ -947,7 +947,7 @@
 				box-sizing: border-box;
 				padding: 0;
 				margin: 0;
-				border: 1px solid rgba(255,255,255,0.16);
+				border: none;
 				border-radius: 0.12rem;
 				overflow: hidden;
 				background: #000;
@@ -960,7 +960,8 @@
 			.galaxy-thumb:hover,
 			.galaxy-thumb:focus-visible {
 				transform: translate(-50%, 50%) scale(1.8);
-				border-color: #f2c14e;
+				outline: 2px solid #f2c14e;
+				outline-offset: 1px;
 				z-index: 20;
 			}
 
@@ -2432,16 +2433,16 @@
 					galaxy.z.toFixed(3);
 
 				document.getElementById('galaxy-detail-mass').textContent =
-					'log M★/M☉ = ' + galaxy.logMass.toFixed(2);
+					'log M★ = ' + galaxy.logMass.toFixed(2) + ' [M☉]';
 
 				document.getElementById('galaxy-detail-sigma').innerHTML =
 					Number.isFinite(galaxy.logSigma)
-						? 'log Σ<sub>★,1 kpc</sub> = ' + galaxy.logSigma.toFixed(2) + ' M☉ kpc⁻²'
+						? 'log Σ<sub>★,1 kpc</sub> = ' + galaxy.logSigma.toFixed(2) + ' [M☉ kpc⁻²]'
 						: '—';
 
 				document.getElementById('galaxy-detail-ssfr').innerHTML =
 					Number.isFinite(galaxy.logSSFR)
-						? 'log sSFR<sub>1 kpc</sub> = ' + galaxy.logSSFR.toFixed(2) + ' yr⁻¹'
+						? 'log sSFR<sub>1 kpc</sub> = ' + galaxy.logSSFR.toFixed(2) + ' [yr⁻¹]'
 						: '—';
 
 				document.getElementById('galaxy-detail-xray').textContent =
