@@ -2007,6 +2007,7 @@
 			var status = document.getElementById('galaxy-gallery-status');
 			var modal = document.getElementById('galaxy-detail-modal');
 			var closeButton = document.getElementById('galaxy-detail-close');
+			var galleryXrayToggle = document.getElementById('toggle-gallery-xray');
 			var modalScrollY = 0;
 
 			if (!plot || !status || !modal || !closeButton) return;
@@ -2498,6 +2499,12 @@
 				modal.setAttribute('aria-hidden', 'true');
 				document.body.classList.remove('galaxy-modal-open');
 				requestAnimationFrame(function () { window.scrollTo(0, modalScrollY); });
+			}
+
+			if (galleryXrayToggle) {
+				galleryXrayToggle.addEventListener('change', function () {
+					if (galleryRows.length) renderAtlas();
+				});
 			}
 
 			closeButton.addEventListener('click', function (event) {
