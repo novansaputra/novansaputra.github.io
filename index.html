@@ -713,6 +713,11 @@
 				font-size: 0.78rem;
 			}
 
+			.explorer-status:empty {
+				display: none;
+			}
+
+
 			.explorer-status.error {
 				background: rgba(255,90,90,0.08);
 				border-color: rgba(255,90,90,0.3);
@@ -840,6 +845,31 @@
 				text-transform: uppercase;
 				color: #fff4cf;
 			}
+
+			.gallery-action-panel {
+				flex: 0 0 auto;
+				display: flex;
+				flex-direction: column;
+				align-items: stretch;
+				gap: 0.45rem;
+				min-width: 10.5rem;
+			}
+
+			.gallery-action-panel .gallery-hint {
+				text-align: center;
+			}
+
+			.gallery-xray-option {
+				display: block;
+				margin: 0;
+			}
+
+			.gallery-xray-option span {
+				width: 100%;
+				justify-content: center;
+				text-align: center;
+			}
+
 
 			.galaxy-gallery-plot {
 				width: 100%;
@@ -1014,6 +1044,12 @@
 			}
 
 			@media screen and (max-width: 736px) {
+				.gallery-action-panel {
+					width: 100%;
+					min-width: 0;
+				}
+
+
 				.galaxy-atlas-plotarea {
 					left: 5.4rem;
 					right: 0.7rem;
@@ -1282,7 +1318,7 @@
 						<section class="profile-explorer" aria-labelledby="explorer-title">
 							<div class="explorer-header">
 								<div>
-									<p class="explorer-kicker">Interactive experiment</p>
+									<p class="explorer-kicker">Interactive summary</p>
 									<h3 id="explorer-title">Massive Galaxies Evolution</h3>
 									<p>Move through cosmic time to see how stars become concentrated toward galaxy centers and how actively different regions continue forming new stars.</p>
 								</div>
@@ -1356,19 +1392,17 @@
 									<p class="explorer-kicker">Interactive galaxy atlas</p>
 									<h3 id="galaxy-gallery-title">Explore Individual Massive Galaxies</h3>
 									<p>Each thumbnail is a rest-frame UVJ image placed in the stellar-mass–redshift plane. Click a galaxy to inspect its physical properties and resolved radial profiles.</p>
-								<label class="toggle-chip gallery-xray-toggle">
-									<input type="checkbox" id="toggle-gallery-xray">
-									<span class="toggle-indicator"></span>
-									<span>Outline X-ray detected galaxies</span>
-								</label>
 								</div>
-								<div class="gallery-hint">Click a galaxy</div>
+								<div class="gallery-action-panel">
+									<div class="gallery-hint">Click a galaxy</div>
+									<label class="option-toggle gallery-xray-option">
+										<input id="toggle-gallery-xray" type="checkbox" />
+										<span>Outline X-ray detected</span>
+									</label>
+								</div>
 							</div>
 
 							<div id="galaxy-mass-redshift-plot" class="galaxy-gallery-plot" role="img" aria-label="Clickable gallery of massive galaxies arranged by redshift and stellar mass"></div>
-							<div class="gallery-controls" aria-label="Galaxy gallery options">
-								<label class="option-toggle"><input id="toggle-gallery-xray" type="checkbox" /><span>Outline X-ray detected galaxies</span></label>
-							</div>
 							<p id="galaxy-gallery-status" class="gallery-status">Loading <code>galaxy_gallery.csv</code>…</p>
 						</section>
 
