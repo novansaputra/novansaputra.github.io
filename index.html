@@ -862,6 +862,147 @@
 				color: #ffb3b3;
 			}
 
+			/* Clickable mass-redshift galaxy atlas */
+			.galaxy-atlas-canvas {
+				position: relative;
+				width: 100%;
+				height: 100%;
+				min-width: 0;
+				overflow: hidden;
+			}
+
+			.galaxy-atlas-plotarea {
+				position: absolute;
+				left: 5.2rem;
+				right: 1.2rem;
+				top: 1.5rem;
+				bottom: 4.8rem;
+				border-left: 1px solid rgba(255,255,255,0.72);
+				border-bottom: 1px solid rgba(255,255,255,0.72);
+			}
+
+			.galaxy-atlas-gridline {
+				position: absolute;
+				pointer-events: none;
+				background: rgba(255,255,255,0.12);
+			}
+
+			.galaxy-atlas-gridline.vertical {
+				top: 0;
+				bottom: 0;
+				width: 1px;
+			}
+
+			.galaxy-atlas-gridline.horizontal {
+				left: 0;
+				right: 0;
+				height: 1px;
+			}
+
+			.galaxy-atlas-tick {
+				position: absolute;
+				font-size: 0.68rem;
+				color: rgba(255,255,255,0.82);
+				pointer-events: none;
+				white-space: nowrap;
+			}
+
+			.galaxy-atlas-tick.x {
+				bottom: -1.8rem;
+				transform: translateX(-50%);
+			}
+
+			.galaxy-atlas-tick.y {
+				left: -0.65rem;
+				transform: translate(-100%, 50%);
+			}
+
+			.galaxy-atlas-axis-title {
+				position: absolute;
+				font-size: 0.78rem;
+				font-weight: 700;
+				letter-spacing: 0.02em;
+				color: rgba(255,255,255,0.92);
+				pointer-events: none;
+			}
+
+			.galaxy-atlas-axis-title.x {
+				left: 50%;
+				bottom: -3.8rem;
+				transform: translateX(-50%);
+			}
+
+			.galaxy-atlas-axis-title.y {
+				left: -4.1rem;
+				top: 50%;
+				transform: translateY(-50%) rotate(-90deg);
+				transform-origin: center;
+			}
+
+			.galaxy-thumb {
+				position: absolute;
+				width: 3.35%;
+				min-width: 17px;
+				max-width: 34px;
+				aspect-ratio: 1 / 1;
+				padding: 0;
+				margin: 0;
+				border: 1px solid rgba(255,255,255,0.16);
+				border-radius: 0.12rem;
+				overflow: hidden;
+				background: #000;
+				transform: translate(-50%, 50%);
+				cursor: pointer;
+				z-index: 2;
+				transition: transform 120ms ease, border-color 120ms ease, z-index 0ms;
+			}
+
+			.galaxy-thumb:hover,
+			.galaxy-thumb:focus-visible {
+				transform: translate(-50%, 50%) scale(1.8);
+				border-color: #f2c14e;
+				z-index: 20;
+			}
+
+			.galaxy-thumb img {
+				display: block;
+				width: 100%;
+				height: 100%;
+				object-fit: cover;
+			}
+
+			.galaxy-thumb.image-missing {
+				opacity: 0.18;
+			}
+
+			.galaxy-atlas-count {
+				position: absolute;
+				right: 0;
+				top: -1.15rem;
+				font-size: 0.62rem;
+				letter-spacing: 0.08em;
+				text-transform: uppercase;
+				color: rgba(255,255,255,0.55);
+			}
+
+			@media screen and (max-width: 736px) {
+				.galaxy-atlas-plotarea {
+					left: 3.9rem;
+					right: 0.7rem;
+					top: 1.1rem;
+					bottom: 4rem;
+				}
+
+				.galaxy-atlas-axis-title.y {
+					left: -3.25rem;
+				}
+
+				.galaxy-thumb {
+					min-width: 12px;
+					max-width: 25px;
+				}
+			}
+
 			#galaxy-detail-modal {
 				position: fixed;
 				inset: 0;
@@ -1836,6 +1977,531 @@
 					status.innerHTML='<strong>Explorer data not loaded.</strong> Place <code>'+DATA_FILE+'</code> and <code>'+CENTRAL_DATA_FILE+'</code> beside <code>index.html</code>, then serve the site through GitHub Pages or a local web server. Details: '+error.message;
 					document.getElementById('story-phase').textContent='Awaiting catalogues';
 					document.getElementById('story-text').textContent='The interactive explorer needs both text catalogues to draw the radial profiles and the central-density distribution.';
+				});
+		}());
+		</script>
+
+
+		<script>
+		(function () {
+			'use strict';
+
+			var GALLERY_FILE = 'galaxy_gallery.csv';
+			var GALLERY_PROFILE_FILE = 'radial_profiles_all_galaxies.txt';
+
+			var plot = document.getElementById('galaxy-mass-redshift-plot');
+			var status = document.getElementById('galaxy-gallery-status');
+			var modal = document.getElementById('galaxy-detail-modal');
+			var closeButton = document.getElementById('galaxy-detail-close');
+
+			if (!plot || !status || !modal || !closeButton) return;
+
+			var galleryRows = [];
+			var profileRows = [];
+
+			var X_EDGES = [0.4, 1.6, 2.8, 4.0, 5.2];
+			var Y_EDGES = [9.5, 10.1, 10.7, 11.3, 11.9];
+			var SUBGRIDS = 8;
+			var XRAY_LUMINOUS_LOG_THRESHOLD = Math.log10(5e43);
+
+			function finiteNumber(value) {
+				if (value === undefined || value === null || value === '') return NaN;
+				var n = Number(value);
+				return Number.isFinite(n) ? n : NaN;
+			}
+
+			function parseCSVLine(line) {
+				var values = [];
+				var current = '';
+				var quoted = false;
+
+				for (var i = 0; i < line.length; i++) {
+					var ch = line[i];
+
+					if (ch === '"') {
+						if (quoted && line[i + 1] === '"') {
+							current += '"';
+							i++;
+						} else {
+							quoted = !quoted;
+						}
+					} else if (ch === ',' && !quoted) {
+						values.push(current);
+						current = '';
+					} else {
+						current += ch;
+					}
+				}
+
+				values.push(current);
+				return values;
+			}
+
+			function parseGalleryCSV(text) {
+				var lines = text.replace(/\r/g, '').split('\n').filter(function (line) {
+					return line.trim().length > 0;
+				});
+
+				if (lines.length < 2) return [];
+
+				var header = parseCSVLine(lines[0]).map(function (v) { return v.trim(); });
+
+				return lines.slice(1).map(function (line) {
+					var values = parseCSVLine(line);
+					var raw = {};
+					header.forEach(function (key, index) {
+						raw[key] = values[index] === undefined ? '' : values[index].trim();
+					});
+
+					return {
+						field: raw.field,
+						id: raw.id,
+						z: finiteNumber(raw.z_phot),
+						logMass: finiteNumber(raw.log_mass),
+						logSigma: finiteNumber(raw.log_sigma1kpc),
+						logSSFR: finiteNumber(raw.log_ssfr1kpc),
+						logXray: finiteNumber(raw.log_xray_L210_unabs),
+						bhar: finiteNumber(raw.bhar_msun_yr),
+						imagePath: raw.image_path
+					};
+				}).filter(function (row) {
+					return row.field && row.id && Number.isFinite(row.z) && Number.isFinite(row.logMass);
+				});
+			}
+
+			function parseTabTable(text) {
+				var lines = text.replace(/\r/g, '').split('\n').filter(function (line) {
+					return line.trim().length > 0 && line.trim()[0] !== '#';
+				});
+
+				if (lines.length < 2) return [];
+
+				var header = lines[0].trim().split(/\s+/);
+
+				return lines.slice(1).map(function (line) {
+					var values = line.trim().split(/\s+/);
+					var raw = {};
+					header.forEach(function (key, index) {
+						raw[key] = values[index];
+					});
+
+					return {
+						field: raw.field,
+						id: String(raw.id),
+						radius: finiteNumber(raw.radius_kpc),
+						mass: finiteNumber(
+							raw.mass_sd_msun_kpc2 !== undefined
+								? raw.mass_sd_msun_kpc2
+								: raw.Sigma_mass_Msun_kpc2
+						),
+						ssfr: finiteNumber(
+							raw['ssfr_yr-1'] !== undefined
+								? raw['ssfr_yr-1']
+								: raw['sSFR_yr-1']
+						)
+					};
+				}).filter(function (row) {
+					return row.field && row.id && Number.isFinite(row.radius);
+				});
+			}
+
+			function locateBin(value, edges) {
+				for (var i = 0; i < edges.length - 1; i++) {
+					if (value >= edges[i] && (value < edges[i + 1] || (i === edges.length - 2 && value <= edges[i + 1]))) {
+						return i;
+					}
+				}
+				return -1;
+			}
+
+			function slotDistance(a, b) {
+				var dx = a.col - b.col;
+				var dy = a.row - b.row;
+				return dx * dx + dy * dy;
+			}
+
+			function assignDisplayPositions(rows) {
+				var groups = {};
+
+				rows.forEach(function (row) {
+					var xb = locateBin(row.z, X_EDGES);
+					var yb = locateBin(row.logMass, Y_EDGES);
+
+					if (xb < 0 || yb < 0) {
+						row.display = null;
+						return;
+					}
+
+					var key = xb + ':' + yb;
+					if (!groups[key]) groups[key] = [];
+					groups[key].push(row);
+				});
+
+				Object.keys(groups).forEach(function (key) {
+					var parts = key.split(':');
+					var xb = Number(parts[0]);
+					var yb = Number(parts[1]);
+					var z0 = X_EDGES[xb], z1 = X_EDGES[xb + 1];
+					var m0 = Y_EDGES[yb], m1 = Y_EDGES[yb + 1];
+
+					var available = [];
+					for (var r = 0; r < SUBGRIDS; r++) {
+						for (var c = 0; c < SUBGRIDS; c++) {
+							available.push({row:r, col:c});
+						}
+					}
+
+					/* Deterministic order improves reproducibility between loads. */
+					groups[key].sort(function (a, b) {
+						if (a.logMass !== b.logMass) return b.logMass - a.logMass;
+						if (a.z !== b.z) return a.z - b.z;
+						return String(a.id).localeCompare(String(b.id));
+					});
+
+					groups[key].forEach(function (galaxy) {
+						var desired = {
+							col: Math.max(0, Math.min(SUBGRIDS - 1,
+								Math.round(((galaxy.z - z0) / (z1 - z0)) * (SUBGRIDS - 1))
+							)),
+							row: Math.max(0, Math.min(SUBGRIDS - 1,
+								Math.round(((galaxy.logMass - m0) / (m1 - m0)) * (SUBGRIDS - 1))
+							))
+						};
+
+						var bestIndex = 0;
+						var bestDistance = Infinity;
+
+						available.forEach(function (slot, index) {
+							var d = slotDistance(slot, desired);
+							if (d < bestDistance) {
+								bestDistance = d;
+								bestIndex = index;
+							}
+						});
+
+						var slot = available.splice(bestIndex, 1)[0];
+
+						galaxy.display = {
+							x: z0 + ((slot.col + 0.5) / SUBGRIDS) * (z1 - z0),
+							y: m0 + ((slot.row + 0.5) / SUBGRIDS) * (m1 - m0)
+						};
+					});
+				});
+			}
+
+			function percentage(value, min, max) {
+				return ((value - min) / (max - min)) * 100;
+			}
+
+			function renderAtlas() {
+				assignDisplayPositions(galleryRows);
+
+				plot.innerHTML = '';
+
+				var canvas = document.createElement('div');
+				canvas.className = 'galaxy-atlas-canvas';
+
+				var area = document.createElement('div');
+				area.className = 'galaxy-atlas-plotarea';
+
+				var count = document.createElement('div');
+				count.className = 'galaxy-atlas-count';
+				count.textContent = galleryRows.length + ' galaxies';
+				area.appendChild(count);
+
+				X_EDGES.forEach(function (tick) {
+					var pct = percentage(tick, X_EDGES[0], X_EDGES[X_EDGES.length - 1]);
+
+					var line = document.createElement('span');
+					line.className = 'galaxy-atlas-gridline vertical';
+					line.style.left = pct + '%';
+					area.appendChild(line);
+
+					var label = document.createElement('span');
+					label.className = 'galaxy-atlas-tick x';
+					label.style.left = pct + '%';
+					label.textContent = tick.toFixed(1);
+					area.appendChild(label);
+				});
+
+				Y_EDGES.forEach(function (tick) {
+					var pct = percentage(tick, Y_EDGES[0], Y_EDGES[Y_EDGES.length - 1]);
+
+					var line = document.createElement('span');
+					line.className = 'galaxy-atlas-gridline horizontal';
+					line.style.bottom = pct + '%';
+					area.appendChild(line);
+
+					var label = document.createElement('span');
+					label.className = 'galaxy-atlas-tick y';
+					label.style.bottom = pct + '%';
+					label.textContent = tick.toFixed(1);
+					area.appendChild(label);
+				});
+
+				var xTitle = document.createElement('span');
+				xTitle.className = 'galaxy-atlas-axis-title x';
+				xTitle.textContent = 'Redshift';
+				area.appendChild(xTitle);
+
+				var yTitle = document.createElement('span');
+				yTitle.className = 'galaxy-atlas-axis-title y';
+				yTitle.textContent = 'log Stellar Mass (M☉)';
+				area.appendChild(yTitle);
+
+				galleryRows.forEach(function (galaxy) {
+					if (!galaxy.display) return;
+
+					var button = document.createElement('button');
+					button.type = 'button';
+					button.className = 'galaxy-thumb';
+					button.style.left = percentage(
+						galaxy.display.x,
+						X_EDGES[0],
+						X_EDGES[X_EDGES.length - 1]
+					) + '%';
+					button.style.bottom = percentage(
+						galaxy.display.y,
+						Y_EDGES[0],
+						Y_EDGES[Y_EDGES.length - 1]
+					) + '%';
+
+					button.setAttribute(
+						'aria-label',
+						'Inspect ' + galaxy.field + ' ' + galaxy.id +
+						', redshift ' + galaxy.z.toFixed(2) +
+						', log stellar mass ' + galaxy.logMass.toFixed(2)
+					);
+
+					button.title =
+						galaxy.field + ' ' + galaxy.id +
+						'\nz = ' + galaxy.z.toFixed(2) +
+						'\nlog M★ = ' + galaxy.logMass.toFixed(2);
+
+					var img = document.createElement('img');
+					img.src = galaxy.imagePath;
+					img.alt = '';
+					img.loading = 'lazy';
+					img.decoding = 'async';
+					img.addEventListener('error', function () {
+						button.classList.add('image-missing');
+					});
+
+					button.appendChild(img);
+					button.addEventListener('click', function () {
+						openGalaxy(galaxy);
+					});
+
+					area.appendChild(button);
+				});
+
+				canvas.appendChild(area);
+				plot.appendChild(canvas);
+
+				status.textContent = '';
+				status.classList.remove('error');
+			}
+
+			function formatPowerOfTen(logValue) {
+				if (!Number.isFinite(logValue)) return 'No X-ray measurement';
+				var exponent = Math.floor(logValue);
+				var coefficient = Math.pow(10, logValue - exponent);
+				return coefficient.toFixed(2) + ' × 10' + superscript(exponent) + ' erg s⁻¹';
+			}
+
+			function superscript(number) {
+				var map = {'-':'⁻','0':'⁰','1':'¹','2':'²','3':'³','4':'⁴','5':'⁵','6':'⁶','7':'⁷','8':'⁸','9':'⁹'};
+				return String(number).split('').map(function (c) { return map[c] || c; }).join('');
+			}
+
+			function formatBHAR(value) {
+				if (!Number.isFinite(value) || value < 0) return 'Not available';
+				if (value === 0) return '0 M☉ yr⁻¹';
+				if (value >= 0.01) return value.toFixed(3) + ' M☉ yr⁻¹';
+				return value.toExponential(2) + ' M☉ yr⁻¹';
+			}
+
+			function selectedProfiles(galaxy) {
+				return profileRows.filter(function (row) {
+					return row.field === galaxy.field && String(row.id) === String(galaxy.id);
+				}).sort(function (a, b) {
+					return a.radius - b.radius;
+				});
+			}
+
+			function renderDetailProfiles(galaxy) {
+				var rows = selectedProfiles(galaxy);
+
+				if (!rows.length) {
+					['galaxy-detail-mass-profile', 'galaxy-detail-ssfr-profile'].forEach(function (id) {
+						var element = document.getElementById(id);
+						Plotly.purge(element);
+						element.innerHTML = '<p style="padding:1rem;opacity:.7;">No radial profile found for this galaxy.</p>';
+					});
+					return;
+				}
+
+				var radii = rows.map(function (r) { return r.radius; });
+				var mass = rows.map(function (r) { return r.mass / 1e9; });
+				var ssfr = rows.map(function (r) { return r.ssfr * 1e9; });
+
+				var base = {
+					margin:{l:70,r:14,t:36,b:52},
+					paper_bgcolor:'rgba(0,0,0,0)',
+					plot_bgcolor:'rgba(0,0,0,0)',
+					font:{color:'#f4f4f4',family:'Arial, sans-serif',size:11},
+					showlegend:false,
+					hoverlabel:{bgcolor:'#111827',bordercolor:'#f2c14e',font:{color:'#fff'}},
+					xaxis:{
+						title:'Radius (kpc)',
+						range:[0,16],
+						gridcolor:'rgba(255,255,255,0.08)',
+						zeroline:false
+					}
+				};
+
+				var massLayout = Object.assign({}, base, {
+					title:{text:'Stellar density profile',font:{size:14}},
+					yaxis:{
+						title:'Σ★ (10⁹ M☉ kpc⁻²)',
+						type:'log',
+						gridcolor:'rgba(255,255,255,0.08)',
+						zeroline:false
+					}
+				});
+
+				var ssfrLayout = Object.assign({}, base, {
+					title:{text:'Star-forming activity profile',font:{size:14}},
+					yaxis:{
+						title:'sSFR (Gyr⁻¹)',
+						type:'log',
+						gridcolor:'rgba(255,255,255,0.08)',
+						zeroline:false
+					}
+				});
+
+				Plotly.react(
+					'galaxy-detail-mass-profile',
+					[{
+						x:radii, y:mass, type:'scatter', mode:'lines+markers',
+						line:{color:'#f2c14e',width:3},
+						marker:{color:'#f2c14e',size:5},
+						hovertemplate:'r = %{x:.2f} kpc<br>Σ★ = %{y:.3g} × 10⁹ M☉ kpc⁻²<extra></extra>'
+					}],
+					massLayout,
+					{responsive:true,displaylogo:false,displayModeBar:false}
+				);
+
+				Plotly.react(
+					'galaxy-detail-ssfr-profile',
+					[{
+						x:radii, y:ssfr, type:'scatter', mode:'lines+markers',
+						line:{color:'#b88cff',width:3},
+						marker:{color:'#b88cff',size:5},
+						hovertemplate:'r = %{x:.2f} kpc<br>sSFR = %{y:.3g} Gyr⁻¹<extra></extra>'
+					}],
+					ssfrLayout,
+					{responsive:true,displaylogo:false,displayModeBar:false}
+				);
+			}
+
+			function openGalaxy(galaxy) {
+				document.getElementById('galaxy-detail-image').src = galaxy.imagePath;
+				document.getElementById('galaxy-detail-image').alt =
+					'Rest-frame UVJ image of ' + galaxy.field + ' ' + galaxy.id;
+
+				document.getElementById('galaxy-detail-title').textContent =
+					galaxy.field + ' ' + galaxy.id;
+
+				document.getElementById('galaxy-detail-subtitle').textContent =
+					'Individual galaxy from the most-massive sample';
+
+				document.getElementById('galaxy-detail-redshift').textContent =
+					galaxy.z.toFixed(3);
+
+				document.getElementById('galaxy-detail-mass').textContent =
+					'log M★/M☉ = ' + galaxy.logMass.toFixed(2);
+
+				document.getElementById('galaxy-detail-sigma').textContent =
+					Number.isFinite(galaxy.logSigma) ? galaxy.logSigma.toFixed(2) : '—';
+
+				document.getElementById('galaxy-detail-ssfr').textContent =
+					Number.isFinite(galaxy.logSSFR) ? galaxy.logSSFR.toFixed(2) : '—';
+
+				document.getElementById('galaxy-detail-xray').textContent =
+					formatPowerOfTen(galaxy.logXray);
+
+				document.getElementById('galaxy-detail-bhar').textContent =
+					formatBHAR(galaxy.bhar);
+
+				var badge = document.getElementById('galaxy-detail-xray-badge');
+				if (Number.isFinite(galaxy.logXray) && galaxy.logXray > XRAY_LUMINOUS_LOG_THRESHOLD) {
+					badge.textContent = 'Luminous X-ray AGN';
+					badge.classList.remove('is-hidden');
+				} else {
+					badge.classList.add('is-hidden');
+				}
+
+				modal.classList.add('is-open');
+				modal.setAttribute('aria-hidden', 'false');
+				document.body.classList.add('galaxy-modal-open');
+
+				renderDetailProfiles(galaxy);
+
+				requestAnimationFrame(function () {
+					['galaxy-detail-mass-profile','galaxy-detail-ssfr-profile'].forEach(function (id) {
+						var el = document.getElementById(id);
+						if (el && el._fullLayout) Plotly.Plots.resize(el);
+					});
+				});
+			}
+
+			function closeGalaxy() {
+				modal.classList.remove('is-open');
+				modal.setAttribute('aria-hidden', 'true');
+				document.body.classList.remove('galaxy-modal-open');
+			}
+
+			closeButton.addEventListener('click', closeGalaxy);
+
+			modal.addEventListener('click', function (event) {
+				if (event.target === modal) closeGalaxy();
+			});
+
+			document.addEventListener('keydown', function (event) {
+				if (event.key === 'Escape' && modal.classList.contains('is-open')) {
+					closeGalaxy();
+				}
+			});
+
+			Promise.all([
+				fetch(GALLERY_FILE, {cache:'no-store'}).then(function (response) {
+					if (!response.ok) throw new Error(GALLERY_FILE + ': HTTP ' + response.status);
+					return response.text();
+				}),
+				fetch(GALLERY_PROFILE_FILE).then(function (response) {
+					if (!response.ok) throw new Error(GALLERY_PROFILE_FILE + ': HTTP ' + response.status);
+					return response.text();
+				})
+			])
+				.then(function (texts) {
+					galleryRows = parseGalleryCSV(texts[0]);
+					profileRows = parseTabTable(texts[1]);
+
+					if (!galleryRows.length) {
+						throw new Error('The CSV loaded, but no valid galaxy rows were parsed.');
+					}
+
+					renderAtlas();
+				})
+				.catch(function (error) {
+					status.classList.add('error');
+					status.innerHTML =
+						'<strong>Galaxy gallery not loaded.</strong> ' +
+						'Expected <code>' + GALLERY_FILE + '</code> and <code>' +
+						GALLERY_PROFILE_FILE + '</code> beside <code>index.html</code>. ' +
+						'Details: ' + error.message;
+					console.error('Galaxy gallery error:', error);
 				});
 		}());
 		</script>
