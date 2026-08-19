@@ -873,7 +873,7 @@
 
 			.galaxy-atlas-plotarea {
 				position: absolute;
-				left: 6.6rem;
+				left: 9.5rem;
 				right: 1.2rem;
 				top: 1.5rem;
 				bottom: 4.8rem;
@@ -901,8 +901,9 @@
 
 			.galaxy-atlas-tick {
 				position: absolute;
-				font-size: 0.68rem;
-				color: rgba(255,255,255,0.82);
+				font-size: 0.9rem;
+				font-weight: 600;
+				color: rgba(255,255,255,0.9);
 				pointer-events: none;
 				white-space: nowrap;
 			}
@@ -919,7 +920,7 @@
 
 			.galaxy-atlas-axis-title {
 				position: absolute;
-				font-size: 1.28rem;
+				font-size: 1.55rem;
 				font-weight: 700;
 				letter-spacing: 0.02em;
 				color: rgba(255,255,255,0.92);
@@ -933,7 +934,7 @@
 			}
 
 			.galaxy-atlas-axis-title.y {
-				left: -6.85rem;
+				left: -7.2rem;
 				top: 50%;
 				transform: translateY(-50%) rotate(-90deg);
 				transform-origin: center;
@@ -976,6 +977,23 @@
 				opacity: 0.18;
 			}
 
+			.galaxy-thumb.xray-detected-visible {
+				outline: 2px solid #f59e0b;
+				outline-offset: 1px;
+				z-index: 5;
+			}
+
+			.galaxy-thumb.xray-detected-visible:hover,
+			.galaxy-thumb.xray-detected-visible:focus-visible {
+				outline-width: 3px;
+			}
+
+			.gallery-controls {
+				display: flex;
+				justify-content: flex-end;
+				margin: 0.75rem 0 0.15rem;
+			}
+
 			.galaxy-atlas-count {
 				position: absolute;
 				right: 0;
@@ -988,14 +1006,14 @@
 
 			@media screen and (max-width: 736px) {
 				.galaxy-atlas-plotarea {
-					left: 4.8rem;
+					left: 6.6rem;
 					right: 0.7rem;
 					top: 1.1rem;
 					bottom: 4rem;
 				}
 
 				.galaxy-atlas-axis-title.y {
-					left: -4.0rem;
+					left: -5.0rem;
 				}
 
 				.galaxy-thumb {
@@ -1330,6 +1348,9 @@
 							</div>
 
 							<div id="galaxy-mass-redshift-plot" class="galaxy-gallery-plot" role="img" aria-label="Clickable gallery of massive galaxies arranged by redshift and stellar mass"></div>
+							<div class="gallery-controls" aria-label="Galaxy gallery options">
+								<label class="option-toggle"><input id="toggle-gallery-xray" type="checkbox" /><span>Outline X-ray detected galaxies</span></label>
+							</div>
 							<p id="galaxy-gallery-status" class="gallery-status">Loading <code>galaxy_gallery.csv</code>…</p>
 						</section>
 
@@ -1345,13 +1366,6 @@
 							</a>
 							<figcaption>Evolution of central star formation and stellar mass density, illustrating the compaction–quenching sequence and the locations of X-ray-luminous AGN.</figcaption>
 						</figure>
-
-						<figure class="image main">
-						<a class="lightbox-trigger" href="images/most_massive_uvj_images.pdf" data-caption="Massive galaxies observed across cosmic time with JWST and Hubble imaging, shown together with their rest-frame UVJ colors.">
-							<img src="images/most_massive_uvj_images.pdf" loading="lazy" alt="Massive galaxies across cosmic time shown with their rest-frame UVJ colors" />
-						</a>
-						<figcaption>Massive galaxies observed across cosmic time and their stellar mass, shown in rest-frame UVJ color.</figcaption>
-					</figure>
 					</section>
 
 
@@ -2067,6 +2081,7 @@
 						logSigma: finiteNumber(raw.log_sigma1kpc),
 						logSSFR: finiteNumber(raw.log_ssfr1kpc),
 						logXray: finiteNumber(raw.log_xray_L210_unabs),
+						xrayDetected: Number.isFinite(finiteNumber(raw.log_xray_L210_unabs)),
 						bhar: finiteNumber(raw.bhar_msun_yr),
 						imagePath: raw.image_path
 					};
@@ -2261,6 +2276,10 @@
 					var button = document.createElement('button');
 					button.type = 'button';
 					button.className = 'galaxy-thumb';
+					button.dataset.xrayDetected = galaxy.xrayDetected ? '1' : '0';
+					if (galleryXrayToggle && galleryXrayToggle.checked && galaxy.xrayDetected) {
+						button.classList.add('xray-detected-visible');
+					}
 					button.style.left = percentage(
 						galaxy.display.x,
 						X_EDGES[0],
