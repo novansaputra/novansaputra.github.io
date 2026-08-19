@@ -825,7 +825,7 @@
 						</p>
 
 						<p class="hero-tagline">
-							I study how compact massive quiescent galaxies are formed and evolved into local elliptical galaxies.
+							I study how massive galaxies build dense stellar cores, stop forming stars, and grow across cosmic time using JWST and Chandra observations.
 						</p>
 
 						<ul class="actions hero-actions">
@@ -1323,7 +1323,7 @@
 				return traces;
 			}
 
-			function plotLayout(yTitle, range, unreliableFrom, tickValues, tickLabels) {
+			function plotLayout(yTitle, range, tickValues, tickLabels) {
 				return {
 					margin:{l:82,r:22,t:36,b:55}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
 					font:{color:'#f4f4f4',family:'Arial, sans-serif'},
@@ -1341,8 +1341,6 @@
 						gridcolor:'rgba(255,255,255,0.08)',zeroline:false,ticks:'outside',ticklen:5
 					},
 					legend:{orientation:'h',x:0,y:1.14,bgcolor:'rgba(0,0,0,0)'},
-					shapes:Number.isFinite(unreliableFrom)?[{type:'rect',xref:'x',yref:'paper',x0:unreliableFrom,x1:16,y0:0,y1:1,fillcolor:'rgba(255,255,255,0.035)',line:{width:0},layer:'below'}]:[],
-					annotations:Number.isFinite(unreliableFrom)?[{xref:'x',yref:'paper',x:(unreliableFrom+16)/2,y:0.96,text:'No reliable measurements',showarrow:false,font:{size:10,color:'rgba(255,255,255,0.48)'},textangle:0}]:[],
 					hoverlabel:{bgcolor:'#111827',bordercolor:'#f2c14e',font:{color:'#ffffff',family:'Arial, sans-serif',size:13},namelength:-1},
 					hovermode:'x unified',transition:{duration:350,easing:'cubic-in-out'}
 				};
@@ -1468,19 +1466,12 @@
 
 				var massTraces=individualTraces(data.galaxies,'mass_sd_msun_kpc2','rgba(158,202,255,0.75)').concat(medianTraces(data.summary,'mass','#f2c14e'));
 				var ssfrTraces=individualTraces(data.galaxies,'ssfr_yr-1','rgba(190,147,255,0.75)').concat(medianTraces(data.summary,'ssfr','#f2c14e'));
-				var sortedBins = bins.slice().sort(function(a,b){return a-b;});
-				var highestBin = sortedBins[sortedBins.length - 1];
-				var secondHighestBin = sortedBins[sortedBins.length - 2];
-				var unreliableFrom = binIndex === highestBin ? 8 : (binIndex === secondHighestBin ? 12 : NaN);
-				var massLayout=plotLayout('Stellar density, Σ★ (10⁹ M☉ kpc⁻²)',[-2,2],unreliableFrom,[0.01,0.1,1,10,100],['0.01','0.1','1','10','100']);
-				var ssfrLayout=plotLayout('Star-forming activity, sSFR (Gyr⁻¹)',[-3,1.5],unreliableFrom,[0.001,0.01,0.1,1,10],['0.001','0.01','0.1','1','10']);
+				var massLayout=plotLayout('Stellar density, Σ★ (10⁹ M☉ kpc⁻²)',[-2,2],[0.01,0.1,1,10,100],['0.01','0.1','1','10','100']);
+				var ssfrLayout=plotLayout('Star-forming activity, sSFR (Gyr⁻¹)',[-3,1.5],[0.001,0.01,0.1,1,10],['0.001','0.01','0.1','1','10']);
 				Plotly.react('mass-profile-plot',massTraces,massLayout,{responsive:true,displaylogo:false,modeBarButtonsToRemove:['lasso2d','select2d']});
 				Plotly.react('ssfr-profile-plot',ssfrTraces,ssfrLayout,{responsive:true,displaylogo:false,modeBarButtonsToRemove:['lasso2d','select2d']});
 				scheduleExplorerResize();
 
-				// Explicitly clear the high-redshift overlay when moving to another bin.
-				Plotly.relayout('mass-profile-plot',{shapes:massLayout.shapes,annotations:massLayout.annotations});
-				Plotly.relayout('ssfr-profile-plot',{shapes:ssfrLayout.shapes,annotations:ssfrLayout.annotations});
 
 				var phase=phaseFor(zMedian);
 				document.getElementById('story-phase').textContent=phase[0];
