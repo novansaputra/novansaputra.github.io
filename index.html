@@ -871,6 +871,49 @@
 			}
 
 
+
+			.gallery-map-selector,
+			.modal-map-selector {
+				display: grid;
+				grid-template-columns: repeat(4, minmax(0, 1fr));
+				gap: 0.3rem;
+				width: 100%;
+			}
+
+			.gallery-map-btn,
+			.modal-map-btn {
+				border: 1px solid rgba(255,255,255,0.22);
+				background: rgba(255,255,255,0.04);
+				color: rgba(255,255,255,0.82);
+				font: inherit;
+				font-size: 0.72rem;
+				font-weight: 600;
+				line-height: 1;
+				padding: 0.48rem 0.35rem;
+				border-radius: 0.3rem;
+				cursor: pointer;
+				transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+			}
+
+			.gallery-map-btn:hover,
+			.modal-map-btn:hover,
+			.gallery-map-btn:focus-visible,
+			.modal-map-btn:focus-visible {
+				border-color: rgba(242,193,78,0.8);
+				color: #fff;
+			}
+
+			.gallery-map-btn.active,
+			.modal-map-btn.active {
+				background: rgba(242,193,78,0.16);
+				border-color: #f2c14e;
+				color: #fff;
+			}
+
+			.modal-map-selector {
+				margin-bottom: 0.7rem;
+			}
+
 			.galaxy-gallery-plot {
 				width: 100%;
 				height: auto;
@@ -1391,10 +1434,16 @@
 								<div>
 									<p class="explorer-kicker">Interactive galaxy atlas</p>
 									<h3 id="galaxy-gallery-title">Explore Individual Massive Galaxies</h3>
-									<p>Each thumbnail is a rest-frame UVJ image placed in the stellar-mass–redshift plane. Click a galaxy to inspect its physical properties and resolved radial profiles.</p>
+									<p>Each thumbnail can be viewed as a rest-frame UVJ image, stellar mass map, SFR map, or dust map while preserving its position in the stellar-mass–redshift plane. Click a galaxy to inspect its physical properties and resolved radial profiles.</p>
 								</div>
 								<div class="gallery-action-panel">
 									<div class="gallery-hint">Click a galaxy</div>
+									<div class="gallery-map-selector" role="radiogroup" aria-label="Galaxy image type">
+										<button type="button" class="gallery-map-btn active" data-map="uvj" aria-pressed="true">UVJ</button>
+										<button type="button" class="gallery-map-btn" data-map="mass" aria-pressed="false">Mass</button>
+										<button type="button" class="gallery-map-btn" data-map="sfr" aria-pressed="false">SFR</button>
+										<button type="button" class="gallery-map-btn" data-map="dust" aria-pressed="false">Dust</button>
+									</div>
 									<label class="option-toggle gallery-xray-option">
 										<input id="toggle-gallery-xray" type="checkbox" />
 										<span>Outline X-ray detected</span>
@@ -1518,6 +1567,12 @@
 
 				<div class="galaxy-detail-top">
 					<div class="galaxy-detail-image-wrap">
+						<div class="modal-map-selector" role="radiogroup" aria-label="Popup image type">
+							<button type="button" class="modal-map-btn active" data-map="uvj" aria-pressed="true">UVJ</button>
+							<button type="button" class="modal-map-btn" data-map="mass" aria-pressed="false">Mass</button>
+							<button type="button" class="modal-map-btn" data-map="sfr" aria-pressed="false">SFR</button>
+							<button type="button" class="modal-map-btn" data-map="dust" aria-pressed="false">Dust</button>
+						</div>
 						<img id="galaxy-detail-image" class="galaxy-detail-image" src="" alt="" />
 					</div>
 
@@ -2060,6 +2115,11 @@
 			var modal = document.getElementById('galaxy-detail-modal');
 			var closeButton = document.getElementById('galaxy-detail-close');
 			var galleryXrayToggle = document.getElementById('toggle-gallery-xray');
+			var galleryMapButtons = Array.prototype.slice.call(document.querySelectorAll('.gallery-map-btn'));
+			var modalMapButtons = Array.prototype.slice.call(document.querySelectorAll('.modal-map-btn'));
+			var currentGalleryMap = 'uvj';
+			var currentModalMap = 'uvj';
+			var currentModalGalaxy = null;
 			var modalScrollY = 0;
 
 			if (!plot || !status || !modal || !closeButton) return;
@@ -2076,6 +2136,55 @@
 			var Y_EDGES = [9.5, 10.1, 10.7, 11.3, 11.9];
 			var SUBGRIDS = 8;
 			var XRAY_LUMINOUS_LOG_THRESHOLD = Math.log10(5e43);
+
+			function galaxyImagePath(galaxy, mapType) {
+				var filename = galaxy.field + '_' + galaxy.id + '.png';
+				if (mapType === 'mass') return 'images/mass_cutouts/' + filename;
+				if (mapType === 'sfr') return 'images/sfr_cutouts/' + filename;
+				if (mapType === 'dust') return 'images/dust_cutouts/' + filename;
+				return 'images/galaxy_gallery/' + filename;
+			}
+
+			function setMapButtonState(buttons, mapType) {
+				buttons.forEach(function (button) {
+					var active = button.getAttribute('data-map') === mapType;
+					button.classList.toggle('active', active);
+					button.setAttribute('aria-pressed', active ? 'true' : 'false');
+				});
+			}
+
+			function updateGalleryMap(mapType) {
+				currentGalleryMap = mapType;
+				setMapButtonState(galleryMapButtons, mapType);
+
+				document.querySelectorAll('.galaxy-thumb').forEach(function (button) {
+					var field = button.dataset.field;
+					var id = button.dataset.id;
+					var img = button.querySelector('img');
+					if (!field || !id || !img) return;
+
+					button.classList.remove('image-missing');
+					img.src = galaxyImagePath({field: field, id: id}, mapType);
+				});
+			}
+
+			function updateModalMap(mapType) {
+				currentModalMap = mapType;
+				setMapButtonState(modalMapButtons, mapType);
+
+				if (!currentModalGalaxy) return;
+
+				var img = document.getElementById('galaxy-detail-image');
+				img.src = galaxyImagePath(currentModalGalaxy, mapType);
+
+				var labels = {
+					uvj: 'Rest-frame UVJ image',
+					mass: 'Stellar mass map',
+					sfr: 'Star formation rate map',
+					dust: 'Dust map'
+				};
+				img.alt = labels[mapType] + ' of ' + currentModalGalaxy.field + ' ' + currentModalGalaxy.id;
+			}
 
 			function finiteNumber(value) {
 				if (value === undefined || value === null || value === '') return NaN;
@@ -2328,6 +2437,8 @@
 					var button = document.createElement('button');
 					button.type = 'button';
 					button.className = 'galaxy-thumb';
+					button.dataset.field = galaxy.field;
+					button.dataset.id = galaxy.id;
 					button.dataset.xrayDetected = galaxy.xrayDetected ? '1' : '0';
 					if (galleryXrayToggle && galleryXrayToggle.checked && galaxy.xrayDetected) {
 						button.classList.add('xray-detected-visible');
@@ -2356,7 +2467,7 @@
 						'\nlog M★ = ' + galaxy.logMass.toFixed(2);
 
 					var img = document.createElement('img');
-					img.src = galaxy.imagePath;
+					img.src = galaxyImagePath(galaxy, currentGalleryMap);
 					img.alt = '';
 					img.loading = 'lazy';
 					img.decoding = 'async';
@@ -2493,9 +2604,22 @@
 			}
 
 			function openGalaxy(galaxy) {
-				document.getElementById('galaxy-detail-image').src = galaxy.imagePath;
+				currentModalGalaxy = galaxy;
+				currentModalMap = currentGalleryMap;
+				setMapButtonState(modalMapButtons, currentModalMap);
+
+				document.getElementById('galaxy-detail-image').src =
+					galaxyImagePath(galaxy, currentModalMap);
+
+				var modalMapLabels = {
+					uvj: 'Rest-frame UVJ image',
+					mass: 'Stellar mass map',
+					sfr: 'Star formation rate map',
+					dust: 'Dust map'
+				};
+
 				document.getElementById('galaxy-detail-image').alt =
-					'Rest-frame UVJ image of ' + galaxy.field + ' ' + galaxy.id;
+					modalMapLabels[currentModalMap] + ' of ' + galaxy.field + ' ' + galaxy.id;
 
 				document.getElementById('galaxy-detail-title').textContent =
 					galaxy.field + ' ' + galaxy.id;
@@ -2552,6 +2676,22 @@
 				document.body.classList.remove('galaxy-modal-open');
 				requestAnimationFrame(function () { window.scrollTo(0, modalScrollY); });
 			}
+
+			galleryMapButtons.forEach(function (button) {
+				button.addEventListener('click', function (event) {
+					event.preventDefault();
+					event.stopPropagation();
+					updateGalleryMap(button.getAttribute('data-map'));
+				});
+			});
+
+			modalMapButtons.forEach(function (button) {
+				button.addEventListener('click', function (event) {
+					event.preventDefault();
+					event.stopPropagation();
+					updateModalMap(button.getAttribute('data-map'));
+				});
+			});
 
 			if (galleryXrayToggle) {
 				galleryXrayToggle.addEventListener('change', function () {
