@@ -1366,8 +1366,15 @@
 
 
 			.gallery-atlas-colorbar {
-				width: min(27rem, 58%);
-				margin: 0.8rem auto 0;
+				position: absolute;
+				left: 5.5%;
+				bottom: 6.5%;
+				width: 22%;
+				min-width: 120px;
+				max-width: 260px;
+				margin: 0;
+				z-index: 30;
+				pointer-events: none;
 			}
 
 			.gallery-atlas-colorbar.is-hidden {
@@ -1417,8 +1424,19 @@
 
 			@media screen and (max-width: 736px) {
 				.gallery-atlas-colorbar {
-					width: min(22rem, 82%);
+					left: 7%;
+					bottom: 7%;
+					width: 34%;
+					min-width: 105px;
+					max-width: 180px;
 				}
+			}
+
+
+			.galaxy-atlas,
+			.galaxy-gallery-canvas,
+			.galaxy-atlas-canvas {
+				position: relative;
 			}
 
 </style>
