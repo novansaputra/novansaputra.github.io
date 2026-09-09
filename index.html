@@ -1367,8 +1367,8 @@
 
 			.gallery-atlas-colorbar {
 				position: absolute;
-				left: 5.5%;
-				bottom: 6.5%;
+				left: 4%;
+				bottom: 5.5%;
 				width: 22%;
 				min-width: 120px;
 				max-width: 260px;
@@ -1424,8 +1424,8 @@
 
 			@media screen and (max-width: 736px) {
 				.gallery-atlas-colorbar {
-					left: 7%;
-					bottom: 7%;
+					left: 4%;
+					bottom: 5%;
 					width: 34%;
 					min-width: 105px;
 					max-width: 180px;
@@ -1598,11 +1598,6 @@
 							</div>
 
 							<div id="galaxy-mass-redshift-plot" class="galaxy-gallery-plot" role="img" aria-label="Clickable gallery of massive galaxies arranged by redshift and stellar mass"></div>
-								<div id="gallery-atlas-colorbar" class="gallery-atlas-colorbar is-hidden" aria-hidden="true">
-									<div id="gallery-atlas-colorbar-gradient" class="gallery-atlas-colorbar-gradient"></div>
-									<div id="gallery-atlas-colorbar-ticks" class="gallery-atlas-colorbar-ticks"></div>
-									<div id="gallery-atlas-colorbar-label" class="gallery-atlas-colorbar-label"></div>
-								</div>
 							<p id="galaxy-gallery-status" class="gallery-status">Loading <code>galaxy_gallery.csv</code>…</p>
 						</section>
 
@@ -2658,6 +2653,31 @@
 				count.textContent = galleryRows.length + ' galaxies';
 				area.appendChild(count);
 
+				// Inset colorbar inside the actual mass-redshift plot area.
+				var atlasColorbar = document.createElement('div');
+				atlasColorbar.id = 'gallery-atlas-colorbar';
+				atlasColorbar.className = 'gallery-atlas-colorbar is-hidden';
+				atlasColorbar.setAttribute('aria-hidden', 'true');
+
+				var atlasColorbarGradient = document.createElement('div');
+				atlasColorbarGradient.id = 'gallery-atlas-colorbar-gradient';
+				atlasColorbarGradient.className = 'gallery-atlas-colorbar-gradient';
+
+				var atlasColorbarTicks = document.createElement('div');
+				atlasColorbarTicks.id = 'gallery-atlas-colorbar-ticks';
+				atlasColorbarTicks.className = 'gallery-atlas-colorbar-ticks';
+
+				var atlasColorbarLabel = document.createElement('div');
+				atlasColorbarLabel.id = 'gallery-atlas-colorbar-label';
+				atlasColorbarLabel.className = 'gallery-atlas-colorbar-label';
+
+				atlasColorbar.appendChild(atlasColorbarGradient);
+				atlasColorbar.appendChild(atlasColorbarTicks);
+				atlasColorbar.appendChild(atlasColorbarLabel);
+				area.appendChild(atlasColorbar);
+
+				updateAtlasColorbar(currentGalleryMap);
+
 				X_EDGES.forEach(function (tick) {
 					var pct = percentage(tick, X_EDGES[0], X_EDGES[X_EDGES.length - 1]);
 
@@ -2945,7 +2965,6 @@
 				requestAnimationFrame(function () { window.scrollTo(0, modalScrollY); });
 			}
 
-			updateAtlasColorbar(currentGalleryMap);
 
 			galleryMapButtons.forEach(function (button) {
 				button.addEventListener('click', function (event) {
