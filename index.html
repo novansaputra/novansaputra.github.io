@@ -1313,6 +1313,114 @@
 				overflow: visible;
 			}
 
+
+			.galaxy-detail-colorbar {
+				width: 100%;
+				margin-top: 0.75rem;
+			}
+
+			.galaxy-detail-colorbar.is-hidden {
+				display: none;
+			}
+
+			.galaxy-detail-colorbar-gradient {
+				width: 100%;
+				height: 0.72rem;
+				border-radius: 999px;
+				border: 1px solid rgba(255,255,255,0.18);
+				box-shadow: inset 0 0 0 1px rgba(0,0,0,0.14);
+			}
+
+			.galaxy-detail-colorbar-ticks {
+				position: relative;
+				height: 1.05rem;
+				margin-top: 0.15rem;
+				font-size: 0.64rem;
+				line-height: 1.2;
+				color: rgba(255,255,255,0.78);
+			}
+
+			.galaxy-detail-colorbar-tick {
+				position: absolute;
+				top: 0;
+				transform: translateX(-50%);
+				white-space: nowrap;
+			}
+
+			.galaxy-detail-colorbar-tick:first-child {
+				transform: translateX(0);
+			}
+
+			.galaxy-detail-colorbar-tick:last-child {
+				transform: translateX(-100%);
+			}
+
+			.galaxy-detail-colorbar-label {
+				margin-top: 0.18rem;
+				text-align: center;
+				font-size: 0.7rem;
+				font-weight: 600;
+				letter-spacing: 0.02em;
+				color: rgba(255,255,255,0.9);
+			}
+
+
+			.gallery-atlas-colorbar {
+				width: min(27rem, 58%);
+				margin: 0.8rem auto 0;
+			}
+
+			.gallery-atlas-colorbar.is-hidden {
+				display: none;
+			}
+
+			.gallery-atlas-colorbar-gradient {
+				width: 100%;
+				height: 0.72rem;
+				border-radius: 999px;
+				border: 1px solid rgba(255,255,255,0.22);
+				box-shadow: inset 0 0 0 1px rgba(0,0,0,0.15);
+			}
+
+			.gallery-atlas-colorbar-ticks {
+				position: relative;
+				height: 1.05rem;
+				margin-top: 0.15rem;
+				font-size: 0.68rem;
+				line-height: 1.2;
+				color: rgba(255,255,255,0.82);
+			}
+
+			.gallery-atlas-colorbar-tick {
+				position: absolute;
+				top: 0;
+				transform: translateX(-50%);
+				white-space: nowrap;
+			}
+
+			.gallery-atlas-colorbar-tick:first-child {
+				transform: translateX(0);
+			}
+
+			.gallery-atlas-colorbar-tick:last-child {
+				transform: translateX(-100%);
+			}
+
+			.gallery-atlas-colorbar-label {
+				margin-top: 0.18rem;
+				text-align: center;
+				font-size: 0.76rem;
+				font-weight: 600;
+				letter-spacing: 0.02em;
+				color: rgba(255,255,255,0.92);
+			}
+
+			@media screen and (max-width: 736px) {
+				.gallery-atlas-colorbar {
+					width: min(22rem, 82%);
+				}
+			}
+
 </style>
 	</head>
 
@@ -1472,6 +1580,11 @@
 							</div>
 
 							<div id="galaxy-mass-redshift-plot" class="galaxy-gallery-plot" role="img" aria-label="Clickable gallery of massive galaxies arranged by redshift and stellar mass"></div>
+								<div id="gallery-atlas-colorbar" class="gallery-atlas-colorbar is-hidden" aria-hidden="true">
+									<div id="gallery-atlas-colorbar-gradient" class="gallery-atlas-colorbar-gradient"></div>
+									<div id="gallery-atlas-colorbar-ticks" class="gallery-atlas-colorbar-ticks"></div>
+									<div id="gallery-atlas-colorbar-label" class="gallery-atlas-colorbar-label"></div>
+								</div>
 							<p id="galaxy-gallery-status" class="gallery-status">Loading <code>galaxy_gallery.csv</code>…</p>
 						</section>
 
@@ -1594,6 +1707,12 @@
 							<button type="button" class="modal-map-btn" data-map="dust" aria-pressed="false">Dust</button>
 						</div>
 						<img id="galaxy-detail-image" class="galaxy-detail-image" src="" alt="" />
+
+						<div id="galaxy-detail-colorbar" class="galaxy-detail-colorbar is-hidden" aria-hidden="true">
+							<div id="galaxy-detail-colorbar-gradient" class="galaxy-detail-colorbar-gradient"></div>
+							<div id="galaxy-detail-colorbar-ticks" class="galaxy-detail-colorbar-ticks"></div>
+							<div id="galaxy-detail-colorbar-label" class="galaxy-detail-colorbar-label"></div>
+						</div>
 					</div>
 
 					<div class="galaxy-detail-copy">
@@ -2176,6 +2295,7 @@
 			function updateGalleryMap(mapType) {
 				currentGalleryMap = mapType;
 				setMapButtonState(galleryMapButtons, mapType);
+				updateAtlasColorbar(mapType);
 
 				document.querySelectorAll('.galaxy-thumb').forEach(function (button) {
 					var field = button.dataset.field;
@@ -2186,6 +2306,113 @@
 					button.classList.remove('image-missing');
 					img.src = galaxyImagePath({field: field, id: id}, mapType);
 				});
+			}
+
+			/*
+			 * Popup colorbar metadata.
+			 *
+			 * The website only sees rendered PNGs, not the underlying map values,
+			 * so the current endpoints are deliberately relative ("Low" / "High").
+			 * When the exact vmin/vmax used to generate the PNGs are known, edit
+			 * min/max below to physical values and units.
+			 */
+			var modalColorbarConfig = {
+				mass: {
+					label: 'log Σ★ [M☉ kpc⁻²]',
+					ticks: [
+						{value: 8.0, position: (8.0 - 7.5) / (10.5 - 7.5)},
+						{value: 9.0, position: (9.0 - 7.5) / (10.5 - 7.5)},
+						{value: 10.0, position: (10.0 - 7.5) / (10.5 - 7.5)}
+					],
+					gradient: 'linear-gradient(90deg, #000004 0%, #120d31 12.5%, #331067 25%, #5f187f 37.5%, #932667 50%, #c83e4d 62.5%, #ed6925 75%, #fb9b06 87.5%, #fcfdbf 100%)'
+				},
+				sfr: {
+					label: 'log ΣSFR [M☉ yr⁻¹ kpc⁻²]',
+					ticks: [
+						{value: -3, position: 0.00},
+						{value: -2, position: 0.25},
+						{value: -1, position: 0.50},
+						{value: 0, position: 0.75},
+						{value: 1, position: 1.00}
+					],
+					gradient: 'linear-gradient(90deg, #000004 0%, #120d31 12.5%, #331067 25%, #5f187f 37.5%, #932667 50%, #c83e4d 62.5%, #ed6925 75%, #fb9b06 87.5%, #fcfdbf 100%)'
+				},
+				dust: {
+					label: 'Aᵥ [mag]',
+					ticks: [
+						{value: 0, position: 0.00},
+						{value: 1, position: 1.0 / 3.0},
+						{value: 2, position: 2.0 / 3.0},
+						{value: 3, position: 1.00}
+					],
+					gradient: 'linear-gradient(90deg, #000004 0%, #120d31 12.5%, #331067 25%, #5f187f 37.5%, #932667 50%, #c83e4d 62.5%, #ed6925 75%, #fb9b06 87.5%, #fcfdbf 100%)'
+				}
+			};
+
+			function updateAtlasColorbar(mapType) {
+				var wrap = document.getElementById('gallery-atlas-colorbar');
+				var gradient = document.getElementById('gallery-atlas-colorbar-gradient');
+				var tickWrap = document.getElementById('gallery-atlas-colorbar-ticks');
+				var label = document.getElementById('gallery-atlas-colorbar-label');
+
+				if (!wrap || !gradient || !tickWrap || !label) return;
+
+				var config = modalColorbarConfig[mapType];
+
+				if (!config) {
+					wrap.classList.add('is-hidden');
+					wrap.setAttribute('aria-hidden', 'true');
+					return;
+				}
+
+				gradient.style.background = config.gradient;
+				label.textContent = config.label;
+
+				tickWrap.innerHTML = '';
+
+				config.ticks.forEach(function(tick) {
+					var el = document.createElement('span');
+					el.className = 'gallery-atlas-colorbar-tick';
+					el.style.left = (100 * tick.position) + '%';
+					el.textContent = tick.value;
+					tickWrap.appendChild(el);
+				});
+
+				wrap.classList.remove('is-hidden');
+				wrap.setAttribute('aria-hidden', 'false');
+			}
+
+			function updateModalColorbar(mapType) {
+				var wrap = document.getElementById('galaxy-detail-colorbar');
+				var gradient = document.getElementById('galaxy-detail-colorbar-gradient');
+				var tickWrap = document.getElementById('galaxy-detail-colorbar-ticks');
+				var label = document.getElementById('galaxy-detail-colorbar-label');
+
+				if (!wrap || !gradient || !tickWrap || !label) return;
+
+				var config = modalColorbarConfig[mapType];
+
+				if (!config) {
+					wrap.classList.add('is-hidden');
+					wrap.setAttribute('aria-hidden', 'true');
+					return;
+				}
+
+				gradient.style.background = config.gradient;
+				label.textContent = config.label;
+
+				tickWrap.innerHTML = '';
+
+				config.ticks.forEach(function(tick) {
+					var el = document.createElement('span');
+					el.className = 'galaxy-detail-colorbar-tick';
+					el.style.left = (100 * tick.position) + '%';
+					el.textContent = tick.value;
+					tickWrap.appendChild(el);
+				});
+
+				wrap.classList.remove('is-hidden');
+				wrap.setAttribute('aria-hidden', 'false');
 			}
 
 			function updateModalMap(mapType) {
@@ -2204,6 +2431,7 @@
 					dust: 'Dust map'
 				};
 				img.alt = labels[mapType] + ' of ' + currentModalGalaxy.field + ' ' + currentModalGalaxy.id;
+				updateModalColorbar(mapType);
 			}
 
 			function finiteNumber(value) {
@@ -2641,6 +2869,8 @@
 				document.getElementById('galaxy-detail-image').alt =
 					modalMapLabels[currentModalMap] + ' of ' + galaxy.field + ' ' + galaxy.id;
 
+				updateModalColorbar(currentModalMap);
+
 				document.getElementById('galaxy-detail-title').textContent =
 					galaxy.field + ' ' + galaxy.id;
 
@@ -2696,6 +2926,8 @@
 				document.body.classList.remove('galaxy-modal-open');
 				requestAnimationFrame(function () { window.scrollTo(0, modalScrollY); });
 			}
+
+			updateAtlasColorbar(currentGalleryMap);
 
 			galleryMapButtons.forEach(function (button) {
 				button.addEventListener('click', function (event) {
