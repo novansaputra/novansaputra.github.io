@@ -15,6 +15,14 @@
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%2319292c'/%3E%3Ccircle cx='50' cy='50' r='21' fill='none' stroke='%23b1c5a9' stroke-width='2'/%3E%3Ccircle cx='50' cy='50' r='5' fill='%23b1c5a9'/%3E%3Cellipse cx='50' cy='50' rx='39' ry='12' fill='none' stroke='%23b1c5a9' stroke-width='2' transform='rotate(-32 50 50)'/%3E%3C/svg%3E">
   <title>Novan Saputra Haryana — Astrophysicist</title>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"Novan Saputra Haryana","jobTitle":"PhD Student in Astronomy","affiliation":{"@type":"CollegeOrUniversity","name":"Tohoku University"},"url":"https://novansaputra.github.io/","sameAs":["https://orcid.org/0009-0009-3404-5673","https://www.linkedin.com/in/novansaputra/","https://github.com/novansaputra"]}</script>
+  <script>
+    try {
+      if (localStorage.getItem('novan-theme') === 'dark') {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        document.querySelector('meta[name="theme-color"]').setAttribute('content', '#11191c');
+      }
+    } catch (error) { /* Persistence is optional (e.g., private browsing). */ }
+  </script>
   <style>
     :root { --paper:#f7f7f2; --paper-alt:#eeeee8; --ink:#19292c; --muted:#617070; --line:#d8ded8; --green:#325d51; --sage:#c6d3c1; --white:#fff; --max:1140px; --serif:Georgia,"Iowan Old Style","Baskerville",serif; --sans:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif; }
     *, *::before, *::after { box-sizing:border-box; }
@@ -148,6 +156,67 @@
       .pub-year { grid-column:2; grid-row:1; justify-self:end; display:none; }
       .contact-grid { grid-template-columns:1fr; gap:23px; }
     }
+
+    /* Light/dark switch in the page header. */
+    .nav-actions { display:flex; align-items:center; gap:10px; flex-shrink:0; }
+    .cv-short { display:none; }
+    .theme-toggle { display:inline-flex; align-items:center; gap:8px; min-height:39px; padding:8px 12px; background:transparent; border:1px solid var(--line); border-radius:7px; font:650 .78rem/1.25 var(--sans); color:var(--ink); cursor:pointer; transition:background .2s,border-color .2s; white-space:nowrap; }
+    .theme-toggle:hover { background:#e7eee8; border-color:#93aa9d; }
+    .theme-symbol { font:400 1.24rem/1 var(--sans); width:17px; text-align:center; }
+    :root[data-theme="dark"] { color-scheme:dark; --paper:#11191c; --paper-alt:#192428; --ink:#e8f0ec; --muted:#adbbb7; --line:#34454a; --green:#aad1bc; --sage:#3b6251; --white:#111e20; }
+    :root[data-theme="dark"] body { color:var(--ink); }
+    :root[data-theme="dark"] ::selection { background:#4b7664; color:#f2f8f4; }
+    :root[data-theme="dark"] .skip-link { background:#243b36; color:#edf7f1; }
+    :root[data-theme="dark"] .topbar { background:rgba(17,25,28,.94); border-bottom-color:#34454a; }
+    :root[data-theme="dark"] .wordmark .dot { background:#9bcdb5; }
+    :root[data-theme="dark"] .nav-links a { color:#b1c1ba; }
+    :root[data-theme="dark"] .nav-links a:hover,
+    :root[data-theme="dark"] .nav-links a[aria-current="location"] { color:#f1faf5; }
+    :root[data-theme="dark"] .nav-links a[aria-current="location"]::after { background:#a1c9b5; }
+    :root[data-theme="dark"] .nav-cv { color:#e3f4e9; border-color:#506a60; }
+    :root[data-theme="dark"] .nav-cv:hover { background:#bedcc9; color:#162823; }
+    :root[data-theme="dark"] .theme-toggle { color:#e5f1eb; border-color:#506a60; }
+    :root[data-theme="dark"] .theme-toggle:hover { background:#253a34; border-color:#8dbca6; }
+    :root[data-theme="dark"] .hero-copy,
+    :root[data-theme="dark"] .lead { color:#b8c7c1; }
+    :root[data-theme="dark"] .hero-meta,
+    :root[data-theme="dark"] .portrait-wrap figcaption,
+    :root[data-theme="dark"] .about-note,
+    :root[data-theme="dark"] .education-year,
+    :root[data-theme="dark"] .education p,
+    :root[data-theme="dark"] .pub-meta,
+    :root[data-theme="dark"] .explore-caption,
+    :root[data-theme="dark"] .site-footer { color:#a4b4ae; }
+    :root[data-theme="dark"] .hero-meta strong,
+    :root[data-theme="dark"] .portrait-wrap figcaption span:first-child,
+    :root[data-theme="dark"] .section-name { color:#e6f0ea; }
+    :root[data-theme="dark"] .section-number,
+    :root[data-theme="dark"] .pub-index { color:#a0c9b5; }
+    :root[data-theme="dark"] .portrait-wrap::before { border-color:#50695d; }
+    :root[data-theme="dark"] .button-primary { background:#d0e2d6; color:#152822; }
+    :root[data-theme="dark"] .button-primary:hover { background:#a9cdbb; }
+    :root[data-theme="dark"] .button-soft { color:#d2efdf; border-color:#537263; }
+    :root[data-theme="dark"] .button-soft:hover { background:#253932; }
+    :root[data-theme="dark"] .pub-links a,
+    :root[data-theme="dark"] .all-publications,
+    :root[data-theme="dark"] .contact-email,
+    :root[data-theme="dark"] .social-links a,
+    :root[data-theme="dark"] .footer-row a { color:#b4dec8; border-color:#648c79; }
+    :root[data-theme="dark"] .pub-links a:hover,
+    :root[data-theme="dark"] .contact-email:hover { border-color:#badbc9; }
+    :root[data-theme="dark"] .pub-year,
+    :root[data-theme="dark"] .small-heading { color:#9dc4b1; }
+    :root[data-theme="dark"] .contact-grid { border-color:var(--line); }
+    :root[data-theme="dark"] .contact-grid p:not(.small-heading) { color:#bdc9c2; }
+    /* Keep the explorer's deliberately dark artwork in either mode. */
+    @media(max-width:950px) { .nav-links { gap:1rem; } .theme-label { display:none; } }
+    @media(max-width:680px) {
+      .nav-row > nav { order:3; width:100%; }
+      .nav-links { order:initial; width:100%; }
+      .nav-actions { margin-left:auto; gap:7px; }
+      .theme-toggle { min-width:38px; padding:7px 10px; justify-content:center; }
+    }
+    @media(max-width:440px) { .cv-long { display:none; } .cv-short { display:inline; } }
     @media(prefers-reduced-motion:reduce){ html{scroll-behavior:auto;} *,*::before,*::after{transition:none!important;} }
   </style>
 </head>
@@ -165,7 +234,13 @@
           <li><a href="#contact">Contact</a></li>
         </ul>
       </nav>
-      <a class="nav-cv" href="https://drive.google.com/drive/folders/1aY6SWH8tqX_u9JRQytLjO_FL0EhU-ovT?usp=sharing" target="_blank" rel="noopener noreferrer">Curriculum Vitae ↗</a>
+      <div class="nav-actions">
+        <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch to dark mode" aria-pressed="false" title="Toggle light and dark mode">
+          <span class="theme-symbol" aria-hidden="true">☾</span>
+          <span class="theme-label">Dark mode</span>
+        </button>
+        <a class="nav-cv" href="https://drive.google.com/drive/folders/1aY6SWH8tqX_u9JRQytLjO_FL0EhU-ovT?usp=sharing" target="_blank" rel="noopener noreferrer"><span class="cv-long">Curriculum Vitae ↗</span><span class="cv-short">CV ↗</span></a>
+      </div>
     </div>
   </header>
 
@@ -198,7 +273,7 @@
         <div class="section-main">
           <h2 id="about-title">A little about me.</h2>
           <p class="lead">I'm an Indonesian astrophysicist currently pursuing my PhD at the Astronomical Institute of Tohoku University, Japan. I use observations from telescopes including JWST, Hubble, and Chandra to study how galaxies evolve over billions of years.</p>
-          <p class="about-note">My work combines observational astronomy, spatially resolved spectral energy distribution fitting, and multiwavelength analysis. Beyond research, I enjoy running, music, and photography.</p>
+          <p class="about-note">I use a range of multiwavelength observational techniques, including spatially resolved SED fitting, morphological modeling, X-ray stacking analysis, and modeling AGN emission in two-dimensional galaxy images. Beyond research, I enjoy running, music, and photography.</p>
           <div class="education" aria-label="Education">
             <div class="education-row"><span class="education-year">2026–now</span><div><h3>PhD in Astronomy</h3><p>Tohoku University · Sendai, Japan</p></div></div>
             <div class="education-row"><span class="education-year">2024–2026</span><div><h3>MSc in Astronomy</h3><p>Tohoku University · Sendai, Japan</p></div></div>
@@ -252,7 +327,7 @@
             </div>
             <span class="pub-year">2025</span>
           </article>
-          <a class="all-publications" href="https://ui.adsabs.harvard.edu/search/q=author%3A%22Haryana%2C%20Novan%20Saputra%22&amp;sort=date%20desc%2C%20bibcode%20desc" target="_blank" rel="noopener noreferrer">View all publications on NASA ADS <span aria-hidden="true">↗</span></a>
+          <a class="all-publications" href="https://ui.adsabs.harvard.edu/search/fq=%7B!type%3Daqp%20v%3D%24fq_database%7D&amp;fq_database=(database%3Aastronomy%20OR%20database%3Aphysics)&amp;q=author%3A%22Haryana%2C%20Novan%20Saputra%22%20or%20author%3A%22Saputra%20Haryana%2C%20Novan%22&amp;sort=date%20desc%2C%20bibcode%20desc&amp;p_=0" target="_blank" rel="noopener noreferrer">View all publications on NASA ADS <span aria-hidden="true">↗</span></a>
         </div>
       </div>
     </section>
@@ -275,6 +350,26 @@
   <footer class="site-footer"><div class="shell footer-row"><span>© 2026 Novan Saputra Haryana</span><a href="#top">Back to top ↑</a></div></footer>
   <script>
     (() => {
+      const themeButton = document.getElementById('theme-toggle');
+      const themeLabel = themeButton.querySelector('.theme-label');
+      const themeSymbol = themeButton.querySelector('.theme-symbol');
+      const metaThemeColor = document.querySelector('meta[name="theme-color"]');
+      function applyTheme(theme, save) {
+        const dark = theme === 'dark';
+        document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+        themeButton.setAttribute('aria-pressed', String(dark));
+        themeButton.setAttribute('aria-label', dark ? 'Switch to light mode' : 'Switch to dark mode');
+        themeLabel.textContent = dark ? 'Light mode' : 'Dark mode';
+        themeSymbol.textContent = dark ? '☀' : '☾';
+        metaThemeColor.setAttribute('content', dark ? '#11191c' : '#f7f7f2');
+        if (save) {
+          try { localStorage.setItem('novan-theme', dark ? 'dark' : 'light'); } catch (error) { /* Ignore blocked storage. */ }
+        }
+      }
+      applyTheme(document.documentElement.getAttribute('data-theme'), false);
+      themeButton.addEventListener('click', () => {
+        applyTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark', true);
+      });
       const progress = document.getElementById('scroll-progress');
       const links = [...document.querySelectorAll('.nav-links a')];
       const sections = [...document.querySelectorAll('section.content-section')];
