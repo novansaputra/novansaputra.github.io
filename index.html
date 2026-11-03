@@ -247,6 +247,26 @@
     @media(max-width:440px) { .cv-long { display:none; } .cv-short { display:inline; } }
     @media(prefers-reduced-motion:reduce){ html{scroll-behavior:auto;} *,*::before,*::after{transition:none!important;} }
   </style>
+
+  <style>
+    /* The research explorer lives on the homepage, not at a separate visible URL. */
+    #research.content-section { padding-bottom:96px; }
+    .explore-intro { color:var(--muted); font-size:.96rem; line-height:1.8; margin:26px 0 17px; }
+    .inline-explorer-jump { color:var(--green); font-weight:720; text-decoration:none; border-bottom:1px solid var(--line); padding-bottom:5px; }
+    .inline-explorer-jump:hover { border-color:var(--green); }
+    .research-explorer-shell { margin-top:42px; scroll-margin-top:110px; }
+    .research-explorer-head { display:flex; align-items:baseline; justify-content:space-between; flex-wrap:wrap; gap:8px 22px; padding:0 0 14px; }
+    .research-explorer-eyebrow { font-size:.75rem; font-weight:780; text-transform:uppercase; letter-spacing:.12em; color:var(--green); }
+    .research-explorer-note { font-size:.79rem; color:var(--muted); }
+    .research-frame-wrap { background:#17232a; border:1px solid var(--line); border-radius:12px; overflow:hidden; }
+    #research-frame { display:block; width:100%; height:2300px; border:0; background:#17232a; overflow:hidden; }
+    @media(max-width:680px) {
+      #research.content-section { padding-bottom:68px; }
+      .research-explorer-shell { margin-top:28px; }
+      .research-explorer-head { align-items:flex-start; }
+      .research-frame-wrap { border-radius:8px; }
+    }
+  </style>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -317,16 +337,20 @@
         <div class="section-main">
           <h2 id="research-title">How do massive galaxies grow—and stop growing?</h2>
           <p class="lead research-summary">I investigate how massive galaxies form dense stellar cores, shut down their star formation, and evolve alongside their central supermassive black holes. Using spatially resolved JWST imaging and complementary multiwavelength observations, I trace these processes across cosmic time.</p>
-          <a class="explore-card" href="research.html#research" aria-label="Open the interactive research explorer on a separate page">
-            <div class="explore-copy">
-              <p class="explore-overline">Interactive research · Open in browser</p>
-              <h3>Explore galaxy evolution.</h3>
-              <p>Move through cosmic time, examine radial profiles, and explore individual galaxies and their physical properties.</p>
-              <span class="explore-link">Launch interactive explorer <span class="arrow" aria-hidden="true">↗</span></span>
-            </div>
-            <div class="explore-visual"><img src="images/sSFR_M1kpc_evol.png" loading="lazy" decoding="async" alt="Galaxy evolution diagram showing how central stellar density and star formation change"></div>
-          </a>
-          <div class="explore-caption"><span>Research tools: cosmic evolution · galaxy atlas · spatial profiles</span><span>JWST + Chandra</span></div>
+          <p class="explore-intro">Explore the measurements behind these results—move between cosmic epochs, compare radial profiles, and click individual galaxies to inspect their properties.</p>
+          <a class="inline-explorer-jump" href="#research-explorer">Jump to interactive plots <span aria-hidden="true">↓</span></a>
+        </div>
+      </div>
+
+      <div class="shell research-explorer-shell" id="research-explorer">
+        <div class="research-explorer-head">
+          <span class="research-explorer-eyebrow">Interactive research</span>
+          <span class="research-explorer-note">Explore cosmic evolution and individual galaxies</span>
+        </div>
+        <div class="research-frame-wrap">
+          <iframe id="research-frame" title="Interactive galaxy evolution: redshift profiles and galaxy atlas"
+            src="research.html?embed=1#research" loading="lazy" scrolling="no"
+            referrerpolicy="strict-origin-when-cross-origin"></iframe>
         </div>
       </div>
     </section>
@@ -433,6 +457,46 @@
       addEventListener('scroll', () => { if (!scheduled) { scheduled = true; requestAnimationFrame(update); } }, {passive:true});
       addEventListener('resize', update);
       update();
+    })();
+  </script>
+
+  <script>
+    (function () {
+      const frame = document.getElementById('research-frame');
+      if (!frame) return;
+      let lastHeight = 0;
+      window.addEventListener('message', function (event) {
+        if (event.origin !== window.location.origin || event.source !== frame.contentWindow) return;
+        const data = event.data;
+        if (!data || data.type !== 'novan-research-height') return;
+        const next = Math.ceil(Number(data.height));
+        if (!Number.isFinite(next) || next < 500 || next > 25000 || Math.abs(next - lastHeight) < 3) return;
+        lastHeight = next;
+        frame.style.height = next + 'px';
+        sendFrameViewport();
+      });
+      function sendFrameViewport() {
+        if (!frame.contentWindow) return;
+        const bounds = frame.getBoundingClientRect();
+        const visibleTop = Math.max(0, bounds.top);
+        const visibleBottom = Math.min(innerHeight, bounds.bottom);
+        const visibleHeight = Math.max(320, visibleBottom - visibleTop);
+        const relativeTop = Math.max(0, Math.min(frame.offsetHeight - visibleHeight, visibleTop - bounds.top));
+        frame.contentWindow.postMessage({
+          type: 'novan-research-viewport',
+          top: Math.round(relativeTop),
+          height: Math.round(visibleHeight)
+        }, location.origin);
+      }
+      let viewportScheduled = false;
+      function scheduleViewport() {
+        if (viewportScheduled) return;
+        viewportScheduled = true;
+        requestAnimationFrame(function () { viewportScheduled = false; sendFrameViewport(); });
+      }
+      addEventListener('scroll', scheduleViewport, {passive:true});
+      addEventListener('resize', scheduleViewport, {passive:true});
+      frame.addEventListener('load', sendFrameViewport);
     })();
   </script>
 </body>

@@ -1441,6 +1441,12 @@
 
 </style>
 	<script>
+  if (new URLSearchParams(location.search).get('embed') === '1') {
+    document.documentElement.classList.add('research-embedded');
+  } else if (window.top === window.self) {
+    // Existing links/bookmarks use the new single-page public address.
+    window.location.replace(new URL('./#research', window.location.href).href);
+  }
   if (!window.location.hash || window.location.hash === '#') {
     window.location.replace(window.location.pathname + window.location.search + '#research');
   }
@@ -1456,7 +1462,49 @@
   @media (max-width:736px) { .research-home-link { top:.45rem; left:.45rem; font-size:.64rem; }
     #main article#research { padding-top:3.1rem; } }
 </style>
-	</head>
+	
+<style>
+  /* Embedded-only styling. Standalone research.html retains its original design. */
+  html.research-embedded, .research-embedded body {
+    height:auto !important; min-height:0 !important; overflow:visible !important;
+    background:#17232a !important; color:#f3f5f4;
+  }
+  .research-embedded #wrapper {
+    display:block !important; min-height:0 !important; height:auto !important;
+    padding:0 !important; width:100% !important; margin:0 !important;
+  }
+  .research-embedded #header, .research-embedded #footer, .research-embedded #bg,
+  .research-embedded .research-home-link, .research-embedded .skip-link,
+  .research-embedded #main article .close { display:none !important; }
+  .research-embedded #main { display:block !important; width:100% !important;
+    max-width:none !important; height:auto !important; min-height:0 !important;
+    padding:0 !important; margin:0 !important; overflow:visible !important; }
+  .research-embedded #main article#research {
+    display:block !important; width:100% !important; max-width:100% !important;
+    padding:2.3rem clamp(1rem,3vw,2.5rem) 2rem !important;
+    margin:0 !important; transform:none !important; opacity:1 !important;
+    border-radius:0 !important; background:#17232a !important;
+    overflow:visible !important; visibility:visible !important;
+  }
+  .research-embedded #main article#research > h2.major { font-size:1.18rem; letter-spacing:.16rem; }
+  .research-embedded #main article#research > .section-lead { font-size:.93rem; }
+  /* Dialogs stay centered in the visible portion of this long, auto-sized iframe. */
+  .research-embedded #galaxy-detail-modal,
+  .research-embedded #lightbox {
+    position:absolute !important; top:var(--embed-view-top, 0px) !important;
+    left:0 !important; right:0 !important; bottom:auto !important;
+    height:var(--embed-view-height, 700px) !important;
+    box-sizing:border-box;
+  }
+  .research-embedded .galaxy-detail-dialog,
+  .research-embedded .lightbox-dialog {
+    max-height:calc(var(--embed-view-height, 700px) - 2rem) !important;
+  }
+  @media(max-width:736px) {
+    .research-embedded #main article#research { padding:1.4rem .75rem 1.5rem !important; }
+  }
+</style>
+</head>
 
 	<body class="is-preload">
   <a class="research-home-link" href="index.html#research">← Back to homepage</a>
@@ -1665,7 +1713,12 @@
 		<script src="assets/js/browser.min.js"></script>
 		<script src="assets/js/breakpoints.min.js"></script>
 		<script src="assets/js/util.js"></script>
-		<script src="assets/js/main.js"></script>
+		<script>
+          // Dimension's hash router is appropriate only for the standalone page.
+          if (!document.documentElement.classList.contains('research-embedded')) {
+            document.write('<script src="assets/js/main.js"><\/script>');
+          }
+        </script>
 
 		<script>
 			(function () {
@@ -2920,5 +2973,45 @@
 		}());
 		</script>
 
-	</body>
+	
+<script>
+  (function () {
+    if (!document.documentElement.classList.contains('research-embedded')) return;
+    let lastHeight = 0;
+    let queued = false;
+    function reportHeight() {
+      queued = false;
+      const article = document.getElementById('research');
+      if (!article) return;
+      const bottom = Math.ceil(article.getBoundingClientRect().bottom + window.scrollY + 3);
+      const height = Math.max(500, bottom);
+      if (Math.abs(height - lastHeight) < 3) return;
+      lastHeight = height;
+      parent.postMessage({type:'novan-research-height', height:height}, location.origin);
+    }
+    function queueHeight() {
+      if (queued) return;
+      queued = true;
+      requestAnimationFrame(reportHeight);
+    }
+    window.addEventListener('message', function (event) {
+      if (event.origin !== location.origin || event.source !== parent) return;
+      const msg = event.data;
+      if (!msg || msg.type !== 'novan-research-viewport') return;
+      const root = document.documentElement;
+      root.style.setProperty('--embed-view-top', Math.max(0, Number(msg.top) || 0) + 'px');
+      root.style.setProperty('--embed-view-height', Math.max(320, Number(msg.height) || 700) + 'px');
+    });
+    if (typeof ResizeObserver !== 'undefined') {
+      const observer = new ResizeObserver(queueHeight);
+      observer.observe(document.getElementById('research'));
+    }
+    document.querySelectorAll('img').forEach(function (el) { el.addEventListener('load', queueHeight); });
+    addEventListener('load', queueHeight);
+    addEventListener('resize', queueHeight);
+    document.addEventListener('DOMContentLoaded', queueHeight);
+    queueHeight();
+  })();
+</script>
+</body>
 </html>
