@@ -249,23 +249,67 @@
   </style>
 
   <style>
-    /* The research explorer lives on the homepage, not at a separate visible URL. */
-    #research.content-section { padding-bottom:96px; }
-    .explore-intro { color:var(--muted); font-size:.96rem; line-height:1.8; margin:26px 0 17px; }
-    .inline-explorer-jump { color:var(--green); font-weight:720; text-decoration:none; border-bottom:1px solid var(--line); padding-bottom:5px; }
-    .inline-explorer-jump:hover { border-color:var(--green); }
-    .research-explorer-shell { margin-top:42px; scroll-margin-top:110px; }
-    .research-explorer-head { display:flex; align-items:baseline; justify-content:space-between; flex-wrap:wrap; gap:8px 22px; padding:0 0 14px; }
-    .research-explorer-eyebrow { font-size:.75rem; font-weight:780; text-transform:uppercase; letter-spacing:.12em; color:var(--green); }
-    .research-explorer-note { font-size:.79rem; color:var(--muted); }
-    .research-frame-wrap { background:#17232a; border:1px solid var(--line); border-radius:12px; overflow:hidden; }
-    #research-frame { display:block; width:100%; height:2300px; border:0; background:#17232a; overflow:hidden; }
-    @media(max-width:680px) {
-      #research.content-section { padding-bottom:68px; }
-      .research-explorer-shell { margin-top:28px; }
-      .research-explorer-head { align-items:flex-start; }
-      .research-frame-wrap { border-radius:8px; }
+    /* Compact invitation; the research datasets only load when the dialog opens. */
+    .explore-card {
+      appearance:none; text-align:left; width:100%; font:inherit; cursor:pointer;
+      min-height:258px; grid-template-columns:1.3fr .7fr; margin-top:34px;
     }
+    .explore-card .explore-copy { padding:clamp(23px,3.5vw,42px); }
+    .explore-card .explore-copy h3 { font-size:clamp(1.85rem,3vw,2.6rem); }
+    .explore-card .explore-copy p { margin-bottom:20px; }
+    .explore-card .explore-visual { min-height:258px; max-height:300px; }
+    .explore-card .explore-visual img { max-height:250px; }
+
+    .explore-card .explore-card-title { display:block; font:400 clamp(1.85rem,3vw,2.6rem)/1.12 var(--serif); letter-spacing:-.05em; margin:0 0 17px; color:#fff; }
+    .explore-card .explore-description { display:block; margin:0 0 21px; max-width:380px; color:#c8d8d4; font-size:.9rem; line-height:1.8; }
+    .explore-card .explore-overline { display:block; }
+    .explore-card .explore-link { display:inline-flex; }
+    .explore-card .explore-copy { min-width:0; }
+    .explore-card:focus-visible { outline:3px solid #a3c5b2; outline-offset:4px; }
+    .explorer-dialog {
+      box-sizing:border-box; width:min(1320px, calc(100vw - 36px));
+      height:min(930px, calc(100dvh - 36px)); max-width:none; max-height:none;
+      margin:auto; padding:0; border:1px solid #415454; border-radius:14px;
+      overflow:hidden; background:#17232a; color:#f5f8f5;
+      box-shadow:0 28px 100px rgba(0,0,0,.35);
+    }
+    .explorer-dialog::backdrop { background:rgba(7,18,22,.73); backdrop-filter:blur(7px); }
+    .explorer-dialog[open] { display:flex; flex-direction:column; }
+    .explorer-dialog-top {
+      flex:0 0 auto; display:flex; align-items:center; justify-content:space-between;
+      gap:18px; padding:13px 17px 13px 24px; background:#202f32;
+      border-bottom:1px solid rgba(255,255,255,.13);
+    }
+    .explorer-dialog-heading { display:flex; flex-direction:column; min-width:0; }
+    .explorer-dialog-eyebrow { color:#a8c4b8; font-size:.66rem; text-transform:uppercase;
+      font-weight:750; letter-spacing:.14em; }
+    .explorer-dialog-heading h2 { margin:0; font-family:var(--serif); font-size:1.27rem;
+      font-weight:400; color:#fff; letter-spacing:-.02em; line-height:1.3; }
+    .explorer-dialog-close {
+      display:inline-flex; gap:9px; align-items:center; justify-content:center;
+      flex:none; min-height:39px; padding:7px 12px; background:transparent;
+      border:1px solid rgba(255,255,255,.24); border-radius:7px;
+      color:#f7fbfa; font:600 .8rem var(--sans); cursor:pointer;
+    }
+    .explorer-dialog-close:hover, .explorer-dialog-close:focus-visible { background:#355452; }
+    .explorer-dialog-body { position:relative; flex:1; min-height:0; background:#17232a; }
+    #research-frame { display:block; width:100%; height:100%; border:0; background:#17232a; }
+    .explorer-dialog-loading { position:absolute; inset:0; display:grid; place-items:center;
+      background:#17232a; color:#cad8d5; font-size:.95rem; pointer-events:none; }
+    .explorer-dialog-loading[hidden] { display:none; }
+    @media(max-width:800px) {
+      .explore-card { grid-template-columns:1fr; }
+      .explore-card .explore-visual { min-height:190px; max-height:220px; }
+      .explore-card .explore-visual img { max-height:195px; }
+    }
+    @media(max-width:680px) {
+      .explorer-dialog { width:100vw; height:100dvh; border:0; border-radius:0; }
+      .explorer-dialog-top { padding:11px 12px 11px 15px; }
+      .explorer-dialog-heading h2 { font-size:1.08rem; }
+      .explorer-dialog-close { min-width:40px; min-height:40px; padding:6px; }
+      .explorer-dialog-close .close-label { display:none; }
+    }
+    @media(prefers-reduced-motion:reduce) { .explore-card { transition:none; } }
   </style>
 </head>
 <body>
@@ -337,20 +381,16 @@
         <div class="section-main">
           <h2 id="research-title">How do massive galaxies grow—and stop growing?</h2>
           <p class="lead research-summary">I investigate how massive galaxies form dense stellar cores, shut down their star formation, and evolve alongside their central supermassive black holes. Using spatially resolved JWST imaging and complementary multiwavelength observations, I trace these processes across cosmic time.</p>
-          <p class="explore-intro">Explore the measurements behind these results—move between cosmic epochs, compare radial profiles, and click individual galaxies to inspect their properties.</p>
-          <a class="inline-explorer-jump" href="#research-explorer">Jump to interactive plots <span aria-hidden="true">↓</span></a>
-        </div>
-      </div>
-
-      <div class="shell research-explorer-shell" id="research-explorer">
-        <div class="research-explorer-head">
-          <span class="research-explorer-eyebrow">Interactive research</span>
-          <span class="research-explorer-note">Explore cosmic evolution and individual galaxies</span>
-        </div>
-        <div class="research-frame-wrap">
-          <iframe id="research-frame" title="Interactive galaxy evolution: redshift profiles and galaxy atlas"
-            src="research.html?embed=1#research" loading="lazy" scrolling="no"
-            referrerpolicy="strict-origin-when-cross-origin"></iframe>
+          <button class="explore-card" type="button" id="open-research" aria-haspopup="dialog" aria-controls="research-dialog" aria-label="Open interactive research explorer in a popup">
+            <span class="explore-copy">
+              <span class="explore-overline">Interactive research · Explore the data</span>
+              <span class="explore-card-title">Explore galaxy evolution.</span>
+              <span class="explore-description">Move through cosmic time, compare radial profiles, and investigate individual galaxies and their physical properties.</span>
+              <span class="explore-link">Open interactive explorer <span class="arrow" aria-hidden="true">↗</span></span>
+            </span>
+            <span class="explore-visual"><img src="images/sSFR_M1kpc_evol.png" loading="lazy" decoding="async" alt="Galaxy evolution diagram showing the relationship between central density and star formation"></span>
+          </button>
+          <div class="explore-caption"><span>Research tools: cosmic evolution · galaxy atlas · spatial profiles</span><span>JWST + Chandra</span></div>
         </div>
       </div>
     </section>
@@ -413,6 +453,21 @@
       </div>
     </section>
   </main>
+  <dialog class="explorer-dialog" id="research-dialog" aria-labelledby="research-dialog-title" aria-modal="true">
+    <div class="explorer-dialog-top">
+      <div class="explorer-dialog-heading">
+        <span class="explorer-dialog-eyebrow">Interactive research</span>
+        <h2 id="research-dialog-title">Explore galaxy evolution</h2>
+      </div>
+      <button class="explorer-dialog-close" id="close-research" type="button" aria-label="Close interactive research">
+        <span class="close-label">Close</span><span aria-hidden="true">✕</span>
+      </button>
+    </div>
+    <div class="explorer-dialog-body">
+      <div class="explorer-dialog-loading" id="research-loading" role="status">Loading interactive visualizations…</div>
+      <iframe id="research-frame" title="Interactive galaxy evolution: redshift profiles and galaxy atlas" data-src="research.html?embed=1#research" referrerpolicy="strict-origin-when-cross-origin" allow="fullscreen"></iframe>
+    </div>
+  </dialog>
   <footer class="site-footer"><div class="shell footer-row"><span>© 2026 Novan Saputra Haryana</span><a href="#top">Back to top ↑</a></div></footer>
   <script>
     (() => {
@@ -461,42 +516,45 @@
   </script>
 
   <script>
-    (function () {
+    (() => {
+      const dialog = document.getElementById('research-dialog');
+      const openButton = document.getElementById('open-research');
+      const closeButton = document.getElementById('close-research');
       const frame = document.getElementById('research-frame');
-      if (!frame) return;
-      let lastHeight = 0;
-      window.addEventListener('message', function (event) {
-        if (event.origin !== window.location.origin || event.source !== frame.contentWindow) return;
-        const data = event.data;
-        if (!data || data.type !== 'novan-research-height') return;
-        const next = Math.ceil(Number(data.height));
-        if (!Number.isFinite(next) || next < 500 || next > 25000 || Math.abs(next - lastHeight) < 3) return;
-        lastHeight = next;
-        frame.style.height = next + 'px';
-        sendFrameViewport();
+      const loading = document.getElementById('research-loading');
+      let restoreFocus = null;
+
+      function openResearch() {
+        if (dialog.open) return;
+        restoreFocus = document.activeElement;
+        if (location.hash !== '#research') {
+          try { history.replaceState(history.state, '', location.pathname + location.search + '#research'); } catch (error) { /* Some preview contexts restrict history. */ }
+        }
+        loading.hidden = false;
+        dialog.showModal();
+        closeButton.focus();
+        // Lazy-load Plotly, gallery data, and all research assets only on demand.
+        frame.src = frame.dataset.src;
+      }
+      function closeResearch() { if (dialog.open) dialog.close(); }
+      openButton.addEventListener('click', openResearch);
+      closeButton.addEventListener('click', closeResearch);
+      dialog.addEventListener('click', (event) => {
+        if (event.target === dialog) closeResearch();
       });
-      function sendFrameViewport() {
-        if (!frame.contentWindow) return;
-        const bounds = frame.getBoundingClientRect();
-        const visibleTop = Math.max(0, bounds.top);
-        const visibleBottom = Math.min(innerHeight, bounds.bottom);
-        const visibleHeight = Math.max(320, visibleBottom - visibleTop);
-        const relativeTop = Math.max(0, Math.min(frame.offsetHeight - visibleHeight, visibleTop - bounds.top));
-        frame.contentWindow.postMessage({
-          type: 'novan-research-viewport',
-          top: Math.round(relativeTop),
-          height: Math.round(visibleHeight)
-        }, location.origin);
-      }
-      let viewportScheduled = false;
-      function scheduleViewport() {
-        if (viewportScheduled) return;
-        viewportScheduled = true;
-        requestAnimationFrame(function () { viewportScheduled = false; sendFrameViewport(); });
-      }
-      addEventListener('scroll', scheduleViewport, {passive:true});
-      addEventListener('resize', scheduleViewport, {passive:true});
-      frame.addEventListener('load', sendFrameViewport);
+      frame.addEventListener('load', () => {
+        if (frame.src !== 'about:blank') loading.hidden = true;
+      });
+      dialog.addEventListener('close', () => {
+        // Release Plotly, image caches, and iframe memory while the popup is closed.
+        frame.src = 'about:blank';
+        loading.hidden = false;
+        if (restoreFocus && restoreFocus.isConnected) restoreFocus.focus();
+      });
+      window.addEventListener('message', (event) => {
+        if (event.origin !== location.origin || event.source !== frame.contentWindow) return;
+        if (event.data?.type === 'novan-research-close') closeResearch();
+      });
     })();
   </script>
 </body>

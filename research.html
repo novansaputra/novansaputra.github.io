@@ -1488,17 +1488,15 @@
   }
   .research-embedded #main article#research > h2.major { font-size:1.18rem; letter-spacing:.16rem; }
   .research-embedded #main article#research > .section-lead { font-size:.93rem; }
-  /* Dialogs stay centered in the visible portion of this long, auto-sized iframe. */
+  /* Dialogs are fixed inside the viewport of the scrollable popup iframe. */
   .research-embedded #galaxy-detail-modal,
   .research-embedded #lightbox {
-    position:absolute !important; top:var(--embed-view-top, 0px) !important;
-    left:0 !important; right:0 !important; bottom:auto !important;
-    height:var(--embed-view-height, 700px) !important;
+    position:fixed !important; inset:0 !important; height:100vh !important;
     box-sizing:border-box;
   }
   .research-embedded .galaxy-detail-dialog,
   .research-embedded .lightbox-dialog {
-    max-height:calc(var(--embed-view-height, 700px) - 2rem) !important;
+    max-height:calc(100vh - 2rem) !important;
   }
   @media(max-width:736px) {
     .research-embedded #main article#research { padding:1.4rem .75rem 1.5rem !important; }
@@ -2975,43 +2973,16 @@
 
 	
 <script>
-  (function () {
-    if (!document.documentElement.classList.contains('research-embedded')) return;
-    let lastHeight = 0;
-    let queued = false;
-    function reportHeight() {
-      queued = false;
-      const article = document.getElementById('research');
-      if (!article) return;
-      const bottom = Math.ceil(article.getBoundingClientRect().bottom + window.scrollY + 3);
-      const height = Math.max(500, bottom);
-      if (Math.abs(height - lastHeight) < 3) return;
-      lastHeight = height;
-      parent.postMessage({type:'novan-research-height', height:height}, location.origin);
-    }
-    function queueHeight() {
-      if (queued) return;
-      queued = true;
-      requestAnimationFrame(reportHeight);
-    }
-    window.addEventListener('message', function (event) {
-      if (event.origin !== location.origin || event.source !== parent) return;
-      const msg = event.data;
-      if (!msg || msg.type !== 'novan-research-viewport') return;
-      const root = document.documentElement;
-      root.style.setProperty('--embed-view-top', Math.max(0, Number(msg.top) || 0) + 'px');
-      root.style.setProperty('--embed-view-height', Math.max(320, Number(msg.height) || 700) + 'px');
+  // Escape closes the outer explorer only when no inner galaxy-detail dialog is open.
+  if (document.documentElement.classList.contains('research-embedded')) {
+    window.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape' &&
+          !document.getElementById('galaxy-detail-modal')?.classList.contains('is-open') &&
+          !document.getElementById('lightbox')?.classList.contains('is-open')) {
+        parent.postMessage({type:'novan-research-close'}, location.origin);
+      }
     });
-    if (typeof ResizeObserver !== 'undefined') {
-      const observer = new ResizeObserver(queueHeight);
-      observer.observe(document.getElementById('research'));
-    }
-    document.querySelectorAll('img').forEach(function (el) { el.addEventListener('load', queueHeight); });
-    addEventListener('load', queueHeight);
-    addEventListener('resize', queueHeight);
-    document.addEventListener('DOMContentLoaded', queueHeight);
-    queueHeight();
-  })();
+  }
 </script>
 </body>
 </html>
