@@ -351,6 +351,76 @@
     }
     @media(prefers-reduced-motion:reduce) { .explore-card { transition:none; } }
   </style>
+
+  <style>
+    /* Scroll-driven, illustration-only research story. No plotting libraries or remote assets. */
+    .story-section.content-section { padding:104px 0 80px; background:var(--paper-alt); overflow:clip; }
+    .story-header { max-width:850px; margin:0 0 30px; }
+    .story-kicker { color:var(--green); font-size:.72rem; text-transform:uppercase; letter-spacing:.17em; font-weight:800; margin:0 0 14px; }
+    .story-header h2 { font:400 clamp(2.5rem,4.5vw,4.65rem)/1.13 var(--serif); letter-spacing:-.05em; margin:0 0 22px; }
+    .story-deck { max-width:720px; color:var(--muted); margin:0; font-size:1.06rem; line-height:1.9; }
+    .story-layout { display:grid; grid-template-columns:minmax(0,.83fr) minmax(0,1.17fr); align-items:start; column-gap:clamp(26px,5vw,90px); }
+    .story-steps { min-width:0; }
+    .story-step { min-height:80svh; display:flex; align-items:center; padding:12vh 0; scroll-margin-top:95px; }
+    .story-step:first-child { min-height:67svh; }
+    .story-step:last-child { min-height:75svh; }
+    .story-step-content { width:100%; max-width:435px; padding:10px 0 12px 24px; border-left:2px solid var(--line); opacity:.52; transform:translateY(10px); transition:opacity .33s,transform .33s,border-color .3s; }
+    .story-step.is-active .story-step-content { opacity:1; transform:translateY(0); border-left-color:var(--green); }
+    .story-chapter { margin:0 0 13px; font-size:.71rem; letter-spacing:.15em; font-weight:780; color:var(--green); text-transform:uppercase; }
+    .story-step h3 { font:400 clamp(1.9rem,2.7vw,2.7rem)/1.2 var(--serif); letter-spacing:-.044em; margin:0 0 18px; color:var(--ink); }
+    .story-step p:not(.story-chapter) { margin:0; color:var(--muted); font-size:1rem; line-height:1.85; }
+    .story-step.is-active p:not(.story-chapter) { color:var(--ink); }
+    .story-visual { position:sticky; top:calc(78px + 25px); display:flex; align-items:center; align-self:start; min-height:550px; height:calc(100svh - 125px); max-height:730px; z-index:2; }
+    .story-scene { width:100%; border-radius:14px; border:1px solid var(--line); background:var(--paper); box-shadow:0 18px 50px rgba(24,45,38,.045); padding:clamp(17px,3vw,32px); overflow:hidden; }
+    .story-visual-top { display:flex; justify-content:space-between; align-items:baseline; gap:14px; margin-bottom:6px; }
+    .story-visual-title { font-size:.73rem; color:var(--green); font-weight:800; letter-spacing:.13em; text-transform:uppercase; }
+    .story-visual-count { font-size:.76rem; color:var(--muted); white-space:nowrap; font-variant-numeric:tabular-nums; }
+    #story-galaxy-svg { display:block; width:100%; height:auto; overflow:visible; }
+    .story-scene-label { text-align:center; margin:0 0 16px; color:var(--ink); font:400 clamp(1.22rem,2vw,1.58rem)/1.3 var(--serif); letter-spacing:-.025em; min-height:2em; }
+    .story-progress-track { height:3px; width:100%; background:var(--line); border-radius:3px; overflow:hidden; }
+    .story-progress-bar { height:100%; width:0%; background:var(--green); border-radius:3px; }
+    .story-timeline { margin:13px 0 0; display:flex; justify-content:space-between; gap:10px; font-size:.69rem; letter-spacing:.03em; color:var(--muted); }
+    .story-footnote { max-width:815px; margin:16px 0 0; font-size:.81rem; color:var(--muted); line-height:1.85; }
+    .story-footnote a { text-decoration:underline; text-underline-offset:3px; color:var(--green); }
+    .story-ellipse { transform-box:fill-box; transform-origin:center; }
+    :root[data-theme="dark"] .story-scene { box-shadow:0 18px 55px rgba(0,0,0,.12); }
+    @media(max-width:950px) {
+      .story-layout { grid-template-columns:minmax(0,.92fr) minmax(0,1.08fr); column-gap:28px; }
+      .story-step-content { padding-left:19px; }
+      .story-step h3 { font-size:clamp(1.65rem,3vw,2.25rem); }
+      .story-visual { min-height:420px; }
+      .story-scene { padding:18px; }
+    }
+    @media(max-width:680px) {
+      .story-section.content-section { padding:76px 0 50px; }
+      .story-header { margin-bottom:20px; }
+      .story-header h2 { font-size:clamp(2.25rem,8.5vw,3.6rem); }
+      .story-deck { font-size:.95rem; }
+      .story-layout { display:flex; flex-direction:column; }
+      .story-steps { width:100%; }
+      .story-visual { order:-1; width:100%; position:sticky; top:114px; min-height:0; height:auto; background:var(--paper-alt); max-height:none; padding-top:10px; padding-bottom:0; z-index:3; pointer-events:none; }
+      .story-scene { background:var(--paper); padding:12px 15px 10px; border-radius:11px; box-shadow:0 7px 24px rgba(23,36,29,.09); }
+      .story-visual-top { margin-bottom:-6px; }
+      .story-visual-title { font-size:.63rem; }
+      .story-visual-count { font-size:.67rem; }
+      #story-galaxy-svg { max-height:min(26svh,250px); }
+      .story-scene-label { font-size:1.02rem; margin-bottom:8px; min-height:1.2em; }
+      .story-timeline { margin-top:8px; font-size:.6rem; }
+      .story-step, .story-step:first-child, .story-step:last-child { min-height:72svh; padding:8vh 0 7vh; align-items:flex-end; }
+      .story-step:first-child { min-height:57svh; }
+      .story-step-content { background:var(--paper-alt); padding:14px 4px 14px 16px; max-width:100%; opacity:.72; transform:none; }
+      .story-step h3 { font-size:clamp(1.68rem,7vw,2.15rem); margin-bottom:11px; }
+      .story-step p:not(.story-chapter) { font-size:.92rem; line-height:1.7; }
+      .story-chapter { margin-bottom:8px; font-size:.65rem; }
+      .story-footnote { font-size:.75rem; margin-top:10px; }
+    }
+    @media(max-width:380px) {
+      .story-visual { top:109px; }
+      #story-galaxy-svg { max-height:23svh; }
+      .story-step p:not(.story-chapter) { font-size:.88rem; }
+    }
+    @media(prefers-reduced-motion:reduce) { .story-step-content { opacity:1; transform:none; transition:none; } }
+  </style>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -361,6 +431,7 @@
       <nav aria-label="Main navigation">
         <ul class="nav-links">
           <li><a href="#research">Research</a></li>
+          <li><a href="#story">The story</a></li>
           <li><a href="#publications">Publications</a></li>
           <li><a href="#contact">Contact</a></li>
         </ul>
@@ -434,9 +505,118 @@
       </div>
     </section>
 
+
+    <!-- A lightweight SVG story, based on the interpretation of Haryana et al. (2026, 2025). -->
+    <section class="content-section story-section" id="story" aria-labelledby="story-title">
+      <div class="shell">
+        <div class="story-header">
+          <p class="story-kicker">§ 02 · An evolutionary picture</p>
+          <h2 id="story-title">A possible life of a massive galaxy.</h2>
+          <p class="story-deck">What might connect the dense, star-forming galaxies of the early Universe to the large, quiescent ellipticals we see today? Scroll through an evolutionary picture inspired by my two papers.</p>
+        </div>
+        <div class="story-layout" id="galaxy-story">
+          <div class="story-steps" aria-label="Six stages in a possible galaxy evolutionary sequence">
+            <article class="story-step is-active" data-story-step="0">
+              <div class="story-step-content">
+                <p class="story-chapter">01 / 06 · The starting point</p>
+                <h3>An extended, star-forming galaxy.</h3>
+                <p>Early massive galaxies may begin as relatively extended systems, with active star formation spread across their stellar bodies.</p>
+              </div>
+            </article>
+            <article class="story-step" data-story-step="1">
+              <div class="story-step-content">
+                <p class="story-chapter">02 / 06 · Compaction</p>
+                <h3>A dense stellar core takes shape.</h3>
+                <p>Stellar mass builds rapidly in the central region. The galaxy becomes more compact, forming a dense bulge while it is still actively making stars.</p>
+              </div>
+            </article>
+            <article class="story-step" data-story-step="2">
+              <div class="story-step-content">
+                <p class="story-chapter">03 / 06 · Black-hole growth</p>
+                <h3>The central black hole is growing, too.</h3>
+                <p>Our X-ray results associate the compact, actively star-forming phase with enhanced black-hole accretion. The golden glow illustrates a luminous, unresolved nucleus.</p>
+              </div>
+            </article>
+            <article class="story-step" data-story-step="3">
+              <div class="story-step-content">
+                <p class="story-chapter">04 / 06 · Central quenching</p>
+                <h3>Star formation fades from the inside.</h3>
+                <p>The dense center becomes less active while the outskirts can still form stars. This is consistent with an inside-out pattern of quenching.</p>
+              </div>
+            </article>
+            <article class="story-step" data-story-step="4">
+              <div class="story-step-content">
+                <p class="story-chapter">05 / 06 · Quiescence</p>
+                <h3>Quenching extends outward.</h3>
+                <p>Star formation declines across more of the galaxy. The once-blue system becomes a compact, quiescent galaxy, and the depicted nuclear emission fades.</p>
+              </div>
+            </article>
+            <article class="story-step" data-story-step="5">
+              <div class="story-step-content">
+                <p class="story-chapter">06 / 06 · After quenching</p>
+                <h3>The outskirts keep growing.</h3>
+                <p>Smaller galaxies merge into the quenched system, adding stars mainly to its outskirts. Its stellar envelope grows, but the dense bulge changes much less—an evolutionary picture supported by our quiescent-galaxy study.</p>
+              </div>
+            </article>
+          </div>
+          <div class="story-visual">
+            <div class="story-scene" role="group" aria-label="Schematic galaxy that evolves with scrolling">
+              <div class="story-visual-top">
+                <span class="story-visual-title">Galaxy evolution · schematic</span>
+                <span class="story-visual-count" id="story-stage-number">01 / 06</span>
+              </div>
+              <svg id="story-galaxy-svg" viewBox="0 0 640 452" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Schematic of an evolving galaxy: a diffuse blue star-forming system forms a dense bright core, quenches from the inside, and grows its outer envelope through mergers.">
+                <defs>
+                  <radialGradient id="sg-blue-disk"><stop offset="0" stop-color="#287d9d" stop-opacity=".98"/><stop offset=".42" stop-color="#65a4cd" stop-opacity=".83"/><stop offset=".83" stop-color="#86b6d7" stop-opacity=".88"/><stop offset="1" stop-color="#9cc4dd" stop-opacity=".11"/></radialGradient>
+                  <radialGradient id="sg-blue-bulge"><stop offset="0" stop-color="#126e92" stop-opacity=".98"/><stop offset=".65" stop-color="#319bc0" stop-opacity=".9"/><stop offset="1" stop-color="#52b9db" stop-opacity=".1"/></radialGradient>
+                  <radialGradient id="sg-warm-envelope"><stop offset="0" stop-color="#a96049" stop-opacity=".94"/><stop offset=".55" stop-color="#c88e73" stop-opacity=".83"/><stop offset=".9" stop-color="#d9b5a1" stop-opacity=".7"/><stop offset="1" stop-color="#d8b5a5" stop-opacity=".08"/></radialGradient>
+                  <radialGradient id="sg-quenched-region"><stop offset="0" stop-color="#b54c47" stop-opacity=".99"/><stop offset=".5" stop-color="#c95d53" stop-opacity=".95"/><stop offset=".82" stop-color="#d17f69" stop-opacity=".82"/><stop offset="1" stop-color="#d99d84" stop-opacity=".02"/></radialGradient>
+                  <radialGradient id="sg-warm-bulge"><stop offset="0" stop-color="#8e3d3c" stop-opacity=".95"/><stop offset=".65" stop-color="#b85d50" stop-opacity=".8"/><stop offset="1" stop-color="#d89174" stop-opacity="0"/></radialGradient>
+                  <radialGradient id="sg-agn-glow"><stop offset="0" stop-color="#fff9dc" stop-opacity="1"/><stop offset=".15" stop-color="#ffe59a" stop-opacity=".92"/><stop offset=".43" stop-color="#efba4e" stop-opacity=".52"/><stop offset="1" stop-color="#edb849" stop-opacity="0"/></radialGradient>
+                  <radialGradient id="sg-satellite"><stop offset="0" stop-color="#bda8a5"/><stop offset=".7" stop-color="#d4aaa3" stop-opacity=".7"/><stop offset="1" stop-color="#d4aaa3" stop-opacity="0"/></radialGradient>
+                </defs>
+                <g aria-hidden="true" transform="translate(320 224) scale(1.35) translate(-320 -224)">
+                  <!-- Diffuse light is distinct from the central bulge, so the core stays fixed as the envelope grows. -->
+                  <ellipse id="sg-grown-envelope" cx="320" cy="224" rx="170" ry="120" fill="url(#sg-warm-envelope)" opacity="0"/>
+                  <ellipse id="sg-blue-body" cx="320" cy="224" rx="131" ry="98" fill="url(#sg-blue-disk)" opacity="1"/>
+                  <ellipse id="sg-warm-body" cx="320" cy="224" rx="133" ry="102" fill="url(#sg-warm-envelope)" opacity="0"/>
+                  <g id="sg-clumps" fill="#a9e4f3" opacity=".64">
+                    <circle cx="220" cy="199" r="5" opacity=".5"/><circle cx="256" cy="279" r="6" opacity=".47"/>
+                    <circle cx="383" cy="190" r="5" opacity=".53"/><circle cx="404" cy="242" r="5.5" opacity=".48"/>
+                    <circle cx="272" cy="167" r="3.5" opacity=".75"/><circle cx="365" cy="276" r="5" opacity=".55"/>
+                  </g>
+                  <g id="sg-inflow" stroke="#2b7998" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity="0">
+                    <path d="M 226,154 Q 254,175 287,200 l-16,-3 m16,3 l-6,-16"/>
+                    <path d="M 421,158 Q 391,184 359,203 l16,-2 m-16,2 l5,-16"/>
+                    <path d="M 234,300 Q 269,275 288,250 l-5,16 m5,-16 l-16,7"/>
+                    <path d="M 414,294 Q 382,270 354,247 l17,4 m-17,-4 l6,17"/>
+                  </g>
+                  <ellipse id="sg-blue-bulge" cx="320" cy="224" rx="24" ry="22" fill="url(#sg-blue-bulge)" opacity=".48"/>
+                  <ellipse id="sg-quenching" cx="320" cy="224" rx="1" ry="1" fill="url(#sg-quenched-region)" opacity="0"/>
+                  <ellipse id="sg-warm-bulge" cx="320" cy="224" rx="52" ry="47" fill="url(#sg-warm-bulge)" opacity="0"/>
+                  <g id="sg-satellites" opacity="0">
+                    <path id="sg-sat-trail-1" d="M 515,128 Q 482,145 444,172" stroke="#b38f85" stroke-width="1.5" stroke-opacity=".48" stroke-dasharray="4 7" fill="none"/>
+                    <path id="sg-sat-trail-2" d="M 145,343 Q 201,339 229,294" stroke="#b38f85" stroke-width="1.5" stroke-opacity=".48" stroke-dasharray="4 7" fill="none"/>
+                    <ellipse id="sg-satellite-1" cx="520" cy="125" rx="24" ry="17" fill="url(#sg-satellite)"/>
+                    <ellipse id="sg-satellite-2" cx="140" cy="344" rx="17" ry="12" fill="url(#sg-satellite)"/>
+                  </g>
+                  <circle id="sg-agn-halo" cx="320" cy="224" r="42" fill="url(#sg-agn-glow)" opacity="0"/>
+                  <circle id="sg-agn-point" cx="320" cy="224" r="2" fill="#fff3b4" opacity="0"/>
+                </g>
+              </svg>
+              <p class="story-scene-label" id="story-scene-label" aria-live="off">Extended star-forming galaxy</p>
+              <div class="story-progress-track" aria-hidden="true"><div class="story-progress-bar" id="story-progress-bar"></div></div>
+              <p class="story-timeline"><span>Early Universe</span><span>Later cosmic time</span></p>
+            </div>
+          </div>
+        </div>
+        <p class="story-footnote">This sequence is a <strong>schematic interpretation</strong> of galaxy populations at different epochs, not a time-lapse of an individual galaxy. The implied sequence and minor-merger picture are interpretive; the illustrated AGN brightness and outward-moving quenching boundary are not direct measurements. Based on <a href="https://ui.adsabs.harvard.edu/abs/2026ApJ..1009..106H/abstract" target="_blank" rel="noopener noreferrer">Haryana et al. (2026)</a> and <a href="https://ui.adsabs.harvard.edu/abs/2025ApJ...994..215H/abstract" target="_blank" rel="noopener noreferrer">Haryana et al. (2025)</a>.</p>
+      </div>
+    </section>
+
     <section class="content-section" id="publications" aria-labelledby="publications-title">
       <div class="shell section-layout">
-        <div class="section-side"><span class="section-number">§ 02</span><p class="section-name">Publications</p></div>
+        <div class="section-side"><span class="section-number">§ 03</span><p class="section-name">Publications</p></div>
         <div class="section-main">
           <h2 id="publications-title">Selected publications.</h2>
           <p class="lead section-intro">First-author papers on the formation, quenching, and structural evolution of massive galaxies.</p>
@@ -479,7 +659,7 @@
 
     <section class="content-section contact-section" id="contact" aria-labelledby="contact-title">
       <div class="shell section-layout">
-        <div class="section-side"><span class="section-number">§ 03</span><p class="section-name">Contact</p></div>
+        <div class="section-side"><span class="section-number">§ 04</span><p class="section-name">Contact</p></div>
         <div class="section-main">
           <h2 id="contact-title">Let's talk about galaxies.</h2>
           <p class="lead">I'm always happy to discuss astronomy, research ideas, and possible collaborations. Feel free to get in touch.</p>
@@ -602,6 +782,111 @@
         if (event.origin !== location.origin || event.source !== frame.contentWindow) return;
         if (event.data?.type === 'novan-research-close') closeResearch();
       });
+    })();
+  </script>
+
+  <script>
+    (() => {
+      const story = document.getElementById('galaxy-story');
+      if (!story) return;
+      const steps = [...story.querySelectorAll('[data-story-step]')];
+      const svg = document.getElementById('story-galaxy-svg');
+      const byId = id => document.getElementById(id);
+      const sceneLabel = byId('story-scene-label');
+      const stageCounter = byId('story-stage-number');
+      const progressBar = byId('story-progress-bar');
+      const blueBody = byId('sg-blue-body');
+      const warmBody = byId('sg-warm-body');
+      const envelope = byId('sg-grown-envelope');
+      const blueBulge = byId('sg-blue-bulge');
+      const warmBulge = byId('sg-warm-bulge');
+      const quenching = byId('sg-quenching');
+      const agnGlow = byId('sg-agn-halo');
+      const agnPoint = byId('sg-agn-point');
+      const inflow = byId('sg-inflow');
+      const clumps = byId('sg-clumps');
+      const sats = byId('sg-satellites');
+      const sat1 = byId('sg-satellite-1');
+      const sat2 = byId('sg-satellite-2');
+      const names = [
+        'Extended star-forming galaxy',
+        'Compaction and bulge growth',
+        'Dense star-forming galaxy',
+        'Central quenching',
+        'Inside-out quenching',
+        'Extended quiescent galaxy'
+      ];
+      // Schematic values, NOT fitted physical measurements or particle dynamics.
+      const keyframes = [
+        {size:132, bodyBlue:1.00, bodyWarm:0, bulge:22, blueCore:.48, warmCore:0, quench:0, quenchAlpha:0, agn:.025, inflow:0, clumps:.68, envelope:0},
+        {size:117, bodyBlue:1.00, bodyWarm:0, bulge:44, blueCore:1.00, warmCore:0, quench:0, quenchAlpha:0, agn:.38, inflow:.94, clumps:.68, envelope:0},
+        {size:117, bodyBlue:1.00, bodyWarm:0, bulge:52, blueCore:1.00, warmCore:0, quench:0, quenchAlpha:0, agn:1.00, inflow:.15, clumps:.64, envelope:0},
+        {size:121, bodyBlue:.94, bodyWarm:.10, bulge:52, blueCore:.30, warmCore:.62, quench:54, quenchAlpha:.96, agn:.35, inflow:0, clumps:.46, envelope:0},
+        {size:128, bodyBlue:.22, bodyWarm:.88, bulge:52, blueCore:0, warmCore:1, quench:109, quenchAlpha:.92, agn:.07, inflow:0, clumps:.09, envelope:.02},
+        {size:184, bodyBlue:.02, bodyWarm:1.00, bulge:52, blueCore:0, warmCore:1, quench:135, quenchAlpha:.70, agn:.015, inflow:0, clumps:0, envelope:.93}
+      ];
+      const lerp = (a,b,t) => a+(b-a)*t;
+      const clamp = (x,a,b) => Math.max(a,Math.min(b,x));
+      const attr = (el,key,v) => el.setAttribute(key,Number(v).toFixed(3));
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+      let busy = false, previousIndex = -1;
+      function render(t) {
+        const k = clamp(Math.floor(t),0,keyframes.length-1);
+        const q = Math.min(k+1,keyframes.length-1);
+        const f = t-k;
+        const frame = {};
+        for (const key of Object.keys(keyframes[k])) frame[key] = lerp(keyframes[k][key], keyframes[q][key],f);
+        const size = frame.size;
+        attr(blueBody,'rx',size); attr(blueBody,'ry',size*.75); attr(blueBody,'opacity',frame.bodyBlue);
+        attr(warmBody,'rx',size); attr(warmBody,'ry',size*.76); attr(warmBody,'opacity',frame.bodyWarm);
+        attr(envelope,'rx',size*1.1); attr(envelope,'ry',size*.83); attr(envelope,'opacity',frame.envelope);
+        attr(blueBulge,'rx',frame.bulge); attr(blueBulge,'ry',frame.bulge*.91); attr(blueBulge,'opacity',frame.blueCore);
+        attr(warmBulge,'rx',52); attr(warmBulge,'ry',47); attr(warmBulge,'opacity',frame.warmCore);
+        attr(quenching,'rx',Math.max(1,frame.quench)); attr(quenching,'ry',Math.max(1,frame.quench*.77)); attr(quenching,'opacity',frame.quenchAlpha);
+        attr(agnGlow,'r',24+frame.agn*54); attr(agnGlow,'opacity',frame.agn*.96);
+        attr(agnPoint,'r',1+frame.agn*7); attr(agnPoint,'opacity',frame.agn);
+        attr(inflow,'opacity',frame.inflow); attr(clumps,'opacity',frame.clumps);
+        // Satellites briefly appear, fall inward, and dissolve into the outer envelope.
+        const m = clamp(t-4,0,1);
+        const satOpacity = t>=4 && t<=5 ? Math.sin(Math.PI*m)*.89 : 0;
+        attr(sats,'opacity',satOpacity);
+        attr(sat1,'cx',lerp(525,430,m)); attr(sat1,'cy',lerp(123,186,m));
+        attr(sat2,'cx',lerp(130,244,m)); attr(sat2,'cy',lerp(360,285,m));
+        progressBar.style.width = (100*t/(keyframes.length-1)).toFixed(2) + '%';
+        const idx = clamp(Math.round(t),0,names.length-1);
+        if (idx !== previousIndex) {
+          sceneLabel.textContent = names[idx];
+          stageCounter.textContent = String(idx+1).padStart(2,'0') + ' / 06';
+          steps.forEach((step,i) => step.classList.toggle('is-active',i===idx));
+          previousIndex = idx;
+        }
+      }
+      function update() {
+        busy = false;
+        const focus = window.innerHeight*.53;
+        const centers = steps.map(step => {
+          const rect=step.getBoundingClientRect();
+          return rect.top + rect.height/2;
+        });
+        let t = 0;
+        if (focus <= centers[0]) t = 0;
+        else if (focus >= centers[centers.length-1]) t = centers.length-1;
+        else {
+          for (let i=0; i<centers.length-1; i++) {
+            if (centers[i] <= focus && centers[i+1] >= focus) {
+              t = i+clamp((focus-centers[i])/(centers[i+1]-centers[i]),0,1);
+              break;
+            }
+          }
+        }
+        if (prefersReducedMotion.matches) t=Math.round(t);
+        render(t);
+      }
+      function requestUpdate() { if (!busy) { busy=true; requestAnimationFrame(update); } }
+      window.addEventListener('scroll',requestUpdate,{passive:true});
+      window.addEventListener('resize',requestUpdate,{passive:true});
+      prefersReducedMotion.addEventListener?.('change',requestUpdate);
+      render(0); requestUpdate();
     })();
   </script>
 </body>
