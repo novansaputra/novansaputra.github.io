@@ -1623,6 +1623,35 @@ html.research-theme-dark {
   .research-embedded .galaxy-gallery-explorer { margin:0 0 1.5rem; padding:1rem; }
 }
 </style>
+
+<style id="galaxy-atlas-black-background">
+/* Deliberately keep the interactive galaxy atlas black in BOTH themes.
+   This overrides the light/dark matching on this plot only. */
+.galaxy-gallery-plot,
+.research-embedded .galaxy-gallery-plot,
+.galaxy-atlas-canvas,
+.research-embedded .galaxy-atlas-canvas,
+.galaxy-atlas-plotarea,
+.research-embedded .galaxy-atlas-plotarea {
+  background-color:#000 !important;
+  background-image:none !important;
+}
+/* Ensure grid, axes, labels and inset colorbar stay legible on black. */
+.galaxy-atlas-plotarea,
+.research-embedded .galaxy-atlas-plotarea { border-color:rgba(255,255,255,.80) !important; }
+.galaxy-atlas-gridline,
+.research-embedded .galaxy-atlas-gridline { background-color:rgba(255,255,255,.17) !important; }
+.galaxy-atlas-tick,
+.galaxy-atlas-axis-title,
+.galaxy-atlas-count,
+.gallery-atlas-colorbar-label,
+.gallery-atlas-colorbar-ticks,
+.research-embedded .galaxy-atlas-tick,
+.research-embedded .galaxy-atlas-axis-title,
+.research-embedded .galaxy-atlas-count,
+.research-embedded .gallery-atlas-colorbar-label,
+.research-embedded .gallery-atlas-colorbar-ticks { color:#f4f5f4 !important; }
+</style>
 </head>
 
 	<body class="is-preload">
