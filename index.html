@@ -93,6 +93,19 @@
     .portrait-personal { margin:9px 0 0; color:var(--muted); font-size:.78rem; line-height:1.55; }
     .hero .hero-copy { font-size:1.035rem; line-height:1.82; max-width:545px; margin-bottom:30px; }
     .hero .hero-katakana { margin-bottom:22px; }
+    .hero h1 { margin-top:0; }
+    .hero-copy .university-link { color:var(--green); font-weight:700; text-decoration:underline; text-decoration-thickness:1px; text-underline-offset:4px; text-decoration-color:var(--sage); }
+    .hero-copy .university-link:hover { text-decoration-color:currentColor; }
+    .research-summary strong { color:var(--ink); font-weight:680; }
+    .research-takeaways { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:25px; margin-top:40px; max-width:800px; }
+    .research-takeaway { min-width:0; border-top:2px solid var(--sage); padding:19px 0 0; }
+    .research-takeaway-label { color:var(--green); font-size:.72rem; font-weight:750; letter-spacing:.07em; text-transform:uppercase; margin:0 0 14px; line-height:1.5; }
+    .research-takeaway h3 { font:400 clamp(1.55rem,2.2vw,1.9rem)/1.21 var(--serif); letter-spacing:-.025em; color:var(--ink); margin:0 0 14px; }
+    .research-takeaway > p:not(.research-takeaway-label) { color:var(--muted); font-size:.95rem; line-height:1.85; margin:0 0 16px; }
+    .research-takeaway a { color:var(--green); font-size:.8rem; font-weight:750; text-decoration:none; border-bottom:1px solid var(--sage); padding-bottom:3px; }
+    .research-takeaway a:hover { border-color:currentColor; }
+    @media(max-width:700px) { .research-takeaways { grid-template-columns:1fr; gap:28px; margin-top:32px; } }
+
 
     .explore-card { margin-top:43px; background:#1e3335; border-radius:11px; overflow:hidden; display:grid; grid-template-columns:1.04fr .96fr; min-height:360px; color:white; text-decoration:none; transition:transform .2s,box-shadow .2s; }
     .explore-card:hover { transform:translateY(-4px); box-shadow:0 18px 35px rgba(23,51,45,.13); }
@@ -357,10 +370,9 @@
       <span id="about" class="legacy-anchor" aria-hidden="true"></span>
       <div class="hero-grid">
         <div>
-          <p class="eyebrow">Astronomy PhD Student <span class="eyebrow-divider" aria-hidden="true">·</span> <a href="https://www.astr.tohoku.ac.jp/en/" target="_blank" rel="noopener noreferrer" aria-label="Astronomical Institute, Tohoku University (opens in a new tab)">Tohoku University <span aria-hidden="true">↗</span></a></p>
           <h1>Novan Saputra <em>Haryana</em></h1>
           <p class="hero-katakana" lang="ja">ノヴァン・サプトラ・ハリヤナ</p>
-          <p class="hero-copy">I'm an Indonesian astrophysicist pursuing my PhD at Tohoku University, Japan. I study how galaxies build their bulges, grow supermassive black holes, and eventually stop forming stars.</p>
+          <p class="hero-copy">I'm an Indonesian astrophysicist pursuing my PhD at the Astronomical Institute of <a class="university-link" href="https://www.astr.tohoku.ac.jp/en/" target="_blank" rel="noopener noreferrer" aria-label="Astronomical Institute, Tohoku University (opens in a new tab)">Tohoku University <span aria-hidden="true">↗</span></a>, Japan. I study how galaxies build their bulges, grow supermassive black holes, and eventually stop forming stars.</p>
           <div class="button-row">
             <a class="button button-primary" href="#research">Explore my research <span class="arrow" aria-hidden="true">↗</span></a>
             <a class="button button-soft" href="#publications">View publications <span class="arrow" aria-hidden="true">↗</span></a>
@@ -373,7 +385,6 @@
         <figure class="portrait-wrap">
           <img class="portrait-image" src="images/IMG_8870.jpg" width="500" height="580" fetchpriority="high" alt="Portrait of Novan Saputra Haryana">
           <figcaption><span>Naples, June 2025</span></figcaption>
-          <p class="portrait-personal">Outside astronomy, I enjoy running, music, and photography.</p>
         </figure>
       </div>
     </div>
@@ -382,13 +393,22 @@
       <div class="shell section-layout">
         <div class="section-side"><span class="section-number">§ 01</span><p class="section-name">Research</p></div>
         <div class="section-main">
-          <h2 id="research-title">How do massive galaxies grow—and stop growing?</h2>
-          <p class="lead research-summary">I study how massive galaxies transform over cosmic time: how they assemble dense stellar bulges, how their central supermassive black holes grow, and what causes star formation to slow down or stop. By comparing actively star-forming and quiescent galaxies across different epochs, I investigate how these processes might be connected.</p>
-          <p class="research-methods">To investigate these questions, I combine observations from <strong>Chandra</strong> (X-ray), <strong>Hubble</strong> (optical), <strong>JWST</strong> (near-infrared), and <strong>ALMA</strong> (millimeter/submillimeter). I use spatially resolved spectral energy distribution (SED) fitting to map stellar mass and star formation, morphological modeling and two-dimensional AGN/host decomposition to separate galaxy and nuclear light, and X-ray stacking to estimate average black-hole accretion in faint galaxy populations.</p>
-          <div class="research-finding">
-            <p class="research-finding-label">One example from my research <span aria-hidden="true">·</span> z ≈ 5 to 0.5</p>
-            <h3>From dense cores to extended, quiet galaxies.</h3>
-            <p>My studies suggest that the most massive galaxies rapidly build dense stellar cores around <i>z</i> ≈ 4: their median central stellar mass increases by about <strong>0.6 dex in 400 million years</strong>. Luminous X-ray AGN are frequently found in galaxies undergoing this compaction, while star formation subsequently declines in their centers. At later epochs, massive quiescent galaxies become larger primarily through stellar mass growth in their outskirts, with their dense cores remaining comparatively stable. Together, these population trends are consistent with an evolutionary picture involving compaction, inside-out quenching, and later merger-driven growth.</p>
+          <h2 id="research-title">How do massive galaxies build their bulges and black holes?</h2>
+          <p class="lead research-summary">JWST has revealed massive, compact galaxies that had already stopped forming stars less than two billion years after the Big Bang. These systems are thought to be progenitors of today's massive elliptical galaxies, whose bulge masses are tightly correlated with the masses of their central supermassive black holes. Yet two fundamental questions remain: <strong>How did such compact galaxies form so rapidly?</strong> And <strong>how did their bulges and black holes grow together to establish the black-hole–bulge mass relation we see in nearby galaxies?</strong></p>
+          <p class="research-methods">To investigate these questions, I study galaxies across cosmic time using multiwavelength observations: <strong>Chandra</strong> (X-ray), <strong>Hubble</strong> (optical), <strong>JWST</strong> (near-infrared), and <strong>ALMA</strong> (millimeter/submillimeter). I combine spatially resolved spectral energy distribution (SED) fitting, morphological modeling, two-dimensional AGN/host decomposition, and X-ray stacking to trace how stars, galaxy structure, and supermassive black holes evolve.</p>
+          <div class="research-takeaways" aria-label="Key findings from my first-author papers">
+            <article class="research-takeaway">
+              <p class="research-takeaway-label">2026 paper · Compaction &amp; black-hole growth</p>
+              <h3>Bulges grow before star formation stops.</h3>
+              <p>In the most massive galaxies, rapid bulge growth appears to precede quenching. Their central black holes are also actively growing during this compact, star-forming phase.</p>
+              <a href="https://ui.adsabs.harvard.edu/abs/2026ApJ..1009..106H/abstract" target="_blank" rel="noopener noreferrer">Read the paper <span aria-hidden="true">↗</span></a>
+            </article>
+            <article class="research-takeaway">
+              <p class="research-takeaway-label">2025 paper · Quiescent-galaxy evolution</p>
+              <h3>Quiescent galaxies continue to grow.</h3>
+              <p>After they stop forming stars, massive galaxies keep building their outskirts while their dense bulges change relatively little—consistent with predominantly merger-driven growth.</p>
+              <a href="https://ui.adsabs.harvard.edu/abs/2025ApJ...994..215H/abstract" target="_blank" rel="noopener noreferrer">Read the paper <span aria-hidden="true">↗</span></a>
+            </article>
           </div>
           <button class="explore-card" type="button" id="open-research" aria-haspopup="dialog" aria-controls="research-dialog" aria-label="Open interactive research explorer in a popup">
             <span class="explore-copy">
