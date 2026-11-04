@@ -1441,8 +1441,10 @@
 
 </style>
 	<script>
-  if (new URLSearchParams(location.search).get('embed') === '1') {
+  var researchParams = new URLSearchParams(location.search);
+  if (researchParams.get('embed') === '1') {
     document.documentElement.classList.add('research-embedded');
+    document.documentElement.classList.add(researchParams.get('theme') === 'dark' ? 'research-theme-dark' : 'research-theme-light');
   } else if (window.top === window.self) {
     // Existing links/bookmarks use the new single-page public address.
     window.location.replace(new URL('./#research', window.location.href).href);
@@ -1450,6 +1452,31 @@
   if (!window.location.hash || window.location.hash === '#') {
     window.location.replace(window.location.pathname + window.location.search + '#research');
   }
+</script>
+<script>
+  window.novanResearchPalette = function () {
+    var dark = document.documentElement.classList.contains('research-theme-dark');
+    return {
+      dark:dark,
+      ink:dark?'#e8f0ec':'#19292c',
+      muted:dark?'#adbbb7':'#617070',
+      accent:dark?'#aad1bc':'#325d51',
+      grid:dark?'rgba(232,240,236,0.12)':'rgba(25,41,44,0.12)',
+      faint:dark?'rgba(232,240,236,0.17)':'rgba(25,41,44,0.16)',
+      stroke:dark?'#192428':'#f7f7f2',
+      hover:dark?'#172529':'#ffffff',
+      shade:dark?'rgba(170,209,188,0.22)':'rgba(50,93,81,0.17)',
+      otherMedian:dark?'#829b91':'#9eaaa4'
+    };
+  };
+  window.addEventListener('message', function (event) {
+    if (event.source !== window.parent || event.origin !== window.location.origin ||
+        !event.data || event.data.type !== 'novan-research-theme') return;
+    var root = document.documentElement;
+    root.classList.toggle('research-theme-dark', event.data.theme === 'dark');
+    root.classList.toggle('research-theme-light', event.data.theme !== 'dark');
+    window.dispatchEvent(new Event('novan-theme-change'));
+  });
 </script>
 <style>
   .research-home-link { position:fixed; left:1.2rem; top:1.1rem; z-index:100001;
@@ -1467,7 +1494,7 @@
   /* Embedded-only styling. Standalone research.html retains its original design. */
   html.research-embedded, .research-embedded body {
     height:auto !important; min-height:0 !important; overflow:visible !important;
-    background:#17232a !important; color:#f3f5f4;
+    background:var(--rv-bg) !important; color:var(--rv-ink) !important;
   }
   .research-embedded #wrapper {
     display:block !important; min-height:0 !important; height:auto !important;
@@ -1483,7 +1510,7 @@
     display:block !important; width:100% !important; max-width:100% !important;
     padding:2.3rem clamp(1rem,3vw,2.5rem) 2rem !important;
     margin:0 !important; transform:none !important; opacity:1 !important;
-    border-radius:0 !important; background:#17232a !important;
+    border-radius:0 !important; background:var(--rv-bg) !important;
     overflow:visible !important; visibility:visible !important;
   }
   .research-embedded #main article#research > h2.major { font-size:1.18rem; letter-spacing:.16rem; }
@@ -1501,6 +1528,100 @@
   @media(max-width:736px) {
     .research-embedded #main article#research { padding:1.4rem .75rem 1.5rem !important; }
   }
+</style>
+<style>
+/* Match the parent homepage's paper/ink/sage palette in both modes. */
+html.research-theme-light {
+  color-scheme: light;
+  --rv-bg:#f7f7f2; --rv-panel:#ffffff; --rv-alt:#eeeee8;
+  --rv-ink:#19292c; --rv-muted:#617070; --rv-line:#d8ded8;
+  --rv-accent:#325d51; --rv-soft:#e5eee7; --rv-grid:rgba(25,41,44,.12);
+  --rv-hover:#ffffff;
+}
+html.research-theme-dark {
+  color-scheme: dark;
+  --rv-bg:#11191c; --rv-panel:#192428; --rv-alt:#202f32;
+  --rv-ink:#e8f0ec; --rv-muted:#adbbb7; --rv-line:#34454a;
+  --rv-accent:#aad1bc; --rv-soft:#253c33; --rv-grid:rgba(232,240,236,.12);
+  --rv-hover:#172529;
+}
+.research-embedded { --accent:var(--rv-accent) !important; --panel:var(--rv-panel); --border:var(--rv-line); }
+.research-embedded body,
+.research-embedded #main article#research { font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif !important; color:var(--rv-ink) !important; }
+.research-embedded #main article#research { padding-top:1.45rem !important; }
+.research-embedded .profile-explorer,
+.research-embedded .galaxy-gallery-explorer {
+  background:var(--rv-panel) !important; border:1px solid var(--rv-line) !important;
+  box-shadow:none !important; color:var(--rv-ink) !important; border-radius:12px;
+}
+.research-embedded .explorer-controls,
+.research-embedded .explorer-story,
+.research-embedded .explorer-plots {
+  background:var(--rv-bg) !important; border:1px solid var(--rv-line) !important;
+  color:var(--rv-ink) !important;
+}
+.research-embedded .explorer-header h3,
+.research-embedded .galaxy-gallery-header h3 {
+  color:var(--rv-ink) !important; font-family:Georgia,"Iowan Old Style",serif;
+  font-weight:400 !important; letter-spacing:-.02em !important; text-transform:none !important;
+}
+.research-embedded .explorer-header p:not(.explorer-kicker),
+.research-embedded .galaxy-gallery-header p:not(.explorer-kicker),
+.research-embedded .story-text, .research-embedded .gallery-status,
+.research-embedded .galaxy-profile-note { color:var(--rv-muted) !important; opacity:1; }
+.research-embedded .explorer-header a,
+.research-embedded .galaxy-gallery-header a { color:var(--rv-accent) !important; font-weight:700; text-underline-offset:3px; }
+.research-embedded .explorer-kicker,
+.research-embedded .story-phase, .research-embedded .redshift-readout strong { color:var(--rv-accent) !important; }
+.research-embedded .cosmic-time-direction { color:var(--rv-muted); }
+.research-embedded .cosmic-time-arrow,
+.research-embedded #redshift-slider::-webkit-slider-runnable-track,
+.research-embedded #redshift-slider::-moz-range-track { background:var(--rv-accent); border-color:var(--rv-line); box-shadow:none; }
+.research-embedded #redshift-slider::-webkit-slider-thumb,
+.research-embedded #redshift-slider::-moz-range-thumb { background:var(--rv-accent); border-color:var(--rv-panel); box-shadow:0 0 0 2px var(--rv-accent); }
+.research-embedded .slider-dot { background:var(--rv-panel); border-color:var(--rv-line); box-shadow:0 0 0 2px var(--rv-line); }
+.research-embedded .slider-dot.is-active { background:var(--rv-accent); box-shadow:0 0 0 2px var(--rv-panel),0 0 0 3px var(--rv-accent); }
+.research-embedded .redshift-readout { background:var(--rv-soft); border-left-color:var(--rv-accent); }
+.research-embedded .distribution-panel,
+.research-embedded .profile-options, .research-embedded .galaxy-detail-profiles { border-top-color:var(--rv-line); }
+.research-embedded .option-toggle span,
+.research-embedded .gallery-map-btn,
+.research-embedded .modal-map-btn { color:var(--rv-muted) !important; background:var(--rv-panel) !important; border-color:var(--rv-line) !important; }
+.research-embedded .option-toggle span::before { border-color:var(--rv-muted) !important; }
+.research-embedded .option-toggle input:checked + span,
+.research-embedded .gallery-map-btn.active,
+.research-embedded .modal-map-btn.active { color:var(--rv-accent) !important; border-color:var(--rv-accent) !important; background:var(--rv-soft) !important; box-shadow:none !important; opacity:1; }
+.research-embedded .option-toggle input:checked + span::before { background:var(--rv-accent); border-color:var(--rv-accent) !important; box-shadow:none; }
+.research-embedded #profile-play { background:var(--rv-accent); border-color:var(--rv-accent); color:var(--rv-bg) !important; }
+.research-embedded .gallery-hint { color:var(--rv-accent); background:var(--rv-soft); border-color:var(--rv-line); }
+.research-embedded .galaxy-gallery-plot { background:var(--rv-bg); border-color:var(--rv-line); }
+.research-embedded .galaxy-atlas-plotarea { border-color:var(--rv-ink); }
+.research-embedded .galaxy-atlas-gridline { background:var(--rv-grid); }
+.research-embedded .galaxy-atlas-tick,
+.research-embedded .galaxy-atlas-axis-title,
+.research-embedded .gallery-atlas-colorbar-label,
+.research-embedded .gallery-atlas-colorbar-ticks { color:var(--rv-ink) !important; }
+.research-embedded .galaxy-detail-dialog { background:var(--rv-panel) !important; border-color:var(--rv-line) !important; color:var(--rv-ink); }
+.research-embedded .galaxy-detail-dialog h3,
+.research-embedded .galaxy-metric strong { color:var(--rv-ink) !important; }
+.research-embedded .galaxy-metric { background:var(--rv-bg); border-color:var(--rv-line); }
+.research-embedded .galaxy-detail-subtitle,
+.research-embedded .galaxy-metric span,
+.research-embedded .galaxy-detail-colorbar-label,
+.research-embedded .galaxy-detail-colorbar-ticks { color:var(--rv-muted) !important; }
+.research-embedded #galaxy-detail-modal { background:rgba(7,18,22,.64); }
+.research-embedded .explorer-status { background:var(--rv-soft); border-color:var(--rv-line); color:var(--rv-muted); }
+.distribution-legend { display:flex; flex-wrap:wrap; justify-content:center; gap:.65rem 1.1rem; padding:.3rem 0 .15rem; color:var(--rv-muted,#aebeb6); font:600 .7rem/1.5 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif; }
+.distribution-legend>span { display:inline-flex; align-items:center; gap:.4rem; }
+.distribution-legend strong { color:var(--rv-ink,#f4f4f4); font-weight:650; }
+.legend-dot { display:inline-block; width:.65rem; height:.65rem; border-radius:50%; flex:none; }
+.legend-current { background:var(--rv-accent,#aad1bc); box-shadow:0 0 0 2px var(--rv-line,#34454a); }
+.legend-other { background:var(--rv-muted,#8a9490); opacity:.52; }
+@media(max-width:736px) {
+  .research-embedded #main article#research { padding-top:.8rem !important; }
+  .research-embedded .profile-explorer,
+  .research-embedded .galaxy-gallery-explorer { margin:0 0 1.5rem; padding:1rem; }
+}
 </style>
 </head>
 
@@ -1523,17 +1644,13 @@
 			<main id="main">
 
 				<article id="research">
-					<h2 class="major">Interactive Research</h2>
-					<p class="section-lead">
-						Explore my published work through two interactive visualizations: a cosmic-evolution explorer showing stellar-mass and star-formation profiles across redshift, and an atlas of individual massive galaxies with spatially resolved maps.
-					</p>
 
 						<section class="profile-explorer" aria-labelledby="explorer-title">
 							<div class="explorer-header">
 								<div>
 									<p class="explorer-kicker">Interactive summary</p>
 									<h3 id="explorer-title">Massive Galaxies Evolution</h3>
-									<p>Move through cosmic time to see how stars become concentrated toward galaxy centers and how actively different regions continue forming new stars.</p>
+									<p>The plots below show how the most massive galaxies change across different epochs of cosmic time, using the galaxy sample and measurements from <a href="https://ui.adsabs.harvard.edu/abs/2026ApJ..1009..106H/abstract" target="_blank" rel="noopener noreferrer">Haryana et al. (2026)</a>. Select a redshift bin to explore their stellar-mass structure and star-formation activity.</p>
 								</div>
 							</div>
 
@@ -1578,6 +1695,10 @@
 									<div class="distribution-panel">
 										<h5>How galaxy centers become dense and shut down</h5>
 										<div id="central-distribution-plot" class="distribution-plot" role="img" aria-label="Distribution of central specific star formation rate versus central stellar mass surface density"></div>
+                                        <div class="distribution-legend" aria-live="polite">
+                                            <span><i class="legend-dot legend-current" aria-hidden="true"></i><strong id="selected-galaxies-count">Selected redshift bin</strong></span>
+                                            <span><i class="legend-dot legend-other" aria-hidden="true"></i>Other epochs</span>
+                                        </div>
 										<div class="distribution-options" aria-label="Central-density plot options">
 											<label class="option-toggle"><input id="toggle-xray" type="checkbox" /><span>X-ray luminous galaxies</span></label>
 										</div>
@@ -1604,7 +1725,7 @@
 								<div>
 									<p class="explorer-kicker">Interactive galaxy atlas</p>
 									<h3 id="galaxy-gallery-title">Explore Individual Massive Galaxies</h3>
-									<p>Each thumbnail can be viewed as a rest-frame UVJ image, stellar mass map, SFR map, or dust map while preserving its position in the stellar-mass–redshift plane. Click a galaxy to inspect its physical properties and resolved radial profiles.</p>
+									<p>Below are the most massive galaxies across cosmic time from <a href="https://ui.adsabs.harvard.edu/abs/2026ApJ..1009..106H/abstract" target="_blank" rel="noopener noreferrer">Haryana et al. (2026)</a>. Click any galaxy to explore its images, spatially resolved maps, physical properties, and radial profiles.</p>
 								</div>
 								<div class="gallery-action-panel">
 									<div class="gallery-hint">Click a galaxy</div>
@@ -1968,7 +2089,7 @@
 				var traces=[];
 				if (showSpread.checked) {
 					traces.push({x:x,y:summary.map(function(d){return d[prefix+'84'] * scale;}),type:'scatter',mode:'lines',line:{width:0},hoverinfo:'skip',showlegend:false});
-					traces.push({x:x,y:summary.map(function(d){return d[prefix+'16'] * scale;}),type:'scatter',mode:'lines',line:{width:0},fill:'tonexty',fillcolor:'rgba(242,193,78,0.18)',hoverinfo:'skip',name:'16th–84th percentile'});
+					traces.push({x:x,y:summary.map(function(d){return d[prefix+'16'] * scale;}),type:'scatter',mode:'lines',line:{width:0},fill:'tonexty',fillcolor:window.novanResearchPalette().shade,hoverinfo:'skip',name:'16th–84th percentile'});
 				}
 				traces.push({x:x,y:y50,type:'scatter',mode:'lines+markers',name:'Median',line:{color:accent,width:4},marker:{size:6,color:accent},hovertemplate:'r = %{x:.2f} kpc<br>Median = %{y:.3g}<extra></extra>'});
 				return traces;
@@ -1977,22 +2098,22 @@
 			function plotLayout(yTitle, range, tickValues, tickLabels) {
 				return {
 					margin:{l:82,r:22,t:36,b:55}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
-					font:{color:'#f4f4f4',family:'Arial, sans-serif'},
+					font:{color:window.novanResearchPalette().ink,family:'Arial, sans-serif'},
 					xaxis:{
 						title:'Radius (kpc)', type:logRadius.checked?'log':'linear',
 						range:logRadius.checked?[-0.32,Math.log10(16)]:[0,16],
 						tickmode:'array',
 						tickvals:logRadius.checked?[0.5,1,2,4,8,16]:[0,2,4,6,8,10,12,14,16],
 						ticktext:logRadius.checked?[0.5,1,2,4,8,16].map(String):undefined,
-						gridcolor:'rgba(255,255,255,0.08)',zeroline:false,ticks:'outside',ticklen:5,
-						showspikes:true, spikecolor:'#f2c14e', spikethickness:1.5, spikedash:'dot', spikesnap:'cursor'
+						gridcolor:window.novanResearchPalette().grid,zeroline:false,ticks:'outside',ticklen:5,
+						showspikes:true, spikecolor:window.novanResearchPalette().accent, spikethickness:1.5, spikedash:'dot', spikesnap:'cursor'
 					},
 					yaxis:{
 						title:yTitle,type:'log',range:range,tickmode:'array',tickvals:tickValues,ticktext:tickLabels,
-						gridcolor:'rgba(255,255,255,0.08)',zeroline:false,ticks:'outside',ticklen:5
+						gridcolor:window.novanResearchPalette().grid,zeroline:false,ticks:'outside',ticklen:5
 					},
 					legend:{orientation:'h',x:0,y:1.14,bgcolor:'rgba(0,0,0,0)'},
-					hoverlabel:{bgcolor:'#111827',bordercolor:'#f2c14e',font:{color:'#ffffff',family:'Arial, sans-serif',size:13},namelength:-1},
+					hoverlabel:{bgcolor:window.novanResearchPalette().hover,bordercolor:window.novanResearchPalette().accent,font:{color:window.novanResearchPalette().ink,family:'Arial, sans-serif',size:13},namelength:-1},
 					hovermode:'x unified',transition:{duration:350,easing:'cubic-in-out'}
 				};
 			}
@@ -2038,66 +2159,84 @@
 			}
 
 			function updateCentralDistribution(activeBin) {
-				if (!centralRows.length || !rows.length) return;
-				var binInfo = bins.map(function (binIndex) {
-					var sample = rows.find(function (r) { return r.z_bin_index === binIndex; });
-					if (!sample) return null;
-					var selected = centralRows.filter(function (r) {
-						return r.redshift >= sample.z_bin_lower && r.redshift <= sample.z_bin_upper;
-					});
-					return {
-						binIndex: binIndex,
-						label: sample.z_bin_lower.toFixed(1) + ' < z < ' + sample.z_bin_upper.toFixed(1),
-						x: percentile(selected.map(function (r) { return r.logSigma; }), 0.5),
-						y: percentile(selected.map(function (r) { return r.logSSFR; }), 0.5)
-					};
-				}).filter(function (d) { return d && Number.isFinite(d.x) && Number.isFinite(d.y); });
-
-				var inactive = binInfo.filter(function (d) { return d.binIndex !== activeBin; });
-				var active = binInfo.filter(function (d) { return d.binIndex === activeBin; });
-				var traces = [
-					{
-						x: centralRows.map(function (r) { return r.logSigma; }),
-						y: centralRows.map(function (r) { return r.logSSFR; }),
-						type: 'scatter', mode: 'markers', name: 'Galaxies', hoverinfo: 'skip',
-						marker: {size: 4, color: 'rgba(255,255,255,0.18)'}
-					},
-					{
-						x: inactive.map(function (d) { return d.x; }), y: inactive.map(function (d) { return d.y; }),
-						text: inactive.map(function (d) { return d.label; }),
-						type: 'scatter', mode: 'markers', name: 'Bin medians',
-						marker: {size: 10, color: '#d9c27a', line:{color:'#111827',width:1.2}},
-						hovertemplate: '%{text}<br>log Σ<sub>★,1 kpc</sub> = %{x:.2f}<br>log sSFR<sub>1 kpc</sub> = %{y:.2f}<extra></extra>'
-					}
-				];
-
-				if (showXray && showXray.checked) {
-					var luminous = centralRows.filter(function (r) { return r.xrayLuminous; });
-					traces.push({
-						x: luminous.map(function (r) { return r.logSigma; }),
-						y: luminous.map(function (r) { return r.logSSFR; }),
-						type: 'scatter', mode: 'markers', name: 'X-ray luminous',
-						marker: {size: 11, symbol: 'star', color: 'rgba(0,0,0,0)', line: {color: '#ff9f43', width: 2}},
-						hovertemplate: 'X-ray luminous galaxy<br>log Σ<sub>★,1 kpc</sub> = %{x:.2f}<br>log sSFR<sub>1 kpc</sub> = %{y:.2f}<extra></extra>'
-					});
-				}
-
-				if (active.length) traces.push({
-					x:[active[0].x], y:[active[0].y], text:[active[0].label], type:'scatter', mode:'markers', name:'Selected median',
-					marker:{size:20,color:'#f2c14e',symbol:'diamond',line:{color:'#ffffff',width:3}},
-					hovertemplate:'Selected: %{text}<br>log Σ<sub>★,1 kpc</sub> = %{x:.2f}<br>log sSFR<sub>1 kpc</sub> = %{y:.2f}<extra></extra>'
-				});
-
-				var layout = {
-					margin:{l:72,r:14,t:10,b:66}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
-					font:{color:'#f4f4f4',family:'Arial, sans-serif',size:12}, showlegend:false, hovermode:'closest',
-					xaxis:{title:{text:'Central stellar density (log Σ<sub>★,1 kpc</sub>)',font:{size:15}},range:[8.35,10.55],gridcolor:'rgba(255,255,255,0.07)',zeroline:false,ticks:'outside',ticklen:4},
-					yaxis:{title:{text:'Central star-forming activity (log sSFR<sub>1 kpc</sub>)',font:{size:15}},range:[-13.8,-7.9],gridcolor:'rgba(255,255,255,0.07)',zeroline:false,ticks:'outside',ticklen:4},
-					hoverlabel:{bgcolor:'#111827',bordercolor:'#f2c14e',font:{color:'#ffffff',size:11}}
-				};
-				Plotly.react('central-distribution-plot', traces, layout, {responsive:true,displaylogo:false,displayModeBar:false});
-				scheduleExplorerResize();
-			}
+                if (!centralRows.length || !rows.length) return;
+                var palette = window.novanResearchPalette();
+                var sample = rows.find(function (r) { return r.z_bin_index === activeBin; });
+                if (!sample) return;
+                var within = function (r, b) {
+                    // High boundary is inclusive here to retain the published bin definitions.
+                    return r.redshift >= b.z_bin_lower && r.redshift <= b.z_bin_upper;
+                };
+                var selectedRows = centralRows.filter(function (r) { return within(r, sample); });
+                var otherRows = centralRows.filter(function (r) { return !within(r, sample); });
+                var count = document.getElementById('selected-galaxies-count');
+                if (count) count.textContent = 'Selected epoch (' + selectedRows.length + ' galaxies)';
+                var binInfo = bins.map(function (binIndex) {
+                    var b = rows.find(function (r) { return r.z_bin_index === binIndex; });
+                    if (!b) return null;
+                    var selected = centralRows.filter(function (r) { return within(r, b); });
+                    return {
+                        binIndex:binIndex,
+                        label:b.z_bin_lower.toFixed(1) + ' < z < ' + b.z_bin_upper.toFixed(1),
+                        x:percentile(selected.map(function (r) { return r.logSigma; }), .5),
+                        y:percentile(selected.map(function (r) { return r.logSSFR; }), .5)
+                    };
+                }).filter(function (d) { return d && Number.isFinite(d.x) && Number.isFinite(d.y); });
+                var inactive = binInfo.filter(function (d) { return d.binIndex !== activeBin; });
+                var active = binInfo.find(function (d) { return d.binIndex === activeBin; });
+                var hover = 'log Σ<sub>★,1 kpc</sub> = %{x:.2f}<br>log sSFR<sub>1 kpc</sub> = %{y:.2f}<extra></extra>';
+                var traces = [
+                    {
+                        x:otherRows.map(function (r) { return r.logSigma; }),
+                        y:otherRows.map(function (r) { return r.logSSFR; }),
+                        type:'scatter', mode:'markers', name:'Other redshift bins',
+                        marker:{size:5, color:palette.faint},
+                        hoverinfo:'skip'
+                    },
+                    {
+                        x:selectedRows.map(function (r) { return r.logSigma; }),
+                        y:selectedRows.map(function (r) { return r.logSSFR; }),
+                        type:'scatter', mode:'markers', name:'Selected redshift bin',
+                        marker:{size:7, color:palette.accent, opacity:.88,
+                            line:{color:palette.stroke,width:.6}},
+                        hovertemplate:'Selected epoch<br>' + hover
+                    },
+                    {
+                        x:inactive.map(function (d) { return d.x; }),
+                        y:inactive.map(function (d) { return d.y; }),
+                        text:inactive.map(function (d) { return d.label; }),
+                        type:'scatter', mode:'markers', name:'Other bin medians',
+                        marker:{size:9, color:palette.otherMedian, symbol:'diamond-open', line:{color:palette.otherMedian,width:1.6}},
+                        hovertemplate:'%{text}<br>' + hover
+                    }
+                ];
+                if (showXray && showXray.checked) {
+                    var luminous = centralRows.filter(function (r) { return r.xrayLuminous; });
+                    traces.push({
+                        x:luminous.map(function (r) { return r.logSigma; }),
+                        y:luminous.map(function (r) { return r.logSSFR; }),
+                        type:'scatter', mode:'markers', name:'X-ray luminous',
+                        marker:{size:12, symbol:'star', color:'rgba(0,0,0,0)',line:{color:'#dc8540',width:2}},
+                        hovertemplate:'X-ray luminous galaxy<br>' + hover
+                    });
+                }
+                if (active) traces.push({
+                    x:[active.x], y:[active.y], text:[active.label], type:'scatter',
+                    mode:'markers', name:'Selected median',
+                    marker:{size:19,color:palette.accent,symbol:'diamond',line:{color:palette.stroke,width:2.5}},
+                    hovertemplate:'Selected median: %{text}<br>' + hover
+                });
+                var layout = {
+                    margin:{l:72,r:14,t:10,b:66}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
+                    font:{color:palette.ink,family:'Arial, sans-serif',size:12},
+                    showlegend:false, hovermode:'closest',
+                    xaxis:{title:{text:'Central stellar density (log Σ<sub>★,1 kpc</sub>)',font:{size:15}},range:[8.35,10.55],gridcolor:palette.grid,zeroline:false,ticks:'outside',ticklen:4},
+                    yaxis:{title:{text:'Central star-forming activity (log sSFR<sub>1 kpc</sub>)',font:{size:15}},range:[-13.8,-7.9],gridcolor:palette.grid,zeroline:false,ticks:'outside',ticklen:4},
+                    hoverlabel:{bgcolor:palette.hover,bordercolor:palette.accent,font:{color:palette.ink,size:11}}
+                };
+                Plotly.react('central-distribution-plot',traces,layout,{responsive:true,displaylogo:false,displayModeBar:false});
+                scheduleExplorerResize();
+            }
 
 			function updateExplorer() {
 				if (!rows.length) return;
@@ -2115,8 +2254,8 @@
 				document.getElementById('redshift-label').textContent=label;
 				document.getElementById('cosmic-age-label').textContent='Universe ≈ '+cosmicAgeGyr(zMedian).toFixed(1)+' Gyr old';
 
-				var massTraces=individualTraces(data.galaxies,'mass_sd_msun_kpc2','rgba(158,202,255,0.75)').concat(medianTraces(data.summary,'mass','#f2c14e'));
-				var ssfrTraces=individualTraces(data.galaxies,'ssfr_yr-1','rgba(190,147,255,0.75)').concat(medianTraces(data.summary,'ssfr','#f2c14e'));
+				var massTraces=individualTraces(data.galaxies,'mass_sd_msun_kpc2',(window.novanResearchPalette().dark?'rgba(158,202,255,0.75)':'rgba(45,112,146,0.72)')).concat(medianTraces(data.summary,'mass',window.novanResearchPalette().accent));
+				var ssfrTraces=individualTraces(data.galaxies,'ssfr_yr-1',(window.novanResearchPalette().dark?'rgba(190,147,255,0.75)':'rgba(115,74,154,0.67)')).concat(medianTraces(data.summary,'ssfr',window.novanResearchPalette().accent));
 				var massLayout=plotLayout('Stellar density, Σ★ (10⁹ M☉ kpc⁻²)',[-2,2],[0.01,0.1,1,10,100],['0.01','0.1','1','10','100']);
 				var ssfrLayout=plotLayout('Star-forming activity, sSFR (Gyr⁻¹)',[-3,1.5],[0.001,0.01,0.1,1,10],['0.001','0.01','0.1','1','10']);
 				Plotly.react('mass-profile-plot',massTraces,massLayout,{responsive:true,displaylogo:false,modeBarButtonsToRemove:['lasso2d','select2d']});
@@ -2163,6 +2302,7 @@
 			[slider,showIndividuals,showSpread,logRadius].forEach(function(el){el.addEventListener('input',function(){if(el===slider)stopPlaying();updateExplorer();});});
 			if (showXray) showXray.addEventListener('input', function () { updateCentralDistribution(bins[Number(slider.value)]); });
 
+			window.addEventListener('novan-theme-change', function () { if (rows.length) updateExplorer(); });
 			installExplorerResizeHandling();
 
 			Promise.all([
@@ -2757,16 +2897,16 @@
 					margin:{l:70,r:14,t:36,b:52},
 					paper_bgcolor:'rgba(0,0,0,0)',
 					plot_bgcolor:'rgba(0,0,0,0)',
-					font:{color:'#f4f4f4',family:'Arial, sans-serif',size:11},
+					font:{color:window.novanResearchPalette().ink,family:'Arial, sans-serif',size:11},
 					showlegend:false,
-					hoverlabel:{bgcolor:'#111827',bordercolor:'#f2c14e',font:{color:'#fff'}},
+					hoverlabel:{bgcolor:window.novanResearchPalette().hover,bordercolor:window.novanResearchPalette().accent,font:{color:window.novanResearchPalette().ink}},
 					xaxis:{
 						title:'Radius (kpc)',
 						range:[0,16],
 						tickmode:'array',
 						tickvals:[0,4,8,12,16],
 						ticktext:['0','4','8','12','16'],
-						gridcolor:'rgba(255,255,255,0.08)',
+						gridcolor:window.novanResearchPalette().grid,
 						zeroline:false
 					}
 				};
@@ -2779,7 +2919,7 @@
 						tickmode:'array',
 						tickvals:[0.01,0.1,1,10],
 						ticktext:['0.01','0.1','1','10'],
-						gridcolor:'rgba(255,255,255,0.08)',
+						gridcolor:window.novanResearchPalette().grid,
 						zeroline:false
 					}
 				});
@@ -2792,7 +2932,7 @@
 						tickmode:'array',
 						tickvals:[0.001,0.01,0.1,1,10],
 						ticktext:['0.001','0.01','0.1','1','10'],
-						gridcolor:'rgba(255,255,255,0.08)',
+						gridcolor:window.novanResearchPalette().grid,
 						zeroline:false
 					}
 				});
@@ -2801,8 +2941,8 @@
 					'galaxy-detail-mass-profile',
 					[{
 						x:radii, y:mass, type:'scatter', mode:'lines+markers',
-						line:{color:'#f2c14e',width:3},
-						marker:{color:'#f2c14e',size:5},
+						line:{color:window.novanResearchPalette().accent,width:3},
+						marker:{color:window.novanResearchPalette().accent,size:5},
 						hovertemplate:'r = %{x:.2f} kpc<br>Σ★ = %{y:.3g} × 10⁹ M☉ kpc⁻²<extra></extra>'
 					}],
 					massLayout,
@@ -2813,8 +2953,8 @@
 					'galaxy-detail-ssfr-profile',
 					[{
 						x:radii, y:ssfr, type:'scatter', mode:'lines+markers',
-						line:{color:'#b88cff',width:3},
-						marker:{color:'#b88cff',size:5},
+						line:{color:window.novanResearchPalette().dark?'#bca9ee':'#7d559e',width:3},
+						marker:{color:window.novanResearchPalette().dark?'#bca9ee':'#7d559e',size:5},
 						hovertemplate:'r = %{x:.2f} kpc<br>sSFR = %{y:.3g} Gyr⁻¹<extra></extra>'
 					}],
 					ssfrLayout,
@@ -2914,6 +3054,8 @@
 					updateModalMap(button.getAttribute('data-map'));
 				});
 			});
+
+			window.addEventListener('novan-theme-change', function () { if (currentModalGalaxy) renderDetailProfiles(currentModalGalaxy); });
 
 			if (galleryXrayToggle) {
 				galleryXrayToggle.addEventListener('change', function () {

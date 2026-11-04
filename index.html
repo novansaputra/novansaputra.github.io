@@ -327,6 +327,16 @@
     .explorer-dialog-loading { position:absolute; inset:0; display:grid; place-items:center;
       background:#17232a; color:#cad8d5; font-size:.95rem; pointer-events:none; }
     .explorer-dialog-loading[hidden] { display:none; }
+    /* Pop-up uses the same surface colors as the page, in both modes. */
+    .explorer-dialog { background:var(--paper); color:var(--ink); border-color:var(--line); }
+    .explorer-dialog-top { background:var(--paper-alt); border-bottom-color:var(--line); }
+    .explorer-dialog-heading h2 { color:var(--ink); }
+    .explorer-dialog-eyebrow { color:var(--green); }
+    .explorer-dialog-close { color:var(--ink); border-color:var(--line); }
+    .explorer-dialog-close:hover, .explorer-dialog-close:focus-visible { background:var(--sage); color:var(--ink); }
+    .explorer-dialog-body, #research-frame, .explorer-dialog-loading { background:var(--paper); color:var(--muted); }
+    :root[data-theme="dark"] .explorer-dialog-close:hover,
+    :root[data-theme="dark"] .explorer-dialog-close:focus-visible { background:#2e4c40; color:#e8f0ec; }
     @media(max-width:800px) {
       .explore-card { grid-template-columns:1fr; }
       .explore-card .explore-visual { min-height:190px; max-height:220px; }
@@ -485,7 +495,6 @@
   <dialog class="explorer-dialog" id="research-dialog" aria-labelledby="research-dialog-title" aria-modal="true">
     <div class="explorer-dialog-top">
       <div class="explorer-dialog-heading">
-        <span class="explorer-dialog-eyebrow">Interactive research</span>
         <h2 id="research-dialog-title">Explore galaxy evolution</h2>
       </div>
       <button class="explorer-dialog-close" id="close-research" type="button" aria-label="Close interactive research">
@@ -512,6 +521,10 @@
         themeLabel.textContent = dark ? 'Light mode' : 'Dark mode';
         themeSymbol.textContent = dark ? '☀' : '☾';
         metaThemeColor.setAttribute('content', dark ? '#11191c' : '#f7f7f2');
+        const themeFrame = document.getElementById('research-frame');
+        if (themeFrame && themeFrame.contentWindow && themeFrame.getAttribute('src') && themeFrame.getAttribute('src') !== 'about:blank') {
+          themeFrame.contentWindow.postMessage({type:'novan-research-theme',theme:dark?'dark':'light'},location.origin);
+        }
         if (save) {
           try { localStorage.setItem('novan-theme', dark ? 'dark' : 'light'); } catch (error) { /* Ignore blocked storage. */ }
         }
@@ -563,7 +576,9 @@
         dialog.showModal();
         closeButton.focus();
         // Lazy-load Plotly, gallery data, and all research assets only on demand.
-        frame.src = frame.dataset.src;
+        const researchUrl = new URL(frame.dataset.src, location.href);
+        researchUrl.searchParams.set('theme', document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light');
+        frame.src = researchUrl.href;
       }
       function closeResearch() { if (dialog.open) dialog.close(); }
       openButton.addEventListener('click', openResearch);
@@ -572,7 +587,10 @@
         if (event.target === dialog) closeResearch();
       });
       frame.addEventListener('load', () => {
-        if (frame.src !== 'about:blank') loading.hidden = true;
+        if (frame.src !== 'about:blank') {
+          loading.hidden = true;
+          frame.contentWindow.postMessage({type:'novan-research-theme',theme:document.documentElement.getAttribute('data-theme')==='dark'?'dark':'light'},location.origin);
+        }
       });
       dialog.addEventListener('close', () => {
         // Release Plotly, image caches, and iframe memory while the popup is closed.
