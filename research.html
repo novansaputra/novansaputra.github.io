@@ -1466,6 +1466,7 @@
       stroke:dark?'#192428':'#f7f7f2',
       hover:dark?'#172529':'#ffffff',
       shade:dark?'rgba(170,209,188,0.22)':'rgba(50,93,81,0.17)',
+      median:dark?'#e6b65e':'#bc8730',
       otherMedian:dark?'#829b91':'#9eaaa4'
     };
   };
@@ -1617,6 +1618,7 @@ html.research-theme-dark {
 .legend-dot { display:inline-block; width:.65rem; height:.65rem; border-radius:50%; flex:none; }
 .legend-current { background:var(--rv-accent,#aad1bc); box-shadow:0 0 0 2px var(--rv-line,#34454a); }
 .legend-other { background:var(--rv-muted,#8a9490); opacity:.52; }
+.legend-median { background:#ce9a3f; width:.7rem; height:.7rem; border-radius:2px; transform:rotate(45deg); }
 @media(max-width:736px) {
   .research-embedded #main article#research { padding-top:.8rem !important; }
   .research-embedded .profile-explorer,
@@ -1625,6 +1627,22 @@ html.research-theme-dark {
 </style>
 
 <style id="galaxy-atlas-black-background">
+/* Explicitly lock all layers of the galaxy atlas to black in BOTH themes.
+   The surrounding gallery card deliberately retains the parent theme. */
+html.research-embedded.research-theme-light #galaxy-mass-redshift-plot,
+html.research-embedded.research-theme-dark #galaxy-mass-redshift-plot,
+html.research-embedded.research-theme-light #galaxy-mass-redshift-plot .galaxy-atlas-canvas,
+html.research-embedded.research-theme-dark #galaxy-mass-redshift-plot .galaxy-atlas-canvas,
+html.research-embedded.research-theme-light #galaxy-mass-redshift-plot .galaxy-atlas-plotarea,
+html.research-embedded.research-theme-dark #galaxy-mass-redshift-plot .galaxy-atlas-plotarea,
+#galaxy-mass-redshift-plot,
+#galaxy-mass-redshift-plot .galaxy-atlas-canvas,
+#galaxy-mass-redshift-plot .galaxy-atlas-plotarea {
+  background:#000 !important;
+  background-color:#000 !important;
+  background-image:none !important;
+}
+
 /* Deliberately keep the interactive galaxy atlas black in BOTH themes.
    This overrides the light/dark matching on this plot only. */
 .galaxy-gallery-plot,
@@ -1727,6 +1745,7 @@ html.research-theme-dark {
                                         <div class="distribution-legend" aria-live="polite">
                                             <span><i class="legend-dot legend-current" aria-hidden="true"></i><strong id="selected-galaxies-count">Selected redshift bin</strong></span>
                                             <span><i class="legend-dot legend-other" aria-hidden="true"></i>Other epochs</span>
+                                            <span><i class="legend-dot legend-median" aria-hidden="true"></i>Selected median</span>
                                         </div>
 										<div class="distribution-options" aria-label="Central-density plot options">
 											<label class="option-toggle"><input id="toggle-xray" type="checkbox" /><span>X-ray luminous galaxies</span></label>
@@ -2252,7 +2271,7 @@ html.research-theme-dark {
                 if (active) traces.push({
                     x:[active.x], y:[active.y], text:[active.label], type:'scatter',
                     mode:'markers', name:'Selected median',
-                    marker:{size:19,color:palette.accent,symbol:'diamond',line:{color:palette.stroke,width:2.5}},
+                    marker:{size:19,color:palette.median,symbol:'diamond',line:{color:palette.stroke,width:2.5}},
                     hovertemplate:'Selected median: %{text}<br>' + hover
                 });
                 var layout = {
@@ -2283,8 +2302,8 @@ html.research-theme-dark {
 				document.getElementById('redshift-label').textContent=label;
 				document.getElementById('cosmic-age-label').textContent='Universe ≈ '+cosmicAgeGyr(zMedian).toFixed(1)+' Gyr old';
 
-				var massTraces=individualTraces(data.galaxies,'mass_sd_msun_kpc2',(window.novanResearchPalette().dark?'rgba(158,202,255,0.75)':'rgba(45,112,146,0.72)')).concat(medianTraces(data.summary,'mass',window.novanResearchPalette().accent));
-				var ssfrTraces=individualTraces(data.galaxies,'ssfr_yr-1',(window.novanResearchPalette().dark?'rgba(190,147,255,0.75)':'rgba(115,74,154,0.67)')).concat(medianTraces(data.summary,'ssfr',window.novanResearchPalette().accent));
+				var massTraces=individualTraces(data.galaxies,'mass_sd_msun_kpc2',(window.novanResearchPalette().dark?'rgba(158,202,255,0.75)':'rgba(45,112,146,0.72)')).concat(medianTraces(data.summary,'mass',window.novanResearchPalette().median));
+				var ssfrTraces=individualTraces(data.galaxies,'ssfr_yr-1',(window.novanResearchPalette().dark?'rgba(190,147,255,0.75)':'rgba(115,74,154,0.67)')).concat(medianTraces(data.summary,'ssfr',window.novanResearchPalette().median));
 				var massLayout=plotLayout('Stellar density, Σ★ (10⁹ M☉ kpc⁻²)',[-2,2],[0.01,0.1,1,10,100],['0.01','0.1','1','10','100']);
 				var ssfrLayout=plotLayout('Star-forming activity, sSFR (Gyr⁻¹)',[-3,1.5],[0.001,0.01,0.1,1,10],['0.001','0.01','0.1','1','10']);
 				Plotly.react('mass-profile-plot',massTraces,massLayout,{responsive:true,displaylogo:false,modeBarButtonsToRemove:['lasso2d','select2d']});
@@ -2743,12 +2762,15 @@ html.research-theme-dark {
 				assignDisplayPositions(galleryRows);
 
 				plot.innerHTML = '';
+				plot.style.setProperty('background', '#000', 'important');
 
 				var canvas = document.createElement('div');
 				canvas.className = 'galaxy-atlas-canvas';
+				canvas.style.setProperty('background', '#000', 'important');
 
 				var area = document.createElement('div');
 				area.className = 'galaxy-atlas-plotarea';
+				area.style.setProperty('background', '#000', 'important');
 
 				var count = document.createElement('div');
 				count.className = 'galaxy-atlas-count';
