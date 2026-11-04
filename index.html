@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#f7f7f2">
-  <meta name="description" content="Novan Saputra Haryana is a PhD researcher at Tohoku University studying the formation, compaction, quenching, and black-hole growth of massive galaxies.">
+  <meta name="description" content="Novan Saputra Haryana is an Indonesian astrophysicist and Astronomy PhD student at Tohoku University studying massive-galaxy formation, bulge growth, quenching, and supermassive black holes.">
   <meta name="author" content="Novan Saputra Haryana">
   <link rel="canonical" href="https://novansaputra.github.io/">
   <meta property="og:type" content="website">
@@ -81,13 +81,19 @@
     .section-name { margin:0; font-size:.83rem; letter-spacing:.04em; font-weight:780; color:#263e3a; }
     .section-main h2 { font:400 clamp(2.65rem,4.2vw,4.6rem)/1.13 var(--serif); margin:0 0 27px; letter-spacing:-.053em; max-width:790px; }
     .lead { font-size:clamp(1.07rem,1.45vw,1.22rem); color:#4c5c5b; line-height:1.9; max-width:775px; margin:0; }
-    .about-note { margin:23px 0 0; color:#687574; max-width:700px; }
-    .education { border-top:1px solid var(--line); margin-top:46px; }
-    .education-row { display:grid; grid-template-columns:100px 1fr; gap:18px; padding:18px 0; border-bottom:1px solid var(--line); }
-    .education-year { font-size:.79rem; color:#6b7977; font-weight:680; padding-top:4px; }
-    .education h3 { margin:0; font-size:.94rem; font-weight:700; letter-spacing:-.014em; }
-    .education p { margin:3px 0 0; color:#73807d; font-size:.86rem; }
     .research-summary { max-width:760px; }
+    .research-methods { max-width:760px; margin:24px 0 0; color:var(--muted); line-height:1.95; font-size:1rem; }
+    .research-methods strong { color:var(--ink); font-weight:700; }
+    .research-finding { max-width:765px; margin-top:40px; padding:27px 0 4px 25px; border-left:2px solid var(--sage); }
+    .research-finding-label { margin:0 0 11px; font-size:.7rem; font-weight:750; text-transform:uppercase; letter-spacing:.12em; color:var(--green); }
+    .research-finding h3 { margin:0 0 13px; font:400 clamp(1.65rem,2.5vw,2.15rem)/1.25 var(--serif); letter-spacing:-.035em; color:var(--ink); }
+    .research-finding p:last-child { margin:0; color:var(--muted); font-size:.96rem; line-height:1.9; }
+    .research-finding p:last-child strong { color:var(--ink); font-weight:700; }
+    .legacy-anchor { display:block; height:0; scroll-margin-top:90px; }
+    .portrait-personal { margin:9px 0 0; color:var(--muted); font-size:.78rem; line-height:1.55; }
+    .hero .hero-copy { font-size:1.035rem; line-height:1.82; max-width:545px; margin-bottom:30px; }
+    .hero .hero-katakana { margin-bottom:22px; }
+
     .explore-card { margin-top:43px; background:#1e3335; border-radius:11px; overflow:hidden; display:grid; grid-template-columns:1.04fr .96fr; min-height:360px; color:white; text-decoration:none; transition:transform .2s,box-shadow .2s; }
     .explore-card:hover { transform:translateY(-4px); box-shadow:0 18px 35px rgba(23,51,45,.13); }
     .explore-copy { padding:clamp(30px,4vw,54px); display:flex; flex-direction:column; align-items:flex-start; justify-content:center; }
@@ -142,7 +148,12 @@
       .hero-grid { grid-template-columns:1fr; gap:32px; }
       .hero h1 { font-size:clamp(3.1rem,9.1vw,4.65rem); max-width:600px; margin-bottom:12px; }
       .hero-katakana { margin-bottom:27px; font-size:.98rem; letter-spacing:.035em; }
+
       .hero-copy { font-size:1.03rem; }
+      .hero .hero-copy { font-size:1rem; margin-bottom:25px; }
+      .research-methods { font-size:.96rem; margin-top:18px; }
+      .research-finding { margin-top:30px; padding-left:17px; }
+      .research-finding h3 { font-size:1.72rem; }
       .portrait-wrap { max-width:260px; justify-self:start; margin:7px 0 0 8px; }
       .portrait-wrap figcaption { font-size:.68rem; }
       .hero-meta { margin-top:36px; padding-top:22px; gap:10px 22px; }
@@ -151,7 +162,6 @@
       .section-side { display:flex; align-items:baseline; gap:14px; padding:0; }
       .section-number { margin:0; }
       .section-main h2 { font-size:clamp(2.6rem,8.6vw,4rem); }
-      .education-row { grid-template-columns:90px minmax(0,1fr); gap:10px; }
       .explore-card { margin-top:30px; }
       .explore-copy { padding:30px 25px; }
       .explore-copy h3 { font-size:2.3rem; }
@@ -214,12 +224,13 @@
     :root[data-theme="dark"] .lead { color:#b8c7c1; }
     :root[data-theme="dark"] .hero-meta,
     :root[data-theme="dark"] .portrait-wrap figcaption,
-    :root[data-theme="dark"] .about-note,
-    :root[data-theme="dark"] .education-year,
-    :root[data-theme="dark"] .education p,
     :root[data-theme="dark"] .pub-meta,
     :root[data-theme="dark"] .explore-caption,
     :root[data-theme="dark"] .site-footer { color:#a4b4ae; }
+    :root[data-theme="dark"] .research-finding { border-left-color:#506c5d; }
+    :root[data-theme="dark"] .research-methods,
+    :root[data-theme="dark"] .research-finding p:last-child,
+    :root[data-theme="dark"] .portrait-personal { color:#b1c0bb; }
     :root[data-theme="dark"] .hero-meta strong,
     :root[data-theme="dark"] .section-name { color:#e6f0ea; }
     :root[data-theme="dark"] .portrait-wrap figcaption span:first-child { color:var(--muted); }
@@ -326,7 +337,6 @@
       <a class="wordmark" href="#top" aria-label="Novan Haryana, back to top">Novan Haryana<span class="dot"></span></a>
       <nav aria-label="Main navigation">
         <ul class="nav-links">
-          <li><a href="#about">About</a></li>
           <li><a href="#research">Research</a></li>
           <li><a href="#publications">Publications</a></li>
           <li><a href="#contact">Contact</a></li>
@@ -344,14 +354,16 @@
 
   <main id="main">
     <div class="hero shell" id="top">
+      <span id="about" class="legacy-anchor" aria-hidden="true"></span>
       <div class="hero-grid">
         <div>
           <p class="eyebrow">Astronomy PhD Student <span class="eyebrow-divider" aria-hidden="true">·</span> <a href="https://www.astr.tohoku.ac.jp/en/" target="_blank" rel="noopener noreferrer" aria-label="Astronomical Institute, Tohoku University (opens in a new tab)">Tohoku University <span aria-hidden="true">↗</span></a></p>
           <h1>Novan Saputra <em>Haryana</em></h1>
           <p class="hero-katakana" lang="ja">ノヴァン・サプトラ・ハリヤナ</p>
+          <p class="hero-copy">I'm an Indonesian astrophysicist pursuing my PhD at Tohoku University, Japan. I study how galaxies build their bulges, grow supermassive black holes, and eventually stop forming stars.</p>
           <div class="button-row">
             <a class="button button-primary" href="#research">Explore my research <span class="arrow" aria-hidden="true">↗</span></a>
-            <a class="button button-soft" href="#about">Get to know me <span class="arrow" aria-hidden="true">↓</span></a>
+            <a class="button button-soft" href="#publications">View publications <span class="arrow" aria-hidden="true">↗</span></a>
           </div>
           <div class="hero-meta">
             <span><strong>Based in</strong> Sendai, Japan</span>
@@ -361,32 +373,23 @@
         <figure class="portrait-wrap">
           <img class="portrait-image" src="images/IMG_8870.jpg" width="500" height="580" fetchpriority="high" alt="Portrait of Novan Saputra Haryana">
           <figcaption><span>Naples, June 2025</span></figcaption>
+          <p class="portrait-personal">Outside astronomy, I enjoy running, music, and photography.</p>
         </figure>
       </div>
     </div>
 
-    <section class="content-section" id="about" aria-labelledby="about-title">
-      <div class="shell section-layout">
-        <div class="section-side"><span class="section-number">§ 01</span><p class="section-name">About me</p></div>
-        <div class="section-main">
-          <h2 id="about-title">A little about me.</h2>
-          <p class="lead">I'm an Indonesian astrophysicist currently pursuing my PhD at the Astronomical Institute of Tohoku University, Japan. I want to understand how galaxies build their bulges, grow their supermassive black holes, and eventually stop forming stars.</p>
-          <p class="about-note">To investigate these questions, I combine multiwavelength observations—from X-rays with Chandra and optical imaging with Hubble to near-infrared imaging with JWST and millimeter/submillimeter observations with ALMA. I use techniques including spatially resolved spectral energy distribution (SED) fitting, morphological modeling, X-ray stacking analysis, and two-dimensional modeling of AGN emission. Beyond research, I enjoy running, music, and photography.</p>
-          <div class="education" aria-label="Education">
-            <div class="education-row"><span class="education-year">2026–now</span><div><h3>PhD in Astronomy</h3><p>Tohoku University · Sendai, Japan</p></div></div>
-            <div class="education-row"><span class="education-year">2024–2026</span><div><h3>MSc in Astronomy</h3><p>Tohoku University · Sendai, Japan</p></div></div>
-            <div class="education-row"><span class="education-year">2020–2024</span><div><h3>BSc in Astronomy</h3><p>Institut Teknologi Bandung · Bandung, Indonesia</p></div></div>
-          </div>
-        </div>
-      </div>
-    </section>
-
     <section class="content-section" id="research" aria-labelledby="research-title">
       <div class="shell section-layout">
-        <div class="section-side"><span class="section-number">§ 02</span><p class="section-name">Research</p></div>
+        <div class="section-side"><span class="section-number">§ 01</span><p class="section-name">Research</p></div>
         <div class="section-main">
           <h2 id="research-title">How do massive galaxies grow—and stop growing?</h2>
-          <p class="lead research-summary">I investigate how massive galaxies form dense stellar cores, shut down their star formation, and evolve alongside their central supermassive black holes. Using spatially resolved JWST imaging and complementary multiwavelength observations, I trace these processes across cosmic time.</p>
+          <p class="lead research-summary">I study how massive galaxies transform over cosmic time: how they assemble dense stellar bulges, how their central supermassive black holes grow, and what causes star formation to slow down or stop. By comparing actively star-forming and quiescent galaxies across different epochs, I investigate how these processes might be connected.</p>
+          <p class="research-methods">To investigate these questions, I combine observations from <strong>Chandra</strong> (X-ray), <strong>Hubble</strong> (optical), <strong>JWST</strong> (near-infrared), and <strong>ALMA</strong> (millimeter/submillimeter). I use spatially resolved spectral energy distribution (SED) fitting to map stellar mass and star formation, morphological modeling and two-dimensional AGN/host decomposition to separate galaxy and nuclear light, and X-ray stacking to estimate average black-hole accretion in faint galaxy populations.</p>
+          <div class="research-finding">
+            <p class="research-finding-label">One example from my research <span aria-hidden="true">·</span> z ≈ 5 to 0.5</p>
+            <h3>From dense cores to extended, quiet galaxies.</h3>
+            <p>My studies suggest that the most massive galaxies rapidly build dense stellar cores around <i>z</i> ≈ 4: their median central stellar mass increases by about <strong>0.6 dex in 400 million years</strong>. Luminous X-ray AGN are frequently found in galaxies undergoing this compaction, while star formation subsequently declines in their centers. At later epochs, massive quiescent galaxies become larger primarily through stellar mass growth in their outskirts, with their dense cores remaining comparatively stable. Together, these population trends are consistent with an evolutionary picture involving compaction, inside-out quenching, and later merger-driven growth.</p>
+          </div>
           <button class="explore-card" type="button" id="open-research" aria-haspopup="dialog" aria-controls="research-dialog" aria-label="Open interactive research explorer in a popup">
             <span class="explore-copy">
               <span class="explore-overline">Interactive research · Explore the data</span>
@@ -403,7 +406,7 @@
 
     <section class="content-section" id="publications" aria-labelledby="publications-title">
       <div class="shell section-layout">
-        <div class="section-side"><span class="section-number">§ 03</span><p class="section-name">Publications</p></div>
+        <div class="section-side"><span class="section-number">§ 02</span><p class="section-name">Publications</p></div>
         <div class="section-main">
           <h2 id="publications-title">Selected publications.</h2>
           <p class="lead section-intro">First-author papers on the formation, quenching, and structural evolution of massive galaxies.</p>
@@ -446,7 +449,7 @@
 
     <section class="content-section contact-section" id="contact" aria-labelledby="contact-title">
       <div class="shell section-layout">
-        <div class="section-side"><span class="section-number">§ 04</span><p class="section-name">Contact</p></div>
+        <div class="section-side"><span class="section-number">§ 03</span><p class="section-name">Contact</p></div>
         <div class="section-main">
           <h2 id="contact-title">Let's talk about galaxies.</h2>
           <p class="lead">I'm always happy to discuss astronomy, research ideas, and possible collaborations. Feel free to get in touch.</p>
