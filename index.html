@@ -589,7 +589,113 @@
       .story-step, .story-step:first-child, .story-step:last-child { min-height:88svh; padding-top:48svh; }
     }
     @media(prefers-reduced-motion:reduce) { .story-backdrop { will-change:auto; } }
-  </style>
+  
+    /* V17: mobile returns to the V15 sticky, self-contained card.
+       The exact same SVG/profile and narration remain shared with the desktop story. */
+    @media (max-width:680px) {
+      .story-section.content-section {
+        background:var(--paper-alt); overflow:visible;
+        padding:76px 0 56px;
+      }
+      .story-section::before { display:none; }
+      .story-header { width:100%; max-width:100%; margin-bottom:20px; }
+      .story-layout { display:flex; flex-direction:column; align-items:stretch; }
+      .story-steps { order:1; width:100%; }
+      .story-backdrop {
+        position:sticky; inset:auto; top:107px; order:0;
+        display:block; flex:none; width:100%; height:auto;
+        overflow:visible; z-index:3; pointer-events:none;
+        background:var(--paper-alt); will-change:auto;
+      }
+      .story-backdrop .story-visual {
+        position:relative; inset:auto; top:auto; left:auto; right:auto;
+        display:block; width:100%; height:auto; min-height:0; max-height:none;
+        background:transparent; margin:0; padding:8px 0 0;
+      }
+      .story-backdrop .story-scene {
+        display:block; position:relative; width:100%;
+        border:1px solid var(--line); border-radius:11px;
+        background:var(--paper); padding:12px 14px 11px;
+        overflow:hidden; box-shadow:0 7px 24px rgba(23,36,29,.09);
+      }
+      .story-backdrop .story-visual-top {
+        position:static; display:flex; justify-content:space-between;
+        text-align:left; gap:10px; margin:0 0 1px;
+      }
+      .story-backdrop .story-visual-title { font-size:.63rem; }
+      .story-backdrop .story-visual-count { font-size:.67rem; }
+      .story-backdrop .story-figure-pair {
+        display:flex; flex-direction:column; gap:0;
+        margin:2px 0 1px; align-items:stretch;
+      }
+      .story-backdrop .story-galaxy-wrap {
+        position:relative; inset:auto; top:auto; left:auto; right:auto;
+        width:100%; max-width:320px; height:auto; min-height:0;
+        margin:0 auto; transform:scale(1.02); opacity:1;
+      }
+      .story-backdrop #story-galaxy-svg {
+        display:block; width:100%; height:auto;
+        max-height:clamp(152px,22svh,198px);
+      }
+      .story-backdrop .story-profile {
+        position:relative; inset:auto; right:auto; top:auto; bottom:auto;
+        display:block; width:100%; max-width:none; height:auto;
+        margin:-2px 0 0; padding:0; border:0; border-radius:0;
+        background:transparent; box-shadow:none;
+        -webkit-backdrop-filter:none; backdrop-filter:none; opacity:1;
+      }
+      .story-backdrop .story-profile-heading { font-size:.71rem; white-space:nowrap; }
+      .story-backdrop #story-profile-svg { display:none; }
+      .story-backdrop #story-profile-mobile {
+        display:block; width:100%; height:auto;
+        max-height:clamp(88px,12svh,118px);
+      }
+      .story-backdrop .story-profile-status {
+        font-size:.66rem; min-height:1.2em; margin:-3px 0 0; line-height:1.4;
+      }
+      .story-backdrop .story-profile-disclaimer {
+        font-size:.58rem; margin:0; line-height:1.35;
+      }
+      .story-backdrop .story-scene-label {
+        position:static; display:block; text-align:center;
+        margin:5px 0 8px; font-size:.96rem; min-height:1.2em;
+      }
+      .story-backdrop .story-progress-track {
+        position:static; display:block; width:100%; max-width:none; height:3px;
+      }
+      .story-backdrop .story-timeline {
+        position:static; display:flex; width:100%; max-width:none;
+        margin:7px 0 0; font-size:.57rem;
+      }
+      .story-step,.story-step:first-child,.story-step:last-child {
+        min-height:72svh; padding:8svh 0 7svh;
+        align-items:flex-end;
+      }
+      .story-step:first-child { min-height:57svh; }
+      .story-step-content {
+        width:100%; max-width:100%; opacity:.72;
+        transform:none; padding:14px 4px 14px 16px;
+        background:var(--paper-alt); box-shadow:none;
+        text-shadow:none; border-radius:0;
+      }
+      .story-step.is-active .story-step-content { opacity:1; }
+      .story-step h3 { font-size:clamp(1.68rem,7vw,2.15rem); margin-bottom:11px; }
+      .story-step p:not(.story-chapter) { font-size:.92rem; line-height:1.7; }
+      .story-chapter { margin-bottom:8px; font-size:.65rem; }
+      .story-footnote { max-width:100%; padding-top:0; margin-top:12px; font-size:.75rem; }
+    }
+    @media (max-width:380px) {
+      /* Keep the narration below the compact sticky card on short phones. */
+      .story-step, .story-step:last-child { min-height:93svh; }
+      .story-step:first-child { min-height:66svh; }
+      .story-backdrop { top:102px; }
+      .story-backdrop .story-galaxy-wrap { max-width:288px; }
+      .story-backdrop #story-galaxy-svg { max-height:clamp(136px,20svh,174px); }
+      .story-backdrop #story-profile-mobile { max-height:clamp(84px,12svh,108px); }
+      .story-backdrop .story-profile-disclaimer { font-size:.56rem; }
+      .story-step p:not(.story-chapter) { font-size:.88rem; }
+    }
+</style>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -1023,6 +1129,20 @@
       const storyFootnote = storySection?.querySelector('.story-footnote');
       const profileInset = backdrop.querySelector('.story-profile');
       if (!story || !backdrop || !intro || !storySection || !storyHeader || !storyFootnote || !profileInset) return;
+      // Keep one SVG and one animation state. On phones, place it inside the
+      // story as a sticky card; on larger screens, restore the fixed backdrop.
+      const originalParent=backdrop.parentNode;
+      const originalNextSibling=backdrop.nextSibling;
+      const narrowScreen=window.matchMedia('(max-width:680px)');
+      let usingCard=null;
+      function syncStoryLayout(){
+        const mobile=narrowScreen.matches;
+        if(usingCard===mobile)return;
+        usingCard=mobile;
+        if(mobile)story.insertBefore(backdrop,story.firstChild);
+        else originalParent.insertBefore(backdrop,originalNextSibling);
+      }
+      syncStoryLayout();
       const steps = [...story.querySelectorAll('[data-story-step]')];
       const byId = id => document.getElementById(id);
       const sceneLabel = byId('story-scene-label');
@@ -1200,33 +1320,32 @@
       }
       function update(){
         busy=false;
-        // Fade the gallery in during the introduction-to-story transition and out
-        // during the last screenful of the story, without covering subsequent sections.
-        const introBottom = intro.getBoundingClientRect().bottom;
-        const footnoteTop = storyFootnote.getBoundingClientRect().top;
-        const entering = 1 - smooth(innerHeight*.10, innerHeight*.91, introBottom);
-        // Dissolve the art before the attribution note reaches the viewport center.
-        const exiting = smooth(innerHeight*.45,innerHeight*1.28,footnoteTop);
-        const mobile=window.matchMedia('(max-width: 680px)').matches;
-        const headerBottom = storyHeader.getBoundingClientRect().bottom;
-        const mobileIntro = mobile ? 1-smooth(0,innerHeight*.84,headerBottom) : 1;
-        const visibility = clamp(entering*exiting*mobileIntro,0,1);
-        backdrop.style.opacity = visibility.toFixed(3);
-        backdrop.style.visibility = visibility < .003 ? 'hidden' : 'visible';
-        // The compact profile inset hides temporarily if it would cover
-        // narrative text on a narrow screen, and returns once space is clear.
-        if (mobile) {
-          const pr=profileInset.getBoundingClientRect();
-          const texts=[storyHeader,storyFootnote,...steps.map(step=>step.querySelector('.story-step-content'))];
-          const collides=texts.some(el=>{
-            if (!el) return false;
-            const r=el.getBoundingClientRect();
-            return r.top<pr.bottom+14 && r.bottom>pr.top-14 && r.left<pr.right+4 && r.right>pr.left-4;
-          });
-          profileInset.style.opacity=collides?'0':'1';
-        } else profileInset.style.opacity='1';
-        // Mobile narration occupies the lower part of the viewport.
-        const focus=mobile ? innerHeight*.76 : innerHeight*.53;
+        syncStoryLayout();
+        const mobile=narrowScreen.matches;
+        if(mobile){
+          // The sticky card remains visible throughout the story and ends
+          // naturally at the section boundary (no full-page overlay on mobile).
+          backdrop.style.opacity='1';
+          backdrop.style.visibility='visible';
+          profileInset.style.opacity='1';
+        } else {
+          // Desktop retains the V16 fade-in at the end of the introduction
+          // and fade-out before the next section.
+          const introBottom=intro.getBoundingClientRect().bottom;
+          const footnoteTop=storyFootnote.getBoundingClientRect().top;
+          const entering=1-smooth(innerHeight*.10,innerHeight*.91,introBottom);
+          const exiting=smooth(innerHeight*.45,innerHeight*1.28,footnoteTop);
+          const visibility=clamp(entering*exiting,0,1);
+          backdrop.style.opacity=visibility.toFixed(3);
+          backdrop.style.visibility=visibility<.003?'hidden':'visible';
+          profileInset.style.opacity='1';
+        }
+        // On mobile, follow narrative text BELOW the sticky card, not
+        // content that might be obscured under it.
+        const cardBottom=mobile?backdrop.getBoundingClientRect().bottom:0;
+        const focus=mobile
+          ? Math.min(innerHeight*.78,cardBottom+Math.max(25,(innerHeight-cardBottom)*.26))
+          : innerHeight*.53;
         const centers=steps.map(step=>{const rect=step.getBoundingClientRect();return rect.top+rect.height/2;});
         let t=0;
         if(focus<=centers[0])t=0;
