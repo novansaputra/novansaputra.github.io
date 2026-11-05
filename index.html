@@ -425,8 +425,8 @@
     .story-shortcuts { font-size:.8rem; color:var(--green); margin:17px 0 0; font-weight:700; letter-spacing:.02em; }
     .story-shortcuts a { color:inherit; text-decoration:underline; text-underline-offset:3px; }
     .story-shortcuts-sep { margin:0 12px; color:var(--muted); }
-    .story-figure-pair { display:grid; grid-template-columns:minmax(0,1.28fr) minmax(0,.72fr); align-items:center; gap:clamp(6px,1vw,15px); margin:16px -6px 2px; }
-    .story-galaxy-wrap { min-width:0; overflow:visible; transform:scale(1.08); transform-origin:center center; }
+    .story-figure-pair { display:grid; grid-template-columns:minmax(0,1.55fr) minmax(0,.75fr); align-items:center; gap:clamp(6px,1vw,15px); margin:16px -6px 2px; }
+    .story-galaxy-wrap { min-width:0; overflow:visible; transform:scale(1.035); transform-origin:center center; }
     .story-profile { color:var(--ink); min-width:0; padding:0 0 0 5px; }
     .story-profile-heading { font-size:.79rem; color:var(--ink); font-weight:750; line-height:1.4; margin:0 0 1px; white-space:nowrap; }
     .story-profile-heading span { color:#c4984f; }
@@ -435,13 +435,13 @@
     .story-profile-disclaimer { margin:3px 0 0; color:var(--muted); font-size:.66rem; line-height:1.45; }
     .story-scene-label { margin-top:5px; }
     @media(max-width:1100px) and (min-width:681px) {
-      .story-figure-pair { grid-template-columns:minmax(0,1.14fr) minmax(0,.86fr); gap:4px; }
+      .story-figure-pair { grid-template-columns:minmax(0,1.35fr) minmax(0,.85fr); gap:4px; }
       .story-profile-heading { font-size:.68rem; }
       .story-profile-status { font-size:.67rem; }
       .story-profile-disclaimer { font-size:.6rem; }
     }
     @media(max-width:680px) {
-      .story-figure-pair { grid-template-columns:minmax(0,1.12fr) minmax(0,.88fr); gap:5px; margin:6px -6px 0; }
+      .story-figure-pair { grid-template-columns:minmax(0,1.35fr) minmax(0,.85fr); gap:5px; margin:6px -6px 0; }
       .story-scene { padding:11px 13px 10px; }
       #story-galaxy-svg { max-height:unset; }
       #story-profile-svg { max-height:155px; }
@@ -454,8 +454,8 @@
     }
     @media(max-width:680px) {
       .story-figure-pair { display:flex; flex-direction:column; gap:0; margin:3px 0 1px; }
-      .story-galaxy-wrap { max-width:298px; width:100%; margin:0 auto; transform:scale(1.04); }
-      #story-galaxy-svg { max-height:clamp(118px,16svh,145px); }
+      .story-galaxy-wrap { max-width:320px; width:100%; margin:0 auto; transform:scale(1.02); }
+      #story-galaxy-svg { max-height:clamp(156px,22svh,198px); }
       .story-profile { padding:0; width:100%; margin-top:-3px; }
       .story-profile-heading { font-size:.72rem; }
       #story-profile-svg { display:none; }
@@ -465,8 +465,8 @@
       .story-scene-label { margin-top:8px; }
     }
     @media(max-width:380px) {
-      .story-galaxy-wrap { max-width:270px; transform:scale(1.03); }
-      #story-galaxy-svg { max-height:clamp(109px,16svh,140px); }
+      .story-galaxy-wrap { max-width:290px; transform:scale(1.02); }
+      #story-galaxy-svg { max-height:clamp(145px,21svh,183px); }
       #story-profile-mobile { max-height:clamp(94px,13svh,115px); }
       .story-profile-disclaimer { font-size:.57rem; }
     }
@@ -556,7 +556,7 @@
               <div class="story-step-content">
                 <p class="story-chapter">04 / 06 · Central quenching</p>
                 <h3>Star formation fades from the inside.</h3>
-                <p>The dense central stellar mass is already assembled when star formation starts to fade there. The outskirts can remain star-forming and continue building stellar mass, suggesting an inside-out pattern of quenching.</p>
+                <p>The dense central stellar mass is already assembled when star formation starts to fade there. The outskirts can remain star-forming and continue accumulating stellar mass even after central star formation fades, gradually producing a less steep stellar-mass profile.</p>
               </div>
             </article>
             <article class="story-step" data-story-step="4">
@@ -570,7 +570,7 @@
               <div class="story-step-content">
                 <p class="story-chapter">06 / 06 · After quenching</p>
                 <h3>The outskirts keep growing.</h3>
-                <p>Small satellites fall in and are stripped, depositing stars in the outer envelope. After the satellites are disrupted, the host becomes gradually larger, with its central stellar-mass profile remaining nearly unchanged while the outskirts build up smoothly.</p>
+                <p>Small satellites fall in and are stripped, depositing stars in the outer envelope. After the satellites are disrupted, the host becomes gradually larger, with its central stellar-mass profile remaining nearly unchanged while the extended stellar distribution builds up smoothly.</p>
               </div>
             </article>
           </div>
@@ -582,7 +582,7 @@
               </div>
               <div class="story-figure-pair">
                 <div class="story-galaxy-wrap">
-              <svg id="story-galaxy-svg" viewBox="0 0 640 452" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Schematic of an evolving galaxy: a diffuse blue star-forming system forms a dense bright core, quenches from the inside, and grows its outer envelope through mergers.">
+              <svg id="story-galaxy-svg" viewBox="85 35 475 380" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Schematic of an evolving galaxy: a diffuse blue star-forming system forms a dense bright core, quenches from the inside, and grows its outer envelope through mergers.">
                 <defs>
                   <radialGradient id="sg-blue-disk"><stop offset="0" stop-color="#287d9d" stop-opacity=".98"/><stop offset=".42" stop-color="#65a4cd" stop-opacity=".83"/><stop offset=".83" stop-color="#86b6d7" stop-opacity=".88"/><stop offset="1" stop-color="#9cc4dd" stop-opacity=".11"/></radialGradient>
                   <radialGradient id="sg-mass-growth"><stop offset="0" stop-color="#d3f5ff" stop-opacity=".96"/><stop offset=".48" stop-color="#80c6e9" stop-opacity=".7"/><stop offset="1" stop-color="#49a2cb" stop-opacity="0"/></radialGradient>
@@ -593,7 +593,7 @@
                   <radialGradient id="sg-agn-glow"><stop offset="0" stop-color="#fff9dc" stop-opacity="1"/><stop offset=".15" stop-color="#ffe59a" stop-opacity=".92"/><stop offset=".43" stop-color="#efba4e" stop-opacity=".52"/><stop offset="1" stop-color="#edb849" stop-opacity="0"/></radialGradient>
                   <radialGradient id="sg-satellite"><stop offset="0" stop-color="#bda8a5"/><stop offset=".7" stop-color="#d4aaa3" stop-opacity=".7"/><stop offset="1" stop-color="#d4aaa3" stop-opacity="0"/></radialGradient>
                 </defs>
-                <g aria-hidden="true" transform="translate(320 224) scale(1.35) translate(-320 -224)">
+                <g aria-hidden="true" transform="translate(320 224) scale(1.25) translate(-320 -224)">
                   <!-- Diffuse light is distinct from the central bulge, so the core stays fixed as the envelope grows. -->
                   <ellipse id="sg-grown-envelope" cx="320" cy="224" rx="170" ry="120" fill="url(#sg-warm-envelope)" opacity="0"/>
                   <ellipse id="sg-blue-body" cx="320" cy="224" rx="131" ry="98" fill="url(#sg-blue-disk)" opacity="1"/>
@@ -624,10 +624,10 @@
                     <circle cx="221" cy="285" r="2.1" fill="#edc9b8" stroke="none"/>
                   </g>
                   <g id="sg-satellites" opacity="0">
-                    <path id="sg-sat-trail-1" d="M 515,128 Q 482,145 444,172" stroke="#b38f85" stroke-width="1.5" stroke-opacity=".48" stroke-dasharray="4 7" fill="none"/>
-                    <path id="sg-sat-trail-2" d="M 145,343 Q 201,339 229,294" stroke="#b38f85" stroke-width="1.5" stroke-opacity=".48" stroke-dasharray="4 7" fill="none"/>
-                    <ellipse id="sg-satellite-1" cx="520" cy="125" rx="24" ry="17" fill="url(#sg-satellite)"/>
-                    <ellipse id="sg-satellite-2" cx="140" cy="344" rx="17" ry="12" fill="url(#sg-satellite)"/>
+                    <path id="sg-sat-trail-1" d="M 480,128 Q 461,145 440,172" stroke="#b38f85" stroke-width="1.5" stroke-opacity=".48" stroke-dasharray="4 7" fill="none"/>
+                    <path id="sg-sat-trail-2" d="M 160,343 Q 203,333 229,294" stroke="#b38f85" stroke-width="1.5" stroke-opacity=".48" stroke-dasharray="4 7" fill="none"/>
+                    <ellipse id="sg-satellite-1" cx="480" cy="125" rx="24" ry="17" fill="url(#sg-satellite)"/>
+                    <ellipse id="sg-satellite-2" cx="160" cy="344" rx="17" ry="12" fill="url(#sg-satellite)"/>
                   </g>
                   <circle id="sg-agn-halo" cx="320" cy="224" r="42" fill="url(#sg-agn-glow)" opacity="0"/>
                   <circle id="sg-agn-point" cx="320" cy="224" r="2" fill="#fff3b4" opacity="0"/>
@@ -636,7 +636,7 @@
                 </div>
                 <div class="story-profile" aria-label="Illustrative stellar-mass surface-density profile, updated during the story">
                   <div class="story-profile-heading">Stellar-mass profile <span aria-hidden="true">↗</span></div>
-                  <svg id="story-profile-svg" viewBox="0 0 300 270" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Illustrative radial stellar mass density: the core grows first, while the outskirts increase after minor mergers.">
+                  <svg id="story-profile-svg" viewBox="0 0 300 270" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Illustrative radial stellar mass density: the core grows first, then the full extended component gradually increases and flattens the profile.">
                     <defs>
                       <linearGradient id="sp-area" x1="0" x2="0" y1="0" y2="1">
                         <stop offset="0" stop-color="#d6a14a" stop-opacity=".20"/>
@@ -676,7 +676,7 @@
             </div>
           </div>
         </div>
-        <p class="story-footnote">This sequence is a <strong>schematic interpretation</strong> of galaxy populations at different epochs, not a time-lapse of an individual galaxy. The changing radial profiles are illustrative interpolations inspired by the papers, not fitted profiles or measurements of individual galaxy tracks. The merger sequence, illustrated AGN brightness, and outward quenching boundary are interpretive. Based on <a href="https://ui.adsabs.harvard.edu/abs/2026ApJ..1009..106H/abstract" target="_blank" rel="noopener noreferrer">Haryana et al. (2026)</a> and <a href="https://ui.adsabs.harvard.edu/abs/2025ApJ...994..215H/abstract" target="_blank" rel="noopener noreferrer">Haryana et al. (2025)</a>.</p>
+        <p class="story-footnote">This sequence is a <strong>schematic interpretation</strong> of galaxy populations at different epochs, not a time-lapse of an individual galaxy. The changing radial profiles are illustrative, smoothly varying profiles inspired by the two-phase trend in the papers (especially Figure 9 of Haryana et al. 2026); they are not fits to the plotted medians or individual galaxy tracks. The merger sequence, illustrated AGN brightness, and outward quenching boundary are interpretive. Based on <a href="https://ui.adsabs.harvard.edu/abs/2026ApJ..1009..106H/abstract" target="_blank" rel="noopener noreferrer">Haryana et al. (2026)</a> and <a href="https://ui.adsabs.harvard.edu/abs/2025ApJ...994..215H/abstract" target="_blank" rel="noopener noreferrer">Haryana et al. (2025)</a>.</p>
       </div>
     </section>
 
@@ -973,20 +973,22 @@
         const a=2*Math.PI*random(),rad=130+random()*66;
         appendStar(accretedStars,320+Math.cos(a)*rad,224+Math.sin(a)*rad*.72,.5+random()*.8,.22+random()*.53);
       }
-      // Relative surface density = disk + growing core + merger-built envelope.
-      // The outer component is smoothly gated to large radii, leaving r<1 kpc stable.
-      function profileValue(r,bulgeMass,outerMass){
-        const disk=Math.exp(-r/2.7);
+      // Schematic stellar mass profiles inspired by the *shape* of Fig. 9,
+      // Haryana et al. (2026): rapid early core growth, followed by a broad,
+      // shallower, continuing outer stellar component. No artificial outer-edge bump.
+      // Disk amplitude and scale radius grow smoothly; the central bulge then stays
+      // nearly fixed. The numbers below are artistic interpolation, NOT measured fits.
+      function profileValue(r,bulgeMass,diskAmplitude,diskScale){
+        const extended=diskAmplitude*Math.exp(-r/diskScale);
         const bulge=bulgeMass*Math.exp(-r/.65);
-        const outskirts=outerMass/(1+Math.exp(-(r-2.8)*2.6))*Math.exp(-r/5);
-        return Math.log10(disk+bulge+outskirts);
+        return Math.log10(extended+bulge);
       }
       const x0=48,x1=283,y0=30,y1=222;
       const xy=(r,v)=>[(x0+r/7*(x1-x0)), (y1-(v+1.4)/2.65*(y1-y0))];
-      function profilePath(bulgeMass,outerMass){
+      function profilePath(bulgeMass,diskAmplitude,diskScale){
         const coords=[];
         for(let i=0;i<=110;i++){
-          const r=i/110*7, [x,y]=xy(r,profileValue(r,bulgeMass,outerMass));
+          const r=i/110*7, [x,y]=xy(r,profileValue(r,bulgeMass,diskAmplitude,diskScale));
           coords.push((i===0?'M':'L')+x.toFixed(2)+' '+y.toFixed(2));
         }
         return coords.join(' ');
@@ -1017,39 +1019,46 @@
         const growth=smooth(.70,1,m);
         const satVisible=smooth(0,.09,m)*(1-dissolve);
         attr(sats,'opacity',satVisible*.92);
-        attr(sat1,'cx',lerp(525,431,approach));attr(sat1,'cy',lerp(123,183,approach));
-        attr(sat2,'cx',lerp(130,230,approach));attr(sat2,'cy',lerp(360,287,approach));
+        attr(sat1,'cx',lerp(480,431,approach));attr(sat1,'cy',lerp(123,183,approach));
+        attr(sat2,'cx',lerp(160,230,approach));attr(sat2,'cy',lerp(360,287,approach));
         attr(sat1,'rx',24*(1-.78*dissolve));attr(sat1,'ry',17*(1-.78*dissolve));
         attr(sat2,'rx',17*(1-.78*dissolve));attr(sat2,'ry',12*(1-.78*dissolve));
         attr(debris,'opacity',smooth(.39,.55,m)*(1-smooth(.76,.93,m))*.82);
-        attr(envelope,'rx',137+growth*42);attr(envelope,'ry',103+growth*32);attr(envelope,'opacity',.18+growth*.52);
+        attr(envelope,'rx',137+growth*29);attr(envelope,'ry',103+growth*21);attr(envelope,'opacity',.15+growth*.44);
         attr(accretedStars,'opacity',growth*.54);
-        // Outer stellar mass keeps building during inside-out quenching, then mergers add a smaller extra boost.
-        const sfOuterGrowth=.42*smooth(2.75,4.55,t);
-        const mergerOuterGrowth=.24*growth;
-        const outerMass=sfOuterGrowth+mergerOuterGrowth;
-        // Dynamically drawn gold radial profile, with a faint phase-reference curve.
-        const currentPath=profilePath(frame.massB,outerMass);
+        // During inside-out quenching the extended stellar component grows
+        // broadly across the galaxy (roughly 1–7 kpc), *not* just at the edge.
+        // A modest scale-length increase makes the total profile less steep.
+        // Minor mergers later contribute only a small, smooth additional increase.
+        const sfGrowth=smooth(2.55,4.20,t);
+        const diskAmplitude=1+.48*sfGrowth+.16*growth;
+        const diskScale=2.70+.22*sfGrowth+.10*growth;
+        // A faded reference is shown at the beginning of each growth phase.
+        const refPhase=smooth(4.03,4.36,t);
+        const refBulge=lerp(.55,8.5,smooth(2.45,2.86,t));
+        const refAmp=1+.48*refPhase;
+        const refScale=2.70+.22*refPhase;
+        const showGhost=(t>.12&&t<2.83)||(t>2.65);
+        const currentPath=profilePath(frame.massB,diskAmplitude,diskScale);
         profileLine.setAttribute('d',currentPath);
         profileArea.setAttribute('d',currentPath+` L ${x1} ${y1} L ${x0} ${y1} Z`);
-        const showGhost=(t>.12&&t<2.8)||(t>4.10);
-        profileGhost.setAttribute('opacity',showGhost?'.42':'0');
-        profileGhost.setAttribute('d',profilePath(t>4.10?8.5:.55,0));
-        // A simpler, wider sparkline keeps the figure legible on small screens.
-        function mobilePath(bulgeMass,outerMass){
+        profileGhost.setAttribute('opacity',showGhost?'.39':'0');
+        profileGhost.setAttribute('d',profilePath(refBulge,refAmp,refScale));
+        // The compact mobile plot uses the exact same evolving profile.
+        function mobilePath(bulgeMass,amplitude,scale){
           let path='';
           for(let i=0;i<=85;i++){
             const r=i/85*7, x=24+r/7*304;
-            const y=107-(profileValue(r,bulgeMass,outerMass)+1.4)/2.65*93;
+            const y=107-(profileValue(r,bulgeMass,amplitude,scale)+1.4)/2.65*93;
             path+=(i===0?'M':'L')+x.toFixed(2)+' '+y.toFixed(2)+' ';
           }
           return path.trim();
         }
-        const mobileCurrent=mobilePath(frame.massB,outerMass);
+        const mobileCurrent=mobilePath(frame.massB,diskAmplitude,diskScale);
         mobileLine.setAttribute('d',mobileCurrent);
         mobileArea.setAttribute('d',mobileCurrent+' L 328 107 L 24 107 Z');
-        mobileGhost.setAttribute('d',mobilePath(t>4.10?8.5:.55,0));
-        mobileGhost.setAttribute('opacity',showGhost?'.38':'0');
+        mobileGhost.setAttribute('d',mobilePath(refBulge,refAmp,refScale));
+        mobileGhost.setAttribute('opacity',showGhost?'.36':'0');
         progressBar.style.width=(100*t/(keyframes.length-1)).toFixed(2)+'%';
         const idx=clamp(Math.round(t),0,names.length-1);
         if(idx!==previousIndex){
