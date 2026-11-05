@@ -471,6 +471,125 @@
       .story-profile-disclaimer { font-size:.57rem; }
     }
   </style>
+
+  <style>
+    /* V16: cinematic, borderless, scroll-driven illustration. The illustration remains
+       lightweight inline SVG: no canvas, library, video, or extra network request. */
+    .story-backdrop {
+      position:fixed; inset:0; z-index:0; opacity:0; visibility:hidden;
+      pointer-events:none; overflow:hidden; will-change:opacity;
+      background:radial-gradient(ellipse 43% 57% at 72% 51%, rgba(108,148,157,.075), transparent 88%);
+      transition:visibility 0s linear .01s;
+    }
+    .story-backdrop .story-visual { position:absolute; inset:0; top:0; width:100%; height:100%; min-height:0;
+      max-height:none; display:block; margin:0; padding:0; z-index:auto; background:transparent; }
+    .story-backdrop .story-scene, .story-backdrop .story-figure-pair { display:contents; }
+    .story-backdrop .story-galaxy-wrap {
+      position:absolute; top:50%; right:-5vw; width:min(95vw,1420px); height:96svh;
+      max-width:none; min-width:0; margin:0; transform:translateY(-50%);
+      opacity:.97; overflow:visible;
+    }
+    .story-backdrop #story-galaxy-svg { width:100%; height:100%; max-height:none; display:block; overflow:visible; }
+    /* A small semi-translucent *inset plot*, not a card around the schematic. */
+    .story-backdrop .story-profile {
+      transition:opacity .18s ease;
+      position:absolute; right:clamp(22px,5vw,90px); bottom:clamp(65px,11svh,115px);
+      width:clamp(210px,19vw,285px); max-width:31vw; padding:15px 16px 10px;
+      color:var(--ink); border:1px solid var(--line); border-radius:12px;
+      background:var(--paper); background:color-mix(in srgb, var(--paper) 88%, transparent);
+      -webkit-backdrop-filter:blur(16px); backdrop-filter:blur(16px);
+      box-shadow:0 10px 40px rgba(22,37,37,.05);
+    }
+    .story-backdrop #story-profile-svg { display:block; width:100%; max-height:210px; }
+    .story-backdrop #story-profile-mobile { display:none; }
+    .story-backdrop .story-profile-heading { font-size:.72rem; }
+    .story-backdrop .story-profile-status { font-size:.67rem; }
+    .story-backdrop .story-profile-disclaimer { font-size:.60rem; }
+    .story-backdrop .story-visual-top { position:absolute; right:clamp(20px,5vw,90px); top:clamp(105px,15svh,150px);
+      display:flex; gap:16px; justify-content:flex-end; text-align:right; z-index:1; }
+    .story-backdrop .story-visual-count { color:var(--muted); }
+    .story-backdrop .story-scene-label { position:absolute; right:clamp(20px,5vw,90px); top:clamp(126px,18svh,178px);
+      margin:0; font-size:clamp(1rem,1.45vw,1.35rem); min-height:0; text-align:right; z-index:1; }
+    .story-backdrop .story-progress-track { position:absolute; right:clamp(22px,5vw,90px); bottom:53px;
+      width:clamp(210px,19vw,285px); max-width:31vw; }
+    .story-backdrop .story-timeline { position:absolute; right:clamp(22px,5vw,90px); bottom:19px;
+      width:clamp(210px,19vw,285px); max-width:31vw; margin:0; }
+    /* Page sections are readable in front of the background; the plot never intercepts clicks. */
+    .hero, .story-section { position:relative; z-index:1; }
+    .story-section.content-section { background:transparent; overflow:visible; border-bottom:1px solid var(--line);
+      padding:clamp(78px,10svh,125px) 0 130px; }
+    .story-section .shell { position:relative; }
+    .story-header { width:min(580px,54vw); max-width:580px; margin:0 0 24px; }
+    .story-header h2 { font-size:clamp(2.5rem,4vw,4.35rem); }
+    .story-layout { display:block; }
+    .story-steps { width:min(48%,520px); }
+    .story-step, .story-step:first-child, .story-step:last-child { min-height:94svh; padding:12svh 0; display:flex; align-items:center; }
+    .story-step-content { max-width:480px; background:none; border-left:2px solid var(--line); padding:12px 18px 12px 22px;
+      text-shadow:0 1px 18px var(--paper); }
+    .story-step.is-active .story-step-content { border-left-color:var(--green); }
+    .story-step h3 { font-size:clamp(1.9rem,2.65vw,2.65rem); }
+    .story-footnote { max-width:560px; padding-top:45px; line-height:1.8; }
+    /* A soft page-color wash protects paragraphs without drawing an enclosing card. */
+    .story-section::before { content:""; position:absolute; inset:0 auto 0 0; width:59vw;
+      background:linear-gradient(90deg,var(--paper) 24%,color-mix(in srgb,var(--paper) 94%,transparent) 55%,transparent 100%);
+      pointer-events:none; z-index:-1; }
+    #research, #publications, #contact { position:relative; z-index:1; background:var(--paper); }
+    :root[data-theme="dark"] .story-backdrop { background:radial-gradient(ellipse 46% 61% at 72% 52%,rgba(61,109,129,.1),transparent 84%); }
+    :root[data-theme="dark"] .story-backdrop .story-profile { box-shadow:0 10px 45px rgba(0,0,0,.16); }
+    @media(max-width:1050px) and (min-width:681px) {
+      .story-backdrop .story-galaxy-wrap { right:-15vw; width:107vw; }
+      .story-backdrop .story-profile { max-width:29vw; }
+      .story-steps { width:48%; }
+    }
+    @media(max-width:680px) {
+      .story-backdrop { background:radial-gradient(ellipse 78% 39% at 52% 25%,rgba(90,140,154,.065),transparent 93%); }
+      .story-backdrop .story-visual { top:0; padding:0; background:transparent; }
+      .story-backdrop .story-galaxy-wrap { top:clamp(98px,15svh,150px); left:50%; right:auto;
+        width:min(128vw,640px); height:clamp(275px,45svh,430px);
+        max-width:none; margin:0; transform:translateX(-50%); opacity:.92; }
+      .story-backdrop #story-galaxy-svg { width:100%; height:100%; max-height:none; }
+      .story-backdrop .story-visual-top { display:none; }
+      .story-backdrop .story-visual-title { font-size:.53rem; }
+      .story-backdrop .story-visual-count { font-size:.58rem; }
+      .story-backdrop .story-scene-label { display:none; }
+      .story-backdrop .story-profile { right:12px; top:clamp(215px,29svh,275px); bottom:auto;
+        width:min(39vw,165px); max-width:none; padding:7px 9px 5px;
+        border-radius:9px; }
+      .story-backdrop #story-profile-svg { display:block; max-height:95px; }
+      .story-backdrop #story-profile-mobile { display:none; }
+      .story-backdrop .story-profile-heading { font-size:.53rem; white-space:normal; }
+      .story-backdrop .story-profile-status { font-size:.51rem; line-height:1.22; }
+      .story-backdrop .story-profile-disclaimer { font-size:.46rem; }
+      .story-backdrop .story-progress-track { bottom:14px; right:15px; width:46vw; max-width:200px; }
+      .story-backdrop .story-timeline { display:none; }
+      .story-section.content-section { padding:75px 0 85px; }
+      .story-header { width:100%; max-width:430px; margin-bottom:14svh; }
+      .story-header h2 { font-size:clamp(2.3rem,8.4vw,3.5rem); }
+      .story-deck { font-size:.94rem; }
+      .story-section::before { width:100%; background:linear-gradient(180deg, var(--paper) 0%,
+        color-mix(in srgb, var(--paper) 94%, transparent) 32%,transparent 63%); opacity:.45; }
+      .story-layout { display:block; }
+      .story-steps { width:100%; }
+      .story-step, .story-step:first-child, .story-step:last-child { min-height:86svh; padding:50svh 0 5svh;
+        align-items:flex-end; }
+      .story-step-content { max-width:100%; padding:14px 11px 13px 15px;
+        border-left:2px solid var(--line); opacity:1; background:linear-gradient(90deg,
+        var(--paper),color-mix(in srgb,var(--paper) 97%,transparent));
+        box-shadow:0 0 21px 10px var(--paper);
+        border-radius:0 8px 8px 0; text-shadow:none; }
+      .story-step h3 { font-size:clamp(1.8rem,7.1vw,2.3rem); line-height:1.18; }
+      .story-step p:not(.story-chapter) { font-size:.91rem; line-height:1.69; }
+      .story-footnote { padding-top:0; margin-top:30px; }
+    }
+    @media(max-width:380px) {
+      .story-backdrop .story-galaxy-wrap { width:139vw; top:110px; height:40svh; }
+      .story-backdrop .story-profile { top:clamp(198px,28svh,250px); width:38vw; }
+      .story-backdrop #story-profile-svg { max-height:90px; }
+
+      .story-step, .story-step:first-child, .story-step:last-child { min-height:88svh; padding-top:48svh; }
+    }
+    @media(prefers-reduced-motion:reduce) { .story-backdrop { will-change:auto; } }
+  </style>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -496,84 +615,8 @@
     </div>
   </header>
 
-  <main id="main">
-    <div class="hero shell" id="top">
-      <span id="about" class="legacy-anchor" aria-hidden="true"></span>
-      <div class="hero-grid">
-        <div>
-          <h1>Novan Saputra <em>Haryana</em></h1>
-          <p class="hero-katakana" lang="ja">ノヴァン・サプトラ・ハリヤナ</p>
-          <p class="hero-copy">I'm an Indonesian astrophysicist pursuing my PhD at the Astronomical Institute of <a class="university-link" href="https://www.astr.tohoku.ac.jp/en/" target="_blank" rel="noopener noreferrer" aria-label="Astronomical Institute, Tohoku University (opens in a new tab)">Tohoku University <span aria-hidden="true">↗</span></a>, Japan. I study how galaxies build their bulges, grow supermassive black holes, and eventually stop forming stars.</p>
-          <div class="button-row">
-            <a class="button button-primary" href="#story">Explore the story <span class="arrow" aria-hidden="true">↗</span></a>
-            <a class="button button-soft" href="#publications">View publications <span class="arrow" aria-hidden="true">↗</span></a>
-          </div>
-          <div class="hero-meta">
-            <span><strong>Based in</strong> Sendai, Japan</span>
-            <span><strong>Research</strong> Massive galaxies · Compaction · Quenching · AGN</span>
-          </div>
-        </div>
-        <figure class="portrait-wrap">
-          <img class="portrait-image" src="images/IMG_8870.jpg" width="500" height="580" fetchpriority="high" alt="Portrait of Novan Saputra Haryana">
-          <figcaption><span>Naples, June 2025</span></figcaption>
-        </figure>
-      </div>
-    </div>
-
-    <!-- A lightweight scroll-driven SVG schematic and schematic density-profile story. -->
-    <section class="content-section story-section" id="story" aria-labelledby="story-title">
-      <div class="shell">
-        <div class="story-header">
-          <p class="story-kicker">§ 01 · An evolutionary picture</p>
-          <h2 id="story-title">A possible life of a massive galaxy.</h2>
-          <p class="story-deck">What might connect the dense, star-forming galaxies of the early Universe to the large, quiescent ellipticals we see today? Scroll to follow an evolving galaxy and its stellar-mass distribution, inspired by my two papers.</p>
-          <p class="story-shortcuts"><span aria-hidden="true">↓</span> Scroll to explore <span class="story-shortcuts-sep">·</span> <a href="#research">Skip to research ↗</a></p>
-        </div>
-        <div class="story-layout" id="galaxy-story">
-          <div class="story-steps" aria-label="Six stages in a possible galaxy evolutionary sequence">
-            <article class="story-step is-active" data-story-step="0">
-              <div class="story-step-content">
-                <p class="story-chapter">01 / 06 · The starting point</p>
-                <h3>An extended, star-forming galaxy.</h3>
-                <p>Early massive galaxies may begin as relatively extended systems, with active star formation spread across their stellar bodies.</p>
-              </div>
-            </article>
-            <article class="story-step" data-story-step="1">
-              <div class="story-step-content">
-                <p class="story-chapter">02 / 06 · Compaction</p>
-                <h3>A dense stellar core takes shape.</h3>
-                <p>The inner galaxy gains stellar mass rapidly while the extended stellar component remains. Its radial profile steepens as a dense bulge assembles in an actively star-forming system.</p>
-              </div>
-            </article>
-            <article class="story-step" data-story-step="2">
-              <div class="story-step-content">
-                <p class="story-chapter">03 / 06 · Black-hole growth</p>
-                <h3>The central black hole is growing, too.</h3>
-                <p>Our X-ray results associate the dense, star-forming phase with enhanced black-hole accretion. The bright gold point represents unresolved nuclear emission; the much broader stellar core represents bulge mass.</p>
-              </div>
-            </article>
-            <article class="story-step" data-story-step="3">
-              <div class="story-step-content">
-                <p class="story-chapter">04 / 06 · Central quenching</p>
-                <h3>Star formation fades from the inside.</h3>
-                <p>The dense central stellar mass is already assembled when star formation starts to fade there. The outskirts can remain star-forming and continue accumulating stellar mass even after central star formation fades, gradually producing a less steep stellar-mass profile.</p>
-              </div>
-            </article>
-            <article class="story-step" data-story-step="4">
-              <div class="story-step-content">
-                <p class="story-chapter">05 / 06 · Quiescence</p>
-                <h3>Quenching extends outward.</h3>
-                <p>Star formation declines across more of the galaxy. The once-blue system becomes a compact, quiescent galaxy, and the depicted nuclear emission fades.</p>
-              </div>
-            </article>
-            <article class="story-step" data-story-step="5">
-              <div class="story-step-content">
-                <p class="story-chapter">06 / 06 · After quenching</p>
-                <h3>The outskirts keep growing.</h3>
-                <p>Small satellites fall in and are stripped, depositing stars in the outer envelope. After the satellites are disrupted, the host becomes gradually larger, with its central stellar-mass profile remaining nearly unchanged while the extended stellar distribution builds up smoothly.</p>
-              </div>
-            </article>
-          </div>
+  <!-- The same accessible scroll-synchronized SVG, now a borderless, full-viewport backdrop. -->
+  <div class="story-backdrop" id="story-backdrop" aria-label="Schematic massive galaxy evolving across cosmic time">
           <div class="story-visual">
             <div class="story-scene" role="group" aria-label="Schematic galaxy and illustrative stellar-mass radial profile evolving with scrolling">
               <div class="story-visual-top">
@@ -675,6 +718,87 @@
               <p class="story-timeline"><span>Early Universe</span><span>Later cosmic time</span></p>
             </div>
           </div>
+  </div>
+
+  <main id="main">
+    <div class="hero shell" id="top">
+      <span id="about" class="legacy-anchor" aria-hidden="true"></span>
+      <div class="hero-grid">
+        <div>
+          <h1>Novan Saputra <em>Haryana</em></h1>
+          <p class="hero-katakana" lang="ja">ノヴァン・サプトラ・ハリヤナ</p>
+          <p class="hero-copy">I'm an Indonesian astrophysicist pursuing my PhD at the Astronomical Institute of <a class="university-link" href="https://www.astr.tohoku.ac.jp/en/" target="_blank" rel="noopener noreferrer" aria-label="Astronomical Institute, Tohoku University (opens in a new tab)">Tohoku University <span aria-hidden="true">↗</span></a>, Japan. I study how galaxies build their bulges, grow supermassive black holes, and eventually stop forming stars.</p>
+          <div class="button-row">
+            <a class="button button-primary" href="#story">Explore the story <span class="arrow" aria-hidden="true">↗</span></a>
+            <a class="button button-soft" href="#publications">View publications <span class="arrow" aria-hidden="true">↗</span></a>
+          </div>
+          <div class="hero-meta">
+            <span><strong>Based in</strong> Sendai, Japan</span>
+            <span><strong>Research</strong> Massive galaxies · Compaction · Quenching · AGN</span>
+          </div>
+        </div>
+        <figure class="portrait-wrap">
+          <img class="portrait-image" src="images/IMG_8870.jpg" width="500" height="580" fetchpriority="high" alt="Portrait of Novan Saputra Haryana">
+          <figcaption><span>Naples, June 2025</span></figcaption>
+        </figure>
+      </div>
+    </div>
+
+    <!-- A lightweight scroll-driven SVG schematic and schematic density-profile story. -->
+    <section class="content-section story-section" id="story" aria-labelledby="story-title">
+      <div class="shell">
+        <div class="story-header">
+          <p class="story-kicker">§ 01 · An evolutionary picture</p>
+          <h2 id="story-title">A possible life of a massive galaxy.</h2>
+          <p class="story-deck">What might connect the dense, star-forming galaxies of the early Universe to the large, quiescent ellipticals we see today? Scroll to follow an evolving galaxy and its stellar-mass distribution, inspired by my two papers.</p>
+          <p class="story-shortcuts"><span aria-hidden="true">↓</span> Scroll to explore <span class="story-shortcuts-sep">·</span> <a href="#research">Skip to research ↗</a></p>
+        </div>
+        <div class="story-layout" id="galaxy-story">
+          <div class="story-steps" aria-label="Six stages in a possible galaxy evolutionary sequence">
+            <article class="story-step is-active" data-story-step="0">
+              <div class="story-step-content">
+                <p class="story-chapter">01 / 06 · The starting point</p>
+                <h3>An extended, star-forming galaxy.</h3>
+                <p>Early massive galaxies may begin as relatively extended systems, with active star formation spread across their stellar bodies.</p>
+              </div>
+            </article>
+            <article class="story-step" data-story-step="1">
+              <div class="story-step-content">
+                <p class="story-chapter">02 / 06 · Compaction</p>
+                <h3>A dense stellar core takes shape.</h3>
+                <p>The inner galaxy gains stellar mass rapidly while the extended stellar component remains. Its radial profile steepens as a dense bulge assembles in an actively star-forming system.</p>
+              </div>
+            </article>
+            <article class="story-step" data-story-step="2">
+              <div class="story-step-content">
+                <p class="story-chapter">03 / 06 · Black-hole growth</p>
+                <h3>The central black hole is growing, too.</h3>
+                <p>Our X-ray results associate the dense, star-forming phase with enhanced black-hole accretion. The bright gold point represents unresolved nuclear emission; the much broader stellar core represents bulge mass.</p>
+              </div>
+            </article>
+            <article class="story-step" data-story-step="3">
+              <div class="story-step-content">
+                <p class="story-chapter">04 / 06 · Central quenching</p>
+                <h3>Star formation fades from the inside.</h3>
+                <p>The dense central stellar mass is already assembled when star formation starts to fade there. The outskirts can remain star-forming and continue accumulating stellar mass even after central star formation fades, gradually producing a less steep stellar-mass profile.</p>
+              </div>
+            </article>
+            <article class="story-step" data-story-step="4">
+              <div class="story-step-content">
+                <p class="story-chapter">05 / 06 · Quiescence</p>
+                <h3>Quenching extends outward.</h3>
+                <p>Star formation declines across more of the galaxy. The once-blue system becomes a compact, quiescent galaxy, and the depicted nuclear emission fades.</p>
+              </div>
+            </article>
+            <article class="story-step" data-story-step="5">
+              <div class="story-step-content">
+                <p class="story-chapter">06 / 06 · After quenching</p>
+                <h3>The outskirts keep growing.</h3>
+                <p>Small satellites fall in and are stripped, depositing stars in the outer envelope. After the satellites are disrupted, the host becomes gradually larger, with its central stellar-mass profile remaining nearly unchanged while the extended stellar distribution builds up smoothly.</p>
+              </div>
+            </article>
+          </div>
+
         </div>
         <p class="story-footnote">This sequence is a <strong>schematic interpretation</strong> of galaxy populations at different epochs, not a time-lapse of an individual galaxy. The changing radial profiles are illustrative, smoothly varying profiles inspired by the two-phase trend in the papers (especially Figure 9 of Haryana et al. 2026); they are not fits to the plotted medians or individual galaxy tracks. The merger sequence, illustrated AGN brightness, and outward quenching boundary are interpretive. Based on <a href="https://ui.adsabs.harvard.edu/abs/2026ApJ..1009..106H/abstract" target="_blank" rel="noopener noreferrer">Haryana et al. (2026)</a> and <a href="https://ui.adsabs.harvard.edu/abs/2025ApJ...994..215H/abstract" target="_blank" rel="noopener noreferrer">Haryana et al. (2025)</a>.</p>
       </div>
@@ -892,7 +1016,13 @@
   <script>
     (() => {
       const story = document.getElementById('galaxy-story');
-      if (!story) return;
+      const backdrop = document.getElementById('story-backdrop');
+      const intro = document.querySelector('.hero');
+      const storySection = document.getElementById('story');
+      const storyHeader = storySection?.querySelector('.story-header');
+      const storyFootnote = storySection?.querySelector('.story-footnote');
+      const profileInset = backdrop.querySelector('.story-profile');
+      if (!story || !backdrop || !intro || !storySection || !storyHeader || !storyFootnote || !profileInset) return;
       const steps = [...story.querySelectorAll('[data-story-step]')];
       const byId = id => document.getElementById(id);
       const sceneLabel = byId('story-scene-label');
@@ -1070,11 +1200,33 @@
       }
       function update(){
         busy=false;
-        // On narrow screens the sticky illustration occupies the upper viewport.
-        // Follow narration BELOW it, rather than activating stages hidden behind it.
+        // Fade the gallery in during the introduction-to-story transition and out
+        // during the last screenful of the story, without covering subsequent sections.
+        const introBottom = intro.getBoundingClientRect().bottom;
+        const footnoteTop = storyFootnote.getBoundingClientRect().top;
+        const entering = 1 - smooth(innerHeight*.10, innerHeight*.91, introBottom);
+        // Dissolve the art before the attribution note reaches the viewport center.
+        const exiting = smooth(innerHeight*.45,innerHeight*1.28,footnoteTop);
         const mobile=window.matchMedia('(max-width: 680px)').matches;
-        const figureBottom=story.querySelector('.story-visual').getBoundingClientRect().bottom;
-        const focus=mobile ? Math.min(innerHeight*.78, figureBottom + Math.max(25,(innerHeight-figureBottom)*.26)) : innerHeight*.53;
+        const headerBottom = storyHeader.getBoundingClientRect().bottom;
+        const mobileIntro = mobile ? 1-smooth(0,innerHeight*.84,headerBottom) : 1;
+        const visibility = clamp(entering*exiting*mobileIntro,0,1);
+        backdrop.style.opacity = visibility.toFixed(3);
+        backdrop.style.visibility = visibility < .003 ? 'hidden' : 'visible';
+        // The compact profile inset hides temporarily if it would cover
+        // narrative text on a narrow screen, and returns once space is clear.
+        if (mobile) {
+          const pr=profileInset.getBoundingClientRect();
+          const texts=[storyHeader,storyFootnote,...steps.map(step=>step.querySelector('.story-step-content'))];
+          const collides=texts.some(el=>{
+            if (!el) return false;
+            const r=el.getBoundingClientRect();
+            return r.top<pr.bottom+14 && r.bottom>pr.top-14 && r.left<pr.right+4 && r.right>pr.left-4;
+          });
+          profileInset.style.opacity=collides?'0':'1';
+        } else profileInset.style.opacity='1';
+        // Mobile narration occupies the lower part of the viewport.
+        const focus=mobile ? innerHeight*.76 : innerHeight*.53;
         const centers=steps.map(step=>{const rect=step.getBoundingClientRect();return rect.top+rect.height/2;});
         let t=0;
         if(focus<=centers[0])t=0;
